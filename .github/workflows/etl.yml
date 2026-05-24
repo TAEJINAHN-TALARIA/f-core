@@ -1,6 +1,11 @@
 name: Daily SEC EDGAR ETL
 
 on:
+  push:
+    branches:
+      - master
+    paths:
+      - ".github/workflows/etl.yml"
   schedule:
     # 14:00 UTC = 9am ET, after SEC's morning bulk data refresh
     - cron: "0 14 * * *"
