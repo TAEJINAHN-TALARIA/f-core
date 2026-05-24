@@ -10,10 +10,9 @@ load_dotenv()
 
 app = FastAPI(title="f-core API", version="0.1.0")
 
-origins = [o.strip() for o in os.environ.get("ALLOWED_ORIGINS", "*").split(",")]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_methods=["GET"],
     allow_headers=["*"],
 )
