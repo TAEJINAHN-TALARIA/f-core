@@ -18,7 +18,7 @@ def run() -> None:
     logger.info("=== SEC EDGAR ETL Pipeline Start ===")
 
     ticker_map = get_ticker_map()
-    ciks = list(ticker_map.keys())[:1500]
+    ciks = list(ticker_map.keys())
     client = get_client()
 
     company_buffer: list[dict] = []

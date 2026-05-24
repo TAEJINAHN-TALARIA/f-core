@@ -4,7 +4,7 @@ import zipfile
 from pathlib import Path
 from typing import Generator
 
-from .config import TARGET_TAGS, TAXONOMY
+from .config import TARGET_TAGS, TAXONOMY, HISTORY_CUTOFF
 
 logger = logging.getLogger(__name__)
 
@@ -70,6 +70,10 @@ def extract_facts(data: dict) -> list[dict]:
 
                 # 연간(10-K) 또는 분기(10-Q) 공시만
                 if form not in ("10-K", "10-Q", "10-K/A", "10-Q/A"):
+                    continue
+
+                # 최근 N년 이내 데이터만 수집
+                if end < HISTORY_CUTOFF:
                     continue
 
                 results.append({
