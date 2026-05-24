@@ -1,0 +1,42 @@
+# Environment
+.env
+.env.local
+.env.*.local
+mobile/.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# Next.js
+web/.next/
+web/out/
+web/node_modules/
+
+# Expo / React Native
+mobile/.expo/
+mobile/node_modules/
+mobile/dist/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+npm-debug.log*
+
+# Misc
+/tmp/

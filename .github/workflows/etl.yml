@@ -1,0 +1,30 @@
+name: Daily SEC EDGAR ETL
+
+on:
+  schedule:
+    # 14:00 UTC = 9am ET, after SEC's morning bulk data refresh
+    - cron: "0 14 * * *"
+  workflow_dispatch:
+
+jobs:
+  etl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run ETL pipeline
+        env:
+          EDGAR_USER_AGENT: ${{ secrets.EDGAR_USER_AGENT }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: python -m etl.pipeline

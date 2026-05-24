@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "home": "홈",
+    "search": "검색",
+    "language": "언어"
+  },
+  "home": {
+    "title": "미국 주식 재무 데이터",
+    "subtitle": "SEC EDGAR 공시 데이터 매일 업데이트",
+    "searchPlaceholder": "티커 또는 기업명 검색 (예: AAPL, Apple)",
+    "searchHint": "Enter 키를 누르거나 결과를 클릭하면 기업 상세 정보로 이동합니다"
+  },
+  "company": {
+    "overview": "개요",
+    "income": "손익계산서",
+    "balance": "재무상태표",
+    "cashflow": "현금흐름",
+    "filings": "공시",
+    "exchange": "거래소",
+    "sector": "섹터",
+    "noData": "데이터가 없습니다",
+    "ttmNote": "TTM = 최근 12개월 합산"
+  },
+  "metrics": {
+    "revenue": "매출액",
+    "grossProfit": "매출총이익",
+    "operatingIncome": "영업이익",
+    "netIncome": "당기순이익",
+    "eps": "EPS (희석)",
+    "epsBasic": "EPS (기본)",
+    "assets": "총자산",
+    "liabilities": "총부채",
+    "equity": "자기자본",
+    "cash": "현금 및 현금성자산",
+    "longTermDebt": "장기부채",
+    "operatingCF": "영업현금흐름",
+    "investingCF": "투자현금흐름",
+    "financingCF": "재무현금흐름",
+    "capex": "자본지출",
+    "fcf": "잉여현금흐름",
+    "grossMargin": "매출총이익률",
+    "operatingMargin": "영업이익률",
+    "netMargin": "순이익률",
+    "roe": "자기자본이익률(ROE)",
+    "roa": "총자산이익률(ROA)",
+    "debtRatio": "부채비율",
+    "debtToEquity": "부채/자본비율",
+    "interestCoverage": "이자보상배율",
+    "buybacks": "자사주 매입",
+    "dividends": "현금 배당",
+    "buybackToFcf": "자사주매입/FCF"
+  },
+  "period": {
+    "annual": "연간",
+    "quarterly": "분기",
+    "ttm": "최근 12개월"
+  },
+  "filings": {
+    "form": "양식",
+    "filedDate": "제출일",
+    "periodEnd": "기간 종료",
+    "viewOnEdgar": "EDGAR에서 보기"
+  },
+  "chart": {
+    "value": "값",
+    "date": "날짜",
+    "noData": "차트 데이터가 없습니다"
+  },
+  "units": {
+    "billion": "B",
+    "million": "M",
+    "thousand": "K"
+  }
+}

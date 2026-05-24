@@ -1,0 +1,47 @@
+export default {
+  home: {
+    title: "미국 주식 재무 데이터",
+    subtitle: "SEC EDGAR 공시 데이터 매일 업데이트",
+    searchPlaceholder: "티커 또는 기업명 (예: AAPL)",
+    noResults: "검색 결과 없음",
+  },
+  company: {
+    overview: "개요",
+    filings: "공시",
+    noData: "데이터 없음",
+    ttmNote: "TTM = 최근 12개월 합산",
+  },
+  metrics: {
+    revenue: "매출액",
+    netIncome: "당기순이익",
+    eps: "EPS (희석)",
+    grossMargin: "매출총이익률",
+    operatingMargin: "영업이익률",
+    netMargin: "순이익률",
+    roe: "ROE",
+    fcf: "잉여현금흐름",
+    assets: "총자산",
+    equity: "자기자본",
+    longTermDebt: "장기부채",
+  },
+  period: {
+    annual: "연간",
+    quarterly: "분기",
+    ttm: "최근 12개월",
+  },
+  watchlist: {
+    title: "관심종목",
+    empty: "저장된 종목이 없습니다.\n검색 후 관심종목에 추가하세요.",
+    remove: "삭제",
+  },
+  tabs: {
+    search: "검색",
+    watchlist: "관심종목",
+  },
+  filings: {
+    form: "양식",
+    filedDate: "제출일",
+    periodEnd: "기간",
+    viewOnEdgar: "EDGAR에서 보기",
+  },
+};

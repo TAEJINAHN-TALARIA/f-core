@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "home": "Home",
+    "search": "Search",
+    "language": "Language"
+  },
+  "home": {
+    "title": "US Stock Financials",
+    "subtitle": "SEC EDGAR filing data updated daily",
+    "searchPlaceholder": "Search by ticker or company name (e.g. AAPL, Apple)",
+    "searchHint": "Press Enter or click a result to view company details"
+  },
+  "company": {
+    "overview": "Overview",
+    "income": "Income Statement",
+    "balance": "Balance Sheet",
+    "cashflow": "Cash Flow",
+    "filings": "Filings",
+    "exchange": "Exchange",
+    "sector": "Sector",
+    "noData": "No data available",
+    "ttmNote": "TTM = Trailing Twelve Months"
+  },
+  "metrics": {
+    "revenue": "Revenue",
+    "grossProfit": "Gross Profit",
+    "operatingIncome": "Operating Income",
+    "netIncome": "Net Income",
+    "eps": "EPS (Diluted)",
+    "epsBasic": "EPS (Basic)",
+    "assets": "Total Assets",
+    "liabilities": "Total Liabilities",
+    "equity": "Stockholders' Equity",
+    "cash": "Cash & Equivalents",
+    "longTermDebt": "Long-term Debt",
+    "operatingCF": "Operating Cash Flow",
+    "investingCF": "Investing Cash Flow",
+    "financingCF": "Financing Cash Flow",
+    "capex": "CapEx",
+    "fcf": "Free Cash Flow",
+    "grossMargin": "Gross Margin",
+    "operatingMargin": "Operating Margin",
+    "netMargin": "Net Margin",
+    "roe": "ROE",
+    "roa": "ROA",
+    "debtRatio": "Debt Ratio",
+    "debtToEquity": "Debt / Equity",
+    "interestCoverage": "Interest Coverage",
+    "buybacks": "Stock Buybacks",
+    "dividends": "Dividends Paid",
+    "buybackToFcf": "Buyback / FCF"
+  },
+  "period": {
+    "annual": "Annual",
+    "quarterly": "Quarterly",
+    "ttm": "TTM"
+  },
+  "filings": {
+    "form": "Form",
+    "filedDate": "Filed Date",
+    "periodEnd": "Period End",
+    "viewOnEdgar": "View on EDGAR"
+  },
+  "chart": {
+    "value": "Value",
+    "date": "Date",
+    "noData": "No chart data available"
+  },
+  "units": {
+    "billion": "B",
+    "million": "M",
+    "thousand": "K"
+  }
+}
