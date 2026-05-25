@@ -1,6 +1,7 @@
 import json
 import logging
 import zipfile
+from datetime import date
 from pathlib import Path
 from typing import Generator
 
@@ -46,6 +47,7 @@ def extract_facts(data: dict) -> list[dict]:
     """핵심 XBRL 태그의 수치만 추출"""
     cik = str(data.get("cik", "")).zfill(10)
     facts_raw = data.get("facts", {}).get(TAXONOMY, {})
+    today = date.today().isoformat()
     results = []
 
     for tag, tag_data in facts_raw.items():
@@ -72,8 +74,8 @@ def extract_facts(data: dict) -> list[dict]:
                 if form not in ("10-K", "10-Q", "10-K/A", "10-Q/A"):
                     continue
 
-                # 최근 N년 이내 데이터만 수집
-                if end < HISTORY_CUTOFF:
+                # 과거 N년 이내, 미래 날짜 제외
+                if end < HISTORY_CUTOFF or end > today:
                     continue
 
                 results.append({
@@ -97,12 +99,8 @@ def _infer_period_type(entry: dict) -> str:
     end = entry.get("end")
     if not start:
         return "instant"
-    # 시작~끝 기간으로 연간/분기 구분
-    from datetime import date
     try:
-        d_start = date.fromisoformat(start)
-        d_end = date.fromisoformat(end)
-        days = (d_end - d_start).days
+        days = (date.fromisoformat(end) - date.fromisoformat(start)).days
         if days > 300:
             return "annual"
         elif days > 60:
