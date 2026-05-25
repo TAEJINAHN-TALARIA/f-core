@@ -5,6 +5,7 @@ from .downloader import get_ticker_map, iter_companyfacts
 from .loader import get_client, upsert_companies, upsert_facts, upsert_metrics
 from .normalizer import compute_metrics, deduplicate_facts
 from .parser import extract_company_info, extract_facts
+from .stats import ParseStats
 
 logging.basicConfig(
     level=logging.INFO,
@@ -20,6 +21,7 @@ def run() -> None:
     ticker_map = get_ticker_map()
     ciks = list(ticker_map.keys())
     client = get_client()
+    stats = ParseStats()
 
     company_buffer: list[dict] = []
     facts_buffer: list[dict] = []
@@ -27,14 +29,17 @@ def run() -> None:
     total_companies = 0
 
     for data in iter_companyfacts(ciks, ticker_map=ticker_map):
+        stats.mark_fetched()
+
         company = extract_company_info(data)
         if not company:
             continue
 
         cik = company["cik"]
-        raw_facts = extract_facts(data)
+        raw_facts = extract_facts(data, stats=stats)
         deduped_facts = deduplicate_facts(raw_facts)
-        metrics = compute_metrics(deduped_facts, cik)
+        stats.record_dedup(len(deduped_facts))
+        metrics = compute_metrics(deduped_facts, cik, stats=stats)
 
         company_buffer.append(company)
         facts_buffer.extend(deduped_facts)
@@ -47,6 +52,8 @@ def run() -> None:
 
     if company_buffer:
         _flush(client, company_buffer, facts_buffer, metrics_buffer)
+
+    stats.save()
 
     elapsed = time.time() - start
     logger.info(f"=== Pipeline Complete: {total_companies} companies in {elapsed:.1f}s ===")

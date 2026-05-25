@@ -1,5 +1,9 @@
 import logging
 from collections import defaultdict
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .stats import ParseStats
 
 logger = logging.getLogger(__name__)
 
@@ -20,14 +24,15 @@ def deduplicate_facts(facts: list[dict]) -> list[dict]:
         if existing is None:
             best[key] = fact
         else:
-            # 더 최근에 제출된 것 우선
             if (fact["filed_date"] or "") > (existing["filed_date"] or ""):
                 best[key] = fact
 
     return list(best.values())
 
 
-def compute_metrics(facts: list[dict], cik: str) -> list[dict]:
+def compute_metrics(
+    facts: list[dict], cik: str, stats: "ParseStats | None" = None
+) -> list[dict]:
     """
     facts에서 파생 지표를 계산한다.
     반환: [{"cik", "end_date", "period_type", "metric", "value"}, ...]
@@ -50,11 +55,12 @@ def compute_metrics(facts: list[dict], cik: str) -> list[dict]:
 
     metrics = []
     for (end_date, period_type), tags in by_period.items():
-        # 같은 end_date의 재무상태표 스냅샷을 병합
         merged = {**instant_by_date.get(end_date, {}), **tags}
-        computed = _derive(merged)
+        computed, missing = _derive(merged)
         for metric, value in computed.items():
             if value is None:
+                if stats and missing.get(metric):
+                    stats.metric_missing(metric, missing[metric])
                 continue
             metrics.append({
                 "cik": cik,
@@ -64,10 +70,18 @@ def compute_metrics(facts: list[dict], cik: str) -> list[dict]:
                 "value": value,
             })
 
+    if stats:
+        stats.metric_ok(len(metrics))
+
     return metrics
 
 
-def _derive(t: dict) -> dict:
+def _derive(t: dict) -> tuple[dict, dict]:
+    """
+    Returns:
+        computed: metric → value (None if couldn't compute)
+        missing:  metric → 누락된 재료 태그 이름
+    """
     revenue = _first(t, "Revenues", "RevenueFromContractWithCustomerExcludingAssessedTax")
     net_income = t.get("NetIncomeLoss")
     assets = t.get("Assets")
@@ -82,24 +96,42 @@ def _derive(t: dict) -> dict:
     dividends = _first(t, "PaymentsOfDividendsCommonStock", "PaymentsOfDividends")
     fcf_val = _safe_sub(op_cf, capex)
 
-    return {
-        # 마진
-        "gross_margin": _safe_div(gross_profit, revenue),
-        "operating_margin": _safe_div(operating_income, revenue),
-        "net_margin": _safe_div(net_income, revenue),
-        # 수익성
-        "roe": _safe_div(net_income, equity),
-        "roa": _safe_div(net_income, assets),
-        # 안정성
-        "debt_ratio": _safe_div(liabilities, assets),
-        "debt_to_equity": _safe_div(liabilities, equity),
-        "interest_coverage": _safe_div(operating_income, interest_expense),
-        # 현금흐름
-        "fcf": fcf_val,
-        # 주주환원
-        "buyback_to_fcf": _safe_div(buybacks, fcf_val) if fcf_val is not None and fcf_val > 0 else None,
-        "dividend_payout": _safe_div(dividends, net_income) if net_income is not None and net_income > 0 else None,
+    computed = {
+        "gross_margin":       _safe_div(gross_profit, revenue),
+        "operating_margin":   _safe_div(operating_income, revenue),
+        "net_margin":         _safe_div(net_income, revenue),
+        "roe":                _safe_div(net_income, equity),
+        "roa":                _safe_div(net_income, assets),
+        "debt_ratio":         _safe_div(liabilities, assets),
+        "debt_to_equity":     _safe_div(liabilities, equity),
+        "interest_coverage":  _safe_div(operating_income, interest_expense),
+        "fcf":                fcf_val,
+        "buyback_to_fcf":     _safe_div(buybacks, fcf_val) if fcf_val and fcf_val > 0 else None,
+        "dividend_payout":    _safe_div(dividends, net_income) if net_income and net_income > 0 else None,
     }
+
+    # 계산 실패 시 어떤 재료가 없었는지 기록
+    missing: dict[str, str] = {}
+    if computed["gross_margin"] is None:
+        missing["gross_margin"] = "GrossProfit" if revenue else "revenue"
+    if computed["operating_margin"] is None:
+        missing["operating_margin"] = "OperatingIncomeLoss" if revenue else "revenue"
+    if computed["net_margin"] is None:
+        missing["net_margin"] = "NetIncomeLoss" if revenue else "revenue"
+    if computed["roe"] is None:
+        missing["roe"] = "StockholdersEquity" if net_income else "NetIncomeLoss"
+    if computed["roa"] is None:
+        missing["roa"] = "Assets" if net_income else "NetIncomeLoss"
+    if computed["debt_ratio"] is None:
+        missing["debt_ratio"] = "Assets" if liabilities else "Liabilities"
+    if computed["debt_to_equity"] is None:
+        missing["debt_to_equity"] = "StockholdersEquity" if liabilities else "Liabilities"
+    if computed["interest_coverage"] is None:
+        missing["interest_coverage"] = "InterestExpense" if operating_income else "OperatingIncomeLoss"
+    if computed["fcf"] is None:
+        missing["fcf"] = "PaymentsToAcquirePropertyPlantAndEquipment" if op_cf else "NetCashProvidedByUsedInOperatingActivities"
+
+    return computed, missing
 
 
 def _first(d: dict, *keys: str):
