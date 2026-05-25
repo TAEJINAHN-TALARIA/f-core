@@ -36,6 +36,12 @@ class ParseStats:
         # TARGET_TAGS 기업 커버리지
         self.target_tag_companies: Counter = Counter()  # tag → 기업 수
 
+        # 이상값 skip: tag → reason → 건수
+        self.skip_invalid: dict[str, Counter] = {}
+
+        # form ↔ period_type 불일치 관측 (skip 없음): "10-K/quarterly" → 건수
+        self.form_period_mismatch: Counter = Counter()
+
         # metrics 계산 실패 사유: metric → 누락된 재료 태그 → 기업 수
         self.metrics_missing: dict[str, Counter] = {}
 
@@ -82,6 +88,14 @@ class ParseStats:
     def record_dedup(self, count: int):
         self.facts_after_dedup += count
 
+    def skip_invalid_value(self, tag: str, reason: str):
+        if tag not in self.skip_invalid:
+            self.skip_invalid[tag] = Counter()
+        self.skip_invalid[tag][reason] += 1
+
+    def note_mismatch(self, form: str, period_type: str):
+        self.form_period_mismatch[f"{form}/{period_type}"] += 1
+
     # ── 태그 발견 ────────────────────────────────────────────
 
     def see_unknown_tag(self, tag: str, new_company: bool = False):
@@ -121,12 +135,16 @@ class ParseStats:
         print(f"[stats] 감사 보고서 저장: {json_path}, {md_path}")
 
     def _to_dict(self, now: datetime) -> dict:
+        invalid_total = sum(
+            sum(c.values()) for c in self.skip_invalid.values()
+        )
         skip_total = (
             self.skip_null
             + sum(self.skip_unknown_form.values())
             + sum(self.skip_unknown_unit.values())
             + self.skip_past_cutoff
             + self.skip_future_date
+            + invalid_total
         )
         return {
             "generated_at": now.isoformat(),
@@ -151,20 +169,18 @@ class ParseStats:
                     "null_value": self.skip_null,
                     "past_cutoff": self.skip_past_cutoff,
                     "future_date": self.skip_future_date,
-                    "unknown_form": dict(
-                        self.skip_unknown_form.most_common(30)
-                    ),
-                    "unknown_unit": dict(
-                        self.skip_unknown_unit.most_common(20)
-                    ),
+                    "invalid_value": {
+                        tag: dict(c) for tag, c in self.skip_invalid.items()
+                    },
+                    "unknown_form": dict(self.skip_unknown_form.most_common(30)),
+                    "unknown_unit": dict(self.skip_unknown_unit.most_common(20)),
                 },
             },
+            "form_period_mismatch": dict(self.form_period_mismatch.most_common()),
             "target_tag_company_coverage": dict(
                 self.target_tag_companies.most_common()
             ),
-            "unknown_tags_top50": dict(
-                self.unknown_tags.most_common(50)
-            ),
+            "unknown_tags_top50": dict(self.unknown_tags.most_common(50)),
             "metrics": {
                 "computed": self.metrics_computed,
                 "missing_by_metric": {
@@ -242,6 +258,31 @@ class ParseStats:
                 skip["unknown_unit"].items(), key=lambda x: -x[1]
             )[:15]:
                 lines.append(f"| `{unit}` | {cnt:,} |")
+
+        if skip["invalid_value"]:
+            lines += [
+                "",
+                "**이상값 skip (invalid_value)**",
+                "",
+                "| 태그 | 사유 | 건수 |",
+                "|------|------|------|",
+            ]
+            for tag, reasons in sorted(skip["invalid_value"].items()):
+                for reason, cnt in sorted(reasons.items(), key=lambda x: -x[1]):
+                    lines.append(f"| `{tag}` | {reason} | {cnt:,} |")
+
+        if d.get("form_period_mismatch"):
+            lines += [
+                "",
+                "**form ↔ period_type 불일치 (관측, skip 아님)**",
+                "",
+                "| form/period_type | 건수 |",
+                "|------------------|------|",
+            ]
+            for key, cnt in sorted(
+                d["form_period_mismatch"].items(), key=lambda x: -x[1]
+            ):
+                lines.append(f"| `{key}` | {cnt:,} |")
 
         lines += [
             "",

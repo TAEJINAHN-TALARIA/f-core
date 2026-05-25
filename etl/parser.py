@@ -1,5 +1,5 @@
-import json
 import logging
+import json
 import zipfile
 from datetime import date
 from pathlib import Path
@@ -14,6 +14,19 @@ logger = logging.getLogger(__name__)
 
 _ALLOWED_FORMS = {"10-K", "10-Q", "10-K/A", "10-Q/A"}
 _ALLOWED_UNITS = {"USD", "shares", "USD/shares"}
+
+# 음수가 물리적으로 불가능한 태그
+_NON_NEGATIVE_TAGS = {
+    "Assets",
+    "AssetsCurrent",
+    "Liabilities",
+    "LiabilitiesCurrent",
+    "WeightedAverageNumberOfSharesOutstandingBasic",
+    "CommonStockSharesOutstanding",
+}
+
+# USD 단위 태그에서 이 값 초과 시 단위 오류 등 데이터 오염으로 간주 ($10조)
+_MAX_USD_VALUE = 1e13
 
 
 def iter_companyfacts(zip_path: Path) -> Generator[dict, None, None]:
@@ -56,16 +69,13 @@ def extract_facts(data: dict, stats: "ParseStats | None" = None) -> list[dict]:
     today = date.today().isoformat()
     results = []
 
-    # 미수집 태그 중복 제거용 (기업당 1회만 카운트)
     seen_unknown: set[str] = set()
     seen_target: set[str] = set()
-
     has_target_tag = False
 
     for tag, tag_data in facts_raw.items():
         if tag not in TARGET_TAGS:
             if stats:
-                # 미수집 태그: 기업당 첫 등장만 기업 수 카운트
                 is_new = tag not in seen_unknown
                 seen_unknown.add(tag)
                 stats.see_unknown_tag(tag, new_company=is_new)
@@ -113,11 +123,25 @@ def extract_facts(data: dict, stats: "ParseStats | None" = None) -> list[dict]:
                         stats.skip_future()
                     continue
 
+                # 이상값 검사 (skip + 로그)
+                reason = _invalid_reason(tag, unit, val)
+                if reason:
+                    if stats:
+                        stats.skip_invalid_value(tag, reason)
+                    logger.debug(f"[{cik}] skip invalid {tag}={val} ({reason})")
+                    continue
+
+                period_type = _infer_period_type(entry)
+
+                # form ↔ period_type 불일치 관측 (skip 없음)
+                if stats:
+                    _check_mismatch(form, period_type, stats)
+
                 results.append({
                     "cik": cik,
                     "tag": tag,
                     "unit": unit,
-                    "period_type": _infer_period_type(entry),
+                    "period_type": period_type,
                     "start_date": entry.get("start"),
                     "end_date": end,
                     "filed_date": entry.get("filed"),
@@ -135,6 +159,21 @@ def extract_facts(data: dict, stats: "ParseStats | None" = None) -> list[dict]:
             stats.mark_no_facts()
 
     return results
+
+
+def _invalid_reason(tag: str, unit: str, val: float) -> str | None:
+    if tag in _NON_NEGATIVE_TAGS and val < 0:
+        return "negative_not_allowed"
+    if unit == "USD" and abs(val) > _MAX_USD_VALUE:
+        return "exceeds_max_usd"
+    return None
+
+
+def _check_mismatch(form: str, period_type: str, stats: "ParseStats") -> None:
+    if form in ("10-K", "10-K/A") and period_type == "quarterly":
+        stats.note_mismatch(form, period_type)
+    elif form in ("10-Q", "10-Q/A") and period_type == "annual":
+        stats.note_mismatch(form, period_type)
 
 
 def _infer_period_type(entry: dict) -> str:
