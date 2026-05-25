@@ -23,6 +23,8 @@ TARGET_TAGS = {
     "EarningsPerShareBasic",
     "EarningsPerShareDiluted",
     "WeightedAverageNumberOfSharesOutstandingBasic",
+    "WeightedAverageNumberOfDilutedSharesOutstanding",  # Diluted EPS 검증
+    "ShareBasedCompensation",                            # SBC-adjusted earnings
     # 재무상태표
     "Assets",
     "AssetsCurrent",
@@ -32,11 +34,14 @@ TARGET_TAGS = {
     "StockholdersEquity",
     "CashAndCashEquivalentsAtCarryingValue",
     "RetainedEarningsAccumulatedDeficit",
+    "PropertyPlantAndEquipmentNet",                      # Asset turnover, ROIC
+    "CommonStockSharesIssued",                           # 희석 위험 측정
     # 현금흐름
     "NetCashProvidedByUsedInOperatingActivities",
     "NetCashProvidedByUsedInInvestingActivities",
     "NetCashProvidedByUsedInFinancingActivities",
     "PaymentsToAcquirePropertyPlantAndEquipment",
+    "Depreciation",                                      # EBITDA 계산용 (DDA와 별도)
     # 주주환원
     "PaymentsForRepurchaseOfCommonStock",
     "PaymentsForRepurchaseOfEquity",

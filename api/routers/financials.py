@@ -25,10 +25,13 @@ INCOME_TAGS = [
     "NetIncomeLoss",
     "EarningsPerShareBasic",
     "EarningsPerShareDiluted",
+    "WeightedAverageNumberOfDilutedSharesOutstanding",
+    "ShareBasedCompensation",
     "ResearchAndDevelopmentExpense",
     "InterestExpense",
     "IncomeTaxExpenseBenefit",
     "DepreciationDepletionAndAmortization",
+    "Depreciation",
 ]
 
 BALANCE_TAGS = [
@@ -41,6 +44,8 @@ BALANCE_TAGS = [
     "CashAndCashEquivalentsAtCarryingValue",
     "RetainedEarningsAccumulatedDeficit",
     "CommonStockSharesOutstanding",
+    "PropertyPlantAndEquipmentNet",
+    "CommonStockSharesIssued",
 ]
 
 CASHFLOW_TAGS = [

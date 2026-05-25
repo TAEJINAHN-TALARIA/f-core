@@ -94,7 +94,11 @@ def _derive(t: dict) -> tuple[dict, dict]:
     interest_expense = t.get("InterestExpense")
     buybacks = _first(t, "PaymentsForRepurchaseOfCommonStock", "PaymentsForRepurchaseOfEquity")
     dividends = _first(t, "PaymentsOfDividendsCommonStock", "PaymentsOfDividends")
+    da = _first(t, "DepreciationDepletionAndAmortization", "Depreciation")
+    sbc = t.get("ShareBasedCompensation")
+    capex = t.get("PaymentsToAcquirePropertyPlantAndEquipment")
     fcf_val = _safe_sub(op_cf, capex)
+    ebitda = _safe_add(operating_income, da)
 
     computed = {
         "gross_margin":       _safe_div(gross_profit, revenue),
@@ -108,6 +112,11 @@ def _derive(t: dict) -> tuple[dict, dict]:
         "fcf":                fcf_val,
         "buyback_to_fcf":     _safe_div(buybacks, fcf_val) if fcf_val and fcf_val > 0 else None,
         "dividend_payout":    _safe_div(dividends, net_income) if net_income and net_income > 0 else None,
+        "ebitda":             ebitda,
+        "ebitda_margin":      _safe_div(ebitda, revenue),
+        "cash_conversion":    _safe_div(fcf_val, net_income) if net_income and net_income > 0 else None,
+        "capex_intensity":    _safe_div(capex, revenue),
+        "sbc_ratio":          _safe_div(sbc, revenue),
     }
 
     # 계산 실패 시 어떤 재료가 없었는지 기록
@@ -130,6 +139,14 @@ def _derive(t: dict) -> tuple[dict, dict]:
         missing["interest_coverage"] = "InterestExpense" if operating_income else "OperatingIncomeLoss"
     if computed["fcf"] is None:
         missing["fcf"] = "PaymentsToAcquirePropertyPlantAndEquipment" if op_cf else "NetCashProvidedByUsedInOperatingActivities"
+    if computed["ebitda"] is None:
+        missing["ebitda"] = "DepreciationDepletionAndAmortization" if operating_income else "OperatingIncomeLoss"
+    if computed["ebitda_margin"] is None:
+        missing["ebitda_margin"] = "ebitda" if revenue else "revenue"
+    if computed["capex_intensity"] is None:
+        missing["capex_intensity"] = "PaymentsToAcquirePropertyPlantAndEquipment" if revenue else "revenue"
+    if computed["sbc_ratio"] is None:
+        missing["sbc_ratio"] = "ShareBasedCompensation" if revenue else "revenue"
 
     return computed, missing
 
@@ -151,3 +168,9 @@ def _safe_sub(a, b) -> float | None:
     if a is None or b is None:
         return None
     return a - b
+
+
+def _safe_add(a, b) -> float | None:
+    if a is None or b is None:
+        return None
+    return a + b
