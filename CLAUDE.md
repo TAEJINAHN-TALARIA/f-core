@@ -68,3 +68,15 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
+
+## Project Data Reference
+
+DB 데이터 현황은 `docs/data_report.md`를 참고하라. 데이터 관련 작업 전에 반드시 읽을 것.
+
+주요 사실:
+- `companies` 6,895개 (Nasdaq/NYSE/OTC), 모두 ticker 보유
+- `facts` ~180만 건 — 29개 XBRL 태그, 2021~ 수집
+- `metrics` ~66만 건 — 11개 파생 지표 (gross_margin, roe, roa, fcf 등)
+- 매출 태그가 `Revenues`와 `RevenueFromContractWithCustomerExcludingAssessedTax` 두 가지로 분리됨 — revenue 조회 시 둘 다 OR로 조회해야 함
+- `facts.end_date`에 미래 날짜(최대 2033년) 포함 — API 필터에서 `end_date <= today` 적용 권장
+- `sic_description`은 현재 전부 NULL (ETL 미수집)
