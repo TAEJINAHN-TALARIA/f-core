@@ -7,6 +7,17 @@ from ..schemas import Company
 router = APIRouter()
 
 
+@router.get("", response_model=list[Company])
+def list_companies(limit: int = 10000, db: Client = Depends(get_supabase)):
+    res = (
+        db.table("companies")
+        .select("cik,name,ticker,exchange,sic,sic_description")
+        .limit(limit)
+        .execute()
+    )
+    return res.data
+
+
 @router.get("/{cik}", response_model=Company)
 def get_company(cik: str, db: Client = Depends(get_supabase)):
     cik = cik.zfill(10)

@@ -1,8 +1,50 @@
+import type { Metadata } from "next";
 import { getCompany } from "@/lib/api";
 import CompanyNav from "@/components/CompanyNav";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; cik: string }>;
+}): Promise<Metadata> {
+  const { locale, cik } = await params;
+  try {
+    const company = await getCompany(cik);
+    const isKo = locale === "ko";
+    const displayName = company.ticker
+      ? `${company.name} (${company.ticker})`
+      : company.name;
+    const description = isKo
+      ? `${displayName} 재무 데이터 — 손익계산서, 재무상태표, 현금흐름 (SEC EDGAR 공시)`
+      : `${displayName} financial data — income statement, balance sheet, cash flow from SEC EDGAR`;
+
+    return {
+      title: displayName,
+      description,
+      ...(SITE_URL && {
+        alternates: {
+          canonical: `${SITE_URL}/${locale}/company/${cik}`,
+          languages: {
+            en: `${SITE_URL}/en/company/${cik}`,
+            ko: `${SITE_URL}/ko/company/${cik}`,
+          },
+        },
+        openGraph: {
+          title: `${displayName} | f-core`,
+          description,
+          url: `${SITE_URL}/${locale}/company/${cik}`,
+        },
+      }),
+    };
+  } catch {
+    return { title: "Company" };
+  }
+}
 
 export default async function CompanyLayout({
   children,

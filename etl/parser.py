@@ -55,8 +55,8 @@ def extract_company_info(data: dict) -> dict | None:
     return {
         "cik": str(cik).zfill(10),
         "name": meta.get("name") or data.get("entityName", ""),
-        "sic": data.get("sic"),
-        "sic_description": data.get("sicDescription", ""),
+        "sic": meta.get("sic"),
+        "sic_description": meta.get("sic_description", ""),
         "ticker": meta.get("ticker"),
         "exchange": meta.get("exchange"),
     }

@@ -2,7 +2,7 @@ import logging
 import time
 
 from .config import HISTORY_CUTOFF
-from .downloader import get_ticker_map, iter_companyfacts
+from .downloader import get_ticker_map, get_sic_map, iter_companyfacts
 from .loader import (
     get_client,
     upsert_companies, upsert_facts, upsert_metrics,
@@ -26,6 +26,10 @@ def run() -> None:
 
     ticker_map = get_ticker_map()
     ciks = list(ticker_map.keys())
+
+    sic_map = get_sic_map(ciks)
+    for cik, sic_data in sic_map.items():
+        ticker_map.setdefault(cik, {}).update(sic_data)
     client = get_client()
     stats = ParseStats()
 
