@@ -8,11 +8,11 @@ router = APIRouter()
 
 
 @router.get("", response_model=list[Company])
-def list_companies(limit: int = 10000, db: Client = Depends(get_supabase)):
+def list_companies(limit: int = 500, offset: int = 0, db: Client = Depends(get_supabase)):
     res = (
         db.table("companies")
         .select("cik,name,ticker,exchange,sic,sic_description")
-        .limit(limit)
+        .range(offset, offset + limit - 1)
         .execute()
     )
     return res.data

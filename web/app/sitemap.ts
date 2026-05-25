@@ -5,16 +5,27 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 const LOCALES = ["en", "ko"] as const;
 
 async function fetchCompanyCiks(): Promise<string[]> {
-  try {
-    const res = await fetch(`${API_URL}/companies?limit=10000`, {
-      next: { revalidate: 86400 },
-    });
-    if (!res.ok) return [];
-    const data: { cik: string }[] = await res.json();
-    return data.map((c) => c.cik);
-  } catch {
-    return [];
+  const PAGE = 500;
+  const ciks: string[] = [];
+  let offset = 0;
+
+  while (true) {
+    try {
+      const res = await fetch(
+        `${API_URL}/companies?limit=${PAGE}&offset=${offset}`,
+        { next: { revalidate: 86400 } }
+      );
+      if (!res.ok) break;
+      const data: { cik: string }[] = await res.json();
+      ciks.push(...data.map((c) => c.cik));
+      if (data.length < PAGE) break;
+      offset += PAGE;
+    } catch {
+      break;
+    }
   }
+
+  return ciks;
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
