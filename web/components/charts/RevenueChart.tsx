@@ -1,11 +1,13 @@
 "use client";
 
 import {
+  ComposedChart,
   Area,
-  AreaChart,
+  Bar,
   CartesianGrid,
   XAxis,
   YAxis,
+  ReferenceLine,
 } from "recharts";
 import { useTranslations } from "next-intl";
 import type { FinancialsResponse } from "@/lib/api";
@@ -26,7 +28,6 @@ interface Props {
 const PRIORITY = [
   "Revenues",
   "RevenueFromContractWithCustomerExcludingAssessedTax",
-  "GrossProfit",
   "OperatingIncomeLoss",
   "NetIncomeLoss",
 ];
@@ -34,15 +35,13 @@ const PRIORITY = [
 const TAG_KEY: Record<string, string> = {
   Revenues: "revenue",
   RevenueFromContractWithCustomerExcludingAssessedTax: "revenue",
-  GrossProfit: "grossProfit",
   OperatingIncomeLoss: "operatingIncome",
   NetIncomeLoss: "netIncome",
 };
 
 const COLORS: Record<string, string> = {
   revenue:         "#3b82f6",
-  grossProfit:     "#10b981",
-  operatingIncome: "#f59e0b",
+  operatingIncome: "#10b981",
   netIncome:       "#8b5cf6",
 };
 
@@ -83,7 +82,6 @@ export default function RevenueChart({ financials }: Props) {
 
   const chartConfig = {
     revenue:         { label: tm("revenue"),         color: COLORS.revenue },
-    grossProfit:     { label: tm("grossProfit"),      color: COLORS.grossProfit },
     operatingIncome: { label: tm("operatingIncome"),  color: COLORS.operatingIncome },
     netIncome:       { label: tm("netIncome"),        color: COLORS.netIncome },
   } satisfies ChartConfig;
@@ -100,14 +98,12 @@ export default function RevenueChart({ financials }: Props) {
 
   return (
     <ChartContainer config={chartConfig} className="h-[300px] w-full">
-      <AreaChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: 8 }}>
+      <ComposedChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: 8 }}>
         <defs>
-          {presentKeys.map((key) => (
-            <linearGradient key={key} id={`grad-${key}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%"  stopColor={COLORS[key]} stopOpacity={key === "revenue" ? 0.25 : 0.12} />
-              <stop offset="95%" stopColor={COLORS[key]} stopOpacity={0} />
-            </linearGradient>
-          ))}
+          <linearGradient id="grad-revenue" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%"  stopColor={COLORS.revenue} stopOpacity={0.2} />
+            <stop offset="95%" stopColor={COLORS.revenue} stopOpacity={0} />
+          </linearGradient>
         </defs>
         <CartesianGrid vertical={false} stroke="#e5e7eb" />
         <XAxis
@@ -123,6 +119,7 @@ export default function RevenueChart({ financials }: Props) {
           tick={{ fill: "#6b7280", fontSize: 11 }}
           tickFormatter={(v) => formatValue(v, "USD").replace("$", "")}
         />
+        <ReferenceLine y={0} stroke="#9ca3af" strokeDasharray="4 2" />
         <ChartTooltip
           contentStyle={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 8 }}
           content={
@@ -136,19 +133,37 @@ export default function RevenueChart({ financials }: Props) {
           }
         />
         <ChartLegend content={<ChartLegendContent />} />
-        {presentKeys.map((key) => (
+        
+        {presentKeys.includes("revenue") && (
           <Area
-            key={key}
             type="monotone"
-            dataKey={key}
-            stroke={COLORS[key]}
-            strokeWidth={key === "revenue" ? 2.5 : 2}
-            fill={`url(#grad-${key})`}
+            dataKey="revenue"
+            stroke={COLORS.revenue}
+            strokeWidth={2}
+            fill="url(#grad-revenue)"
             dot={false}
-            activeDot={{ r: 5, strokeWidth: 0, fill: COLORS[key] }}
+            activeDot={{ r: 4, strokeWidth: 0, fill: COLORS.revenue }}
           />
-        ))}
-      </AreaChart>
+        )}
+        
+        {presentKeys.includes("operatingIncome") && (
+          <Bar
+            dataKey="operatingIncome"
+            fill={COLORS.operatingIncome}
+            radius={[3, 3, 0, 0]}
+            maxBarSize={18}
+          />
+        )}
+        
+        {presentKeys.includes("netIncome") && (
+          <Bar
+            dataKey="netIncome"
+            fill={COLORS.netIncome}
+            radius={[3, 3, 0, 0]}
+            maxBarSize={18}
+          />
+        )}
+      </ComposedChart>
     </ChartContainer>
   );
 }

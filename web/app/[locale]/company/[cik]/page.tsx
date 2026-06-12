@@ -3,6 +3,7 @@ import { getTTM, getFinancials, getMetrics, formatValue, formatPercent } from "@
 import MetricCard from "@/components/MetricCard";
 import RevenueChart from "@/components/charts/RevenueChart";
 import MarginChart from "@/components/charts/MarginChart";
+import ShareholderReturnChart from "@/components/charts/ShareholderReturnChart";
 
 export default async function CompanyOverviewPage({
   params,
@@ -123,6 +124,16 @@ export default async function CompanyOverviewPage({
           <h2 className="text-gray-300 font-semibold mb-3">{t("grossMargin")} / {t("operatingMargin")} / {t("netMargin")}</h2>
           <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
             <MarginChart metrics={metricsData} />
+          </div>
+        </section>
+      )}
+
+      {/* Shareholder Return Chart */}
+      {financialsData.length > 0 && (
+        <section>
+          <h2 className="text-gray-300 font-semibold mb-3">{t("buybacks")} / {t("dividends")} ({tp("annual")})</h2>
+          <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
+            <ShareholderReturnChart financials={financialsData} />
           </div>
         </section>
       )}
