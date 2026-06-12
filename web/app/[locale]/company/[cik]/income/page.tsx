@@ -95,7 +95,7 @@ export default async function IncomePage({ params }: { params: Promise<{ cik: st
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
+      <div className="bg-card rounded-xl p-4 border border-border shadow-md">
         <RevenueChart financials={quarterly} />
       </div>
       {renderTable(quarterly, tp("quarterly"))}

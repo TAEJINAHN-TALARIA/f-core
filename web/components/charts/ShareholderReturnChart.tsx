@@ -94,23 +94,23 @@ export default function ShareholderReturnChart({ financials }: Props) {
   return (
     <ChartContainer config={chartConfig} className="h-[300px] w-full">
       <BarChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: 8 }}>
-        <CartesianGrid vertical={false} stroke="#e5e7eb" />
+        <CartesianGrid vertical={false} stroke="#1a1d27" />
         <XAxis
           dataKey="date"
           tickLine={false}
           axisLine={false}
-          tick={{ fill: "#6b7280", fontSize: 11 }}
+          tick={{ fill: "#9ca3af", fontSize: 11 }}
           tickFormatter={fmtDate}
         />
         <YAxis
           tickLine={false}
           axisLine={false}
-          tick={{ fill: "#6b7280", fontSize: 11 }}
+          tick={{ fill: "#9ca3af", fontSize: 11 }}
           tickFormatter={(v) => formatValue(v, "USD").replace("$", "")}
         />
-        <ReferenceLine y={0} stroke="#9ca3af" strokeDasharray="4 2" />
+        <ReferenceLine y={0} stroke="#374151" strokeDasharray="4 2" />
         <ChartTooltip
-          contentStyle={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 8 }}
+          cursor={{ stroke: "#1a1d27" }}
           content={
             <ChartTooltipContent
               labelFormatter={fmtDate}

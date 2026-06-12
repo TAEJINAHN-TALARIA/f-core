@@ -112,7 +112,7 @@ export default async function CompanyOverviewPage({
       {financialsData.length > 0 && (
         <section>
           <h2 className="text-gray-300 font-semibold mb-3">{t("revenue")} / {t("grossProfit")} / {t("netIncome")}</h2>
-          <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
+          <div className="bg-card rounded-xl p-4 border border-border shadow-md">
             <RevenueChart financials={financialsData} />
           </div>
         </section>
@@ -122,7 +122,7 @@ export default async function CompanyOverviewPage({
       {metricsData.length > 0 && (
         <section>
           <h2 className="text-gray-300 font-semibold mb-3">{t("grossMargin")} / {t("operatingMargin")} / {t("netMargin")}</h2>
-          <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
+          <div className="bg-card rounded-xl p-4 border border-border shadow-md">
             <MarginChart metrics={metricsData} />
           </div>
         </section>
@@ -132,7 +132,7 @@ export default async function CompanyOverviewPage({
       {financialsData.length > 0 && (
         <section>
           <h2 className="text-gray-300 font-semibold mb-3">{t("buybacks")} / {t("dividends")} ({tp("annual")})</h2>
-          <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
+          <div className="bg-card rounded-xl p-4 border border-border shadow-md">
             <ShareholderReturnChart financials={financialsData} />
           </div>
         </section>
