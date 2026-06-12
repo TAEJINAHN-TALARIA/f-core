@@ -32,6 +32,7 @@ export async function generateMetadata({
           languages: {
             en: `${SITE_URL}/en/company/${cik}`,
             ko: `${SITE_URL}/ko/company/${cik}`,
+            "x-default": `${SITE_URL}/en/company/${cik}`,
           },
         },
         openGraph: {
@@ -56,8 +57,23 @@ export default async function CompanyLayout({
   const { locale, cik } = await params;
   const company = await getCompany(cik);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Corporation",
+    "name": company.name,
+    "tickerSymbol": company.ticker || undefined,
+    "exchange": company.exchange || undefined,
+    "description": company.sic_description || `${company.name} financial reports and key metrics.`,
+    "identifier": company.cik,
+    "url": `${SITE_URL}/${locale}/company/${cik}`,
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-950">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <header className="bg-gray-950 border-b border-gray-800 px-6 py-3 flex items-center justify-between">
         <Link href={`/${locale}`} className="font-bold text-gray-100 text-lg tracking-tight hover:text-blue-400 transition-colors">
           f-core

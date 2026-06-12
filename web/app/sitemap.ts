@@ -40,7 +40,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly",
       priority: 1,
       alternates: {
-        languages: { en: `${SITE_URL}/en`, ko: `${SITE_URL}/ko` },
+        languages: {
+          en: `${SITE_URL}/en`,
+          ko: `${SITE_URL}/ko`,
+          "x-default": `${SITE_URL}/en`,
+        },
+      },
+    },
+    {
+      url: `${SITE_URL}/ko`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 1,
+      alternates: {
+        languages: {
+          en: `${SITE_URL}/en`,
+          ko: `${SITE_URL}/ko`,
+          "x-default": `${SITE_URL}/en`,
+        },
       },
     },
   ];
@@ -53,6 +70,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       languages: {
         en: `${SITE_URL}/en/company/${cik}`,
         ko: `${SITE_URL}/ko/company/${cik}`,
+        "x-default": `${SITE_URL}/en/company/${cik}`,
       },
     },
   }));
