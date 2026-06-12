@@ -76,28 +76,28 @@ export function getCompany(cik: string): Promise<Company> {
 
 export function getFinancials(
   cik: string,
-  period: "annual" | "quarterly" = "quarterly"
+  period: "annual" | "quarterly" = "annual"
 ): Promise<FinancialsResponse[]> {
   return apiFetch(`/companies/${cik}/financials?period=${period}`);
 }
 
 export function getBalanceSheet(
   cik: string,
-  period: "annual" | "quarterly" = "quarterly"
+  period: "annual" | "quarterly" = "annual"
 ): Promise<FinancialsResponse[]> {
   return apiFetch(`/companies/${cik}/balance-sheet?period=${period}`);
 }
 
 export function getCashFlow(
   cik: string,
-  period: "annual" | "quarterly" = "quarterly"
+  period: "annual" | "quarterly" = "annual"
 ): Promise<FinancialsResponse[]> {
   return apiFetch(`/companies/${cik}/cash-flow?period=${period}`);
 }
 
 export function getMetrics(
   cik: string,
-  period: "annual" | "quarterly" = "quarterly"
+  period: "annual" | "quarterly" = "annual"
 ): Promise<MetricsResponse> {
   return apiFetch(`/companies/${cik}/metrics?period=${period}`);
 }

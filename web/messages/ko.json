@@ -48,7 +48,8 @@
     "interestCoverage": "이자보상배율",
     "buybacks": "자사주 매입",
     "dividends": "현금 배당",
-    "buybackToFcf": "자사주매입/FCF"
+    "buybackToFcf": "자사주매입/FCF",
+    "shareholderReturn": "총 주주환원액"
   },
   "period": {
     "annual": "연간",

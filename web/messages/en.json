@@ -48,7 +48,8 @@
     "interestCoverage": "Interest Coverage",
     "buybacks": "Stock Buybacks",
     "dividends": "Dividends Paid",
-    "buybackToFcf": "Buyback / FCF"
+    "buybackToFcf": "Buyback / FCF",
+    "shareholderReturn": "Shareholder Return"
   },
   "period": {
     "annual": "Annual",

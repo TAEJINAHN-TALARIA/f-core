@@ -16,8 +16,8 @@ export default async function CompanyOverviewPage({
 
   const [ttm, financials, metricsRes] = await Promise.allSettled([
     getTTM(cik),
-    getFinancials(cik, "quarterly"),
-    getMetrics(cik, "quarterly"),
+    getFinancials(cik, "annual"),
+    getMetrics(cik, "annual"),
   ]);
 
   const ttmData = ttm.status === "fulfilled" ? ttm.value : null;
@@ -34,36 +34,32 @@ export default async function CompanyOverviewPage({
   }
 
   const revenue = getTTMValue("Revenues") ?? getTTMValue("RevenueFromContractWithCustomerExcludingAssessedTax");
-  const netIncome = getTTMValue("NetIncomeLoss");
-  const epsDiluted = getTTMValue("EarningsPerShareDiluted");
-  const grossMargin = getLatestMetric("gross_margin");
   const operatingMargin = getLatestMetric("operating_margin");
-  const netMargin = getLatestMetric("net_margin");
   const roe = getLatestMetric("roe");
   const fcf = getLatestMetric("fcf");
+  const debtToEquity = getLatestMetric("debt_to_equity");
   const interestCoverage = getLatestMetric("interest_coverage");
-  const buybackToFcf = getLatestMetric("buyback_to_fcf");
+  const interestExpense = getTTMValue("InterestExpense");
+  const operatingIncome = getTTMValue("OperatingIncomeLoss");
   const buybacks = getTTMValue("PaymentsForRepurchaseOfCommonStock") ?? getTTMValue("PaymentsForRepurchaseOfEquity");
   const dividends = getTTMValue("PaymentsOfDividendsCommonStock") ?? getTTMValue("PaymentsOfDividends");
+  const shareholderReturn = (buybacks != null || dividends != null) ? (buybacks ?? 0) + (dividends ?? 0) : null;
+
+  // 이자보상배율 예외처리 (무차입 우량기업 처리)
+  let interestCoverageStr = "—";
+  let interestCoveragePositive: boolean | null = null;
+  if (interestCoverage != null) {
+    interestCoverageStr = `${interestCoverage.toFixed(1)}x`;
+    interestCoveragePositive = interestCoverage >= 1.5;
+  } else if (operatingIncome != null && operatingIncome >= 0 && (interestExpense == null || interestExpense <= 0)) {
+    interestCoverageStr = "무차입 (Safe)";
+    interestCoveragePositive = true;
+  }
 
   const cards = [
     {
-      label: `${t("revenue")} (${tp("ttm")})`,
+      label: `${t("revenue")} (${tp("annual")})`,
       value: revenue != null ? formatValue(revenue, "USD") : "—",
-    },
-    {
-      label: `${t("netIncome")} (${tp("ttm")})`,
-      value: netIncome != null ? formatValue(netIncome, "USD") : "—",
-      positive: netIncome != null ? netIncome >= 0 : null,
-    },
-    {
-      label: `${t("eps")} (${tp("ttm")})`,
-      value: epsDiluted != null ? formatValue(epsDiluted, "USD/shares") : "—",
-      positive: epsDiluted != null ? epsDiluted >= 0 : null,
-    },
-    {
-      label: t("grossMargin"),
-      value: grossMargin != null ? formatPercent(grossMargin) : "—",
     },
     {
       label: t("operatingMargin"),
@@ -71,36 +67,29 @@ export default async function CompanyOverviewPage({
       positive: operatingMargin != null ? operatingMargin >= 0 : null,
     },
     {
-      label: t("netMargin"),
-      value: netMargin != null ? formatPercent(netMargin) : "—",
-      positive: netMargin != null ? netMargin >= 0 : null,
-    },
-    {
       label: t("roe"),
       value: roe != null ? formatPercent(roe) : "—",
       positive: roe != null ? roe >= 0 : null,
     },
     {
-      label: `${t("fcf")} (${tp("ttm")})`,
+      label: `${t("fcf")} (${tp("annual")})`,
       value: fcf != null ? formatValue(fcf, "USD") : "—",
       positive: fcf != null ? fcf >= 0 : null,
     },
     {
+      label: t("debtToEquity"),
+      value: debtToEquity != null ? formatPercent(debtToEquity) : "—",
+      positive: debtToEquity != null ? debtToEquity <= 1.0 : null,
+    },
+    {
       label: t("interestCoverage"),
-      value: interestCoverage != null ? `${interestCoverage.toFixed(1)}x` : "—",
-      positive: interestCoverage != null ? interestCoverage >= 1.5 : null,
+      value: interestCoverageStr,
+      positive: interestCoveragePositive,
     },
     {
-      label: `${t("buybacks")} (${tp("ttm")})`,
-      value: buybacks != null ? formatValue(buybacks, "USD") : "—",
-    },
-    {
-      label: `${t("dividends")} (${tp("ttm")})`,
-      value: dividends != null ? formatValue(dividends, "USD") : "—",
-    },
-    {
-      label: t("buybackToFcf"),
-      value: buybackToFcf != null ? formatPercent(buybackToFcf) : "—",
+      label: `${t("shareholderReturn")} (${tp("annual")})`,
+      value: shareholderReturn != null ? formatValue(shareholderReturn, "USD") : "—",
+      positive: shareholderReturn != null ? shareholderReturn >= 0 : null,
     },
   ];
 

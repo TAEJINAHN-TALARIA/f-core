@@ -39,21 +39,19 @@ STOCK_TAGS = {
 
 def compute_ttm(cik: str, db: Client) -> dict:
     """
-    Returns {tag: value, ...} for TTM aggregation.
-    Flow tags: sum of last 4 quarterly facts.
-    Stock tags: most recent quarterly/instant fact.
+    Returns {tag: value, ...} for TTM aggregation (using most recent Annual data).
     """
     cik = cik.zfill(10)
 
-    # Fetch last 8 quarterly facts per tag (4 needed, 8 for safety with gaps)
+    # Fetch last 3 annual facts per tag for safety
     res = (
         db.table("facts")
         .select("tag,end_date,period_type,value,unit")
         .eq("cik", cik)
-        .eq("period_type", "quarterly")
+        .eq("period_type", "annual")
         .in_("unit", ["USD", "shares", "USD/shares"])
         .order("end_date", desc=True)
-        .limit(500)
+        .limit(200)
         .execute()
     )
 
@@ -65,7 +63,6 @@ def compute_ttm(cik: str, db: Client) -> dict:
         tag = row["tag"]
         by_tag.setdefault(tag, []).append((row["end_date"], row["value"]))
 
-    # Deduplicate by end_date (keep first/latest filed per date)
     result: dict[str, float] = {}
     latest_date: str = ""
 
@@ -82,13 +79,10 @@ def compute_ttm(cik: str, db: Client) -> dict:
         if not latest_date or sorted_dates[0] > latest_date:
             latest_date = sorted_dates[0]
 
-        if tag in FLOW_TAGS:
-            ttm_val = sum(seen_dates[d] for d in sorted_dates[:4])
-            result[tag] = ttm_val
-        elif tag in STOCK_TAGS:
-            result[tag] = seen_dates[sorted_dates[0]]
+        # Both FLOW_TAGS and STOCK_TAGS use the latest annual value
+        result[tag] = seen_dates[sorted_dates[0]]
 
-    # Also try instant facts for stock tags that had no quarterly entries
+    # Also try instant facts for stock tags that had no annual entries
     missing_stock = STOCK_TAGS - set(result.keys())
     if missing_stock:
         instant_res = (

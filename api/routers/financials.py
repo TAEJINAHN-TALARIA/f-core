@@ -97,7 +97,7 @@ def _rows_to_series(rows: list[dict]) -> dict[str, FinancialsResponse]:
 @router.get("/{cik}/financials")
 def get_financials(
     cik: str,
-    period: str = Query("quarterly", pattern="^(annual|quarterly)$"),
+    period: str = Query("annual", pattern="^(annual|quarterly)$"),
     db: Client = Depends(get_supabase),
 ) -> list[FinancialsResponse]:
     period_type = "annual" if period == "annual" else "quarterly"
@@ -130,7 +130,7 @@ def get_financials(
 @router.get("/{cik}/balance-sheet")
 def get_balance_sheet(
     cik: str,
-    period: str = Query("quarterly", pattern="^(annual|quarterly|instant)$"),
+    period: str = Query("annual", pattern="^(annual|quarterly|instant)$"),
     db: Client = Depends(get_supabase),
 ) -> list[FinancialsResponse]:
     period_types = ["instant", "quarterly"] if period in ("quarterly", "instant") else ["annual", "instant"]
@@ -163,7 +163,7 @@ def get_balance_sheet(
 @router.get("/{cik}/cash-flow")
 def get_cash_flow(
     cik: str,
-    period: str = Query("quarterly", pattern="^(annual|quarterly)$"),
+    period: str = Query("annual", pattern="^(annual|quarterly)$"),
     db: Client = Depends(get_supabase),
 ) -> list[FinancialsResponse]:
     period_type = "annual" if period == "annual" else "quarterly"
@@ -196,7 +196,7 @@ def get_cash_flow(
 @router.get("/{cik}/metrics")
 def get_metrics(
     cik: str,
-    period: str = Query("quarterly", pattern="^(annual|quarterly)$"),
+    period: str = Query("annual", pattern="^(annual|quarterly)$"),
     db: Client = Depends(get_supabase),
 ) -> MetricsResponse:
     cik_padded = cik.zfill(10)

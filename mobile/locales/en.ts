@@ -23,6 +23,9 @@ export default {
     assets: "Total Assets",
     equity: "Equity",
     longTermDebt: "LT Debt",
+    debtToEquity: "Debt / Equity",
+    interestCoverage: "Interest Coverage",
+    shareholderReturn: "Shareholder Return",
   },
   period: {
     annual: "Annual",

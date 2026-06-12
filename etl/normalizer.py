@@ -84,7 +84,6 @@ def _derive(t: dict) -> tuple[dict, dict]:
     """
     revenue = _first(t, "Revenues", "RevenueFromContractWithCustomerExcludingAssessedTax")
     net_income = t.get("NetIncomeLoss")
-    assets = t.get("Assets")
     equity = t.get("StockholdersEquity")
     liabilities = t.get("Liabilities")
     op_cf = t.get("NetCashProvidedByUsedInOperatingActivities")
@@ -94,29 +93,18 @@ def _derive(t: dict) -> tuple[dict, dict]:
     interest_expense = t.get("InterestExpense")
     buybacks = _first(t, "PaymentsForRepurchaseOfCommonStock", "PaymentsForRepurchaseOfEquity")
     dividends = _first(t, "PaymentsOfDividendsCommonStock", "PaymentsOfDividends")
-    da = _first(t, "DepreciationDepletionAndAmortization", "Depreciation")
-    sbc = t.get("ShareBasedCompensation")
-    capex = t.get("PaymentsToAcquirePropertyPlantAndEquipment")
-    fcf_val = _safe_sub(op_cf, capex)
-    ebitda = _safe_add(operating_income, da)
+    fcf_val = _safe_sub(op_cf, abs(capex) if capex is not None else None)
 
     computed = {
         "gross_margin":       _safe_div(gross_profit, revenue),
         "operating_margin":   _safe_div(operating_income, revenue),
         "net_margin":         _safe_div(net_income, revenue),
         "roe":                _safe_div(net_income, equity),
-        "roa":                _safe_div(net_income, assets),
-        "debt_ratio":         _safe_div(liabilities, assets),
         "debt_to_equity":     _safe_div(liabilities, equity),
         "interest_coverage":  _safe_div(operating_income, interest_expense),
         "fcf":                fcf_val,
         "buyback_to_fcf":     _safe_div(buybacks, fcf_val) if fcf_val and fcf_val > 0 else None,
         "dividend_payout":    _safe_div(dividends, net_income) if net_income and net_income > 0 else None,
-        "ebitda":             ebitda,
-        "ebitda_margin":      _safe_div(ebitda, revenue),
-        "cash_conversion":    _safe_div(fcf_val, net_income) if net_income and net_income > 0 else None,
-        "capex_intensity":    _safe_div(capex, revenue),
-        "sbc_ratio":          _safe_div(sbc, revenue),
     }
 
     # 계산 실패 시 어떤 재료가 없었는지 기록
@@ -129,24 +117,12 @@ def _derive(t: dict) -> tuple[dict, dict]:
         missing["net_margin"] = "NetIncomeLoss" if revenue else "revenue"
     if computed["roe"] is None:
         missing["roe"] = "StockholdersEquity" if net_income else "NetIncomeLoss"
-    if computed["roa"] is None:
-        missing["roa"] = "Assets" if net_income else "NetIncomeLoss"
-    if computed["debt_ratio"] is None:
-        missing["debt_ratio"] = "Assets" if liabilities else "Liabilities"
     if computed["debt_to_equity"] is None:
         missing["debt_to_equity"] = "StockholdersEquity" if liabilities else "Liabilities"
     if computed["interest_coverage"] is None:
         missing["interest_coverage"] = "InterestExpense" if operating_income else "OperatingIncomeLoss"
     if computed["fcf"] is None:
         missing["fcf"] = "PaymentsToAcquirePropertyPlantAndEquipment" if op_cf else "NetCashProvidedByUsedInOperatingActivities"
-    if computed["ebitda"] is None:
-        missing["ebitda"] = "DepreciationDepletionAndAmortization" if operating_income else "OperatingIncomeLoss"
-    if computed["ebitda_margin"] is None:
-        missing["ebitda_margin"] = "ebitda" if revenue else "revenue"
-    if computed["capex_intensity"] is None:
-        missing["capex_intensity"] = "PaymentsToAcquirePropertyPlantAndEquipment" if revenue else "revenue"
-    if computed["sbc_ratio"] is None:
-        missing["sbc_ratio"] = "ShareBasedCompensation" if revenue else "revenue"
 
     return computed, missing
 

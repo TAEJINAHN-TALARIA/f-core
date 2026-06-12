@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-_ALLOWED_FORMS = {"10-K", "10-Q", "10-K/A", "10-Q/A"}
+_ALLOWED_FORMS = {"10-K", "10-K/A"}
 _ALLOWED_UNITS = {"USD", "shares", "USD/shares"}
 
 # 음수가 물리적으로 불가능한 태그
@@ -132,10 +132,8 @@ def extract_facts(data: dict, stats: "ParseStats | None" = None) -> list[dict]:
                     continue
 
                 period_type = _infer_period_type(entry)
-
-                # form ↔ period_type 불일치 관측 (skip 없음)
-                if stats:
-                    _check_mismatch(form, period_type, stats)
+                if period_type not in ("annual", "instant"):
+                    continue
 
                 results.append({
                     "cik": cik,
@@ -185,9 +183,7 @@ def _infer_period_type(entry: dict) -> str:
         days = (date.fromisoformat(end) - date.fromisoformat(start)).days
         if days > 300:
             return "annual"
-        elif days > 60:
-            return "quarterly"
         else:
             return "other"
     except Exception:
-        return "duration"
+        return "invalid"

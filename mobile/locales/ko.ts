@@ -23,6 +23,9 @@ export default {
     assets: "총자산",
     equity: "자기자본",
     longTermDebt: "장기부채",
+    debtToEquity: "부채/자본비율",
+    interestCoverage: "이자보상배율",
+    shareholderReturn: "총 주주환원액",
   },
   period: {
     annual: "연간",

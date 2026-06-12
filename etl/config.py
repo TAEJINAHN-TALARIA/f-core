@@ -20,39 +20,20 @@ TARGET_TAGS = {
     "GrossProfit",
     "OperatingIncomeLoss",
     "NetIncomeLoss",
-    "EarningsPerShareBasic",
-    "EarningsPerShareDiluted",
-    "WeightedAverageNumberOfSharesOutstandingBasic",
-    "WeightedAverageNumberOfDilutedSharesOutstanding",  # Diluted EPS 검증
-    "ShareBasedCompensation",                            # SBC-adjusted earnings
     # 재무상태표
     "Assets",
-    "AssetsCurrent",
     "Liabilities",
-    "LiabilitiesCurrent",
-    "LongTermDebt",
     "StockholdersEquity",
-    "CashAndCashEquivalentsAtCarryingValue",
-    "RetainedEarningsAccumulatedDeficit",
-    "PropertyPlantAndEquipmentNet",                      # Asset turnover, ROIC
-    "CommonStockSharesIssued",                           # 희석 위험 측정
     # 현금흐름
     "NetCashProvidedByUsedInOperatingActivities",
-    "NetCashProvidedByUsedInInvestingActivities",
-    "NetCashProvidedByUsedInFinancingActivities",
     "PaymentsToAcquirePropertyPlantAndEquipment",
-    "Depreciation",                                      # EBITDA 계산용 (DDA와 별도)
     # 주주환원
     "PaymentsForRepurchaseOfCommonStock",
     "PaymentsForRepurchaseOfEquity",
     "PaymentsOfDividendsCommonStock",
     "PaymentsOfDividends",
     # 기타
-    "CommonStockSharesOutstanding",
     "InterestExpense",
-    "IncomeTaxExpenseBenefit",
-    "DepreciationDepletionAndAmortization",
-    "ResearchAndDevelopmentExpense",
 }
 
 TAXONOMY = "us-gaap"

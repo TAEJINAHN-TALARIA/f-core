@@ -50,10 +50,15 @@ export default function CompanyDetailScreen() {
   useEffect(() => {
     if (!cik) return;
     setLoading(true);
+    setCompany(null);
+    setTtm(null);
+    setMetrics([]);
+    setFilings([]);
+
     Promise.allSettled([
       getCompany(cik),
       getTTM(cik),
-      getMetrics(cik, "quarterly"),
+      getMetrics(cik, "annual"),
       getFilings(cik, 10),
     ]).then(([co, t, m, f]) => {
       if (co.status === "fulfilled") {
@@ -106,19 +111,36 @@ export default function CompanyDetailScreen() {
   }
 
   const revenue = getTTMValue("Revenues") ?? getTTMValue("RevenueFromContractWithCustomerExcludingAssessedTax");
-  const netIncome = getTTMValue("NetIncomeLoss");
-  const eps = getTTMValue("EarningsPerShareDiluted");
-  const grossMargin = getLatestMetric("gross_margin");
-  const netMargin = getLatestMetric("net_margin");
+  const operatingMargin = getLatestMetric("operating_margin");
   const roe = getLatestMetric("roe");
+  const fcf = getLatestMetric("fcf");
+  const debtToEquity = getLatestMetric("debt_to_equity");
+  const interestCoverage = getLatestMetric("interest_coverage");
+  const interestExpense = getTTMValue("InterestExpense");
+  const operatingIncome = getTTMValue("OperatingIncomeLoss");
+  const buybacks = getTTMValue("PaymentsForRepurchaseOfCommonStock") ?? getTTMValue("PaymentsForRepurchaseOfEquity");
+  const dividends = getTTMValue("PaymentsOfDividendsCommonStock") ?? getTTMValue("PaymentsOfDividends");
+  const shareholderReturn = (buybacks != null || dividends != null) ? (buybacks ?? 0) + (dividends ?? 0) : null;
+
+  // 이자보상배율 예외처리 (무차입 우량기업 처리)
+  let interestCoverageStr = "—";
+  let interestCoveragePositive: boolean | null = null;
+  if (interestCoverage != null) {
+    interestCoverageStr = `${interestCoverage.toFixed(1)}x`;
+    interestCoveragePositive = interestCoverage >= 1.5;
+  } else if (operatingIncome != null && operatingIncome >= 0 && (interestExpense == null || interestExpense <= 0)) {
+    interestCoverageStr = "무차입 (Safe)";
+    interestCoveragePositive = true;
+  }
 
   const cards = [
-    { label: `${i18n.t("metrics.revenue")} (${i18n.t("period.ttm")})`, value: revenue != null ? formatValue(revenue, "USD") : "—" },
-    { label: `${i18n.t("metrics.netIncome")} (${i18n.t("period.ttm")})`, value: netIncome != null ? formatValue(netIncome, "USD") : "—", positive: netIncome != null ? netIncome >= 0 : null },
-    { label: `${i18n.t("metrics.eps")} (${i18n.t("period.ttm")})`, value: eps != null ? formatValue(eps, "USD/shares") : "—", positive: eps != null ? eps >= 0 : null },
-    { label: i18n.t("metrics.grossMargin"), value: grossMargin != null ? formatPercent(grossMargin) : "—" },
-    { label: i18n.t("metrics.netMargin"), value: netMargin != null ? formatPercent(netMargin) : "—", positive: netMargin != null ? netMargin >= 0 : null },
+    { label: `${i18n.t("metrics.revenue")} (${i18n.t("period.annual")})`, value: revenue != null ? formatValue(revenue, "USD") : "—" },
+    { label: i18n.t("metrics.operatingMargin"), value: operatingMargin != null ? formatPercent(operatingMargin) : "—", positive: operatingMargin != null ? operatingMargin >= 0 : null },
     { label: i18n.t("metrics.roe"), value: roe != null ? formatPercent(roe) : "—", positive: roe != null ? roe >= 0 : null },
+    { label: `${i18n.t("metrics.fcf")} (${i18n.t("period.annual")})`, value: fcf != null ? formatValue(fcf, "USD") : "—", positive: fcf != null ? fcf >= 0 : null },
+    { label: i18n.t("metrics.debtToEquity"), value: debtToEquity != null ? formatPercent(debtToEquity) : "—", positive: debtToEquity != null ? debtToEquity <= 1.0 : null },
+    { label: i18n.t("metrics.interestCoverage"), value: interestCoverageStr, positive: interestCoveragePositive },
+    { label: `${i18n.t("metrics.shareholderReturn")} (${i18n.t("period.annual")})`, value: shareholderReturn != null ? formatValue(shareholderReturn, "USD") : "—", positive: shareholderReturn != null ? shareholderReturn >= 0 : null },
   ];
 
   return (
