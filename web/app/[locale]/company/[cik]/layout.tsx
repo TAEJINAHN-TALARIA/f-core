@@ -69,12 +69,16 @@ export default async function CompanyLayout({
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-950">
+    <div className="min-h-screen flex flex-col bg-background relative overflow-hidden">
+      {/* 초미세 분위기용 데코레이션 광원 (가독성 영향 없음) */}
+      <div className="absolute top-[-15%] left-[-15%] w-[60%] h-[60%] rounded-full bg-[radial-gradient(circle,rgba(59,130,246,0.03)_0%,rgba(0,0,0,0)_75%)] pointer-events-none" />
+      <div className="absolute bottom-[-15%] right-[-15%] w-[60%] h-[60%] rounded-full bg-[radial-gradient(circle,rgba(139,92,246,0.02)_0%,rgba(0,0,0,0)_75%)] pointer-events-none" />
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <header className="bg-gray-950 border-b border-gray-800 px-6 py-3 flex items-center justify-between">
+      <header className="bg-background/80 backdrop-blur-md border-b border-border px-6 py-3 flex items-center justify-between z-10">
         <Link href={`/${locale}`} className="font-bold text-gray-100 text-lg tracking-tight hover:text-blue-400 transition-colors">
           f-core
         </Link>
