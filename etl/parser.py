@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Generator
 
 from .config import TARGET_TAGS, TAXONOMY, HISTORY_CUTOFF
+from .downloader import _is_common_stock_entry
 
 if TYPE_CHECKING:
     from .stats import ParseStats
@@ -46,19 +47,27 @@ def iter_companyfacts(zip_path: Path) -> Generator[dict, None, None]:
 
 
 def extract_company_info(data: dict) -> dict | None:
-    """기업 메타데이터 추출"""
+    """기업 메타데이터 추출. 워런트/유닛/펀드는 None 반환해 pipeline이 skip하도록."""
     cik = data.get("cik")
     if not cik:
         return None
 
-    meta = data.get("_meta", {})
+    meta   = data.get("_meta", {})
+    ticker = meta.get("ticker") or ""
+    name   = meta.get("name") or data.get("entityName", "")
+
+    # 2nd-line guard: skip if ticker_map already resolved wrong (e.g. OTC-only fallback)
+    if not _is_common_stock_entry({"ticker": ticker, "name": name}):
+        logger.debug(f"[{cik}] skip non-common: ticker={ticker} name={name}")
+        return None
+
     return {
-        "cik": str(cik).zfill(10),
-        "name": meta.get("name") or data.get("entityName", ""),
-        "sic": meta.get("sic"),
+        "cik":             str(cik).zfill(10),
+        "name":            name,
+        "sic":             meta.get("sic"),
         "sic_description": meta.get("sic_description", ""),
-        "ticker": meta.get("ticker"),
-        "exchange": meta.get("exchange"),
+        "ticker":          ticker,
+        "exchange":        meta.get("exchange"),
     }
 
 

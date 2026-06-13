@@ -1,9 +1,35 @@
+import re
 import logging
 import time
 import requests
+from collections import defaultdict
 from typing import Generator
 
 from .config import EDGAR_USER_AGENT
+
+# Patterns that identify non-common-stock securities in the SEC file
+_NONCOMMON_TICKER_RE = re.compile(
+    r'.+W[ST]?$'       # warrants: OABIW, SBXE-WT
+    r'|.+U[U]?$'       # units:    DMAAU
+    r'|-UN$'           # units:    JENA-UN
+    r'|-P[A-Z]{0,2}$'  # preferred: GS-PD, MTB-PK
+    r'|-W[ST]?$'       # hyphen warrants: VACI-WT
+)
+_FUND_NAME_RE = re.compile(
+    r'\b(fund|trust|etf|note|bond|preferred|warrant|unit|'
+    r'depositary|receipt|index|commodity|income|yield|'
+    r'dividend|series|municipal|muni|interval)\b',
+    re.IGNORECASE,
+)
+
+def _is_common_stock_entry(entry: dict) -> bool:
+    ticker = (entry.get("ticker") or "").upper()
+    name   = entry.get("name") or ""
+    if _NONCOMMON_TICKER_RE.match(ticker):
+        return False
+    if _FUND_NAME_RE.search(name):
+        return False
+    return True
 
 logger = logging.getLogger(__name__)
 
@@ -20,21 +46,34 @@ def _headers() -> dict:
 
 
 def get_ticker_map() -> dict[str, dict]:
-    """Download company_tickers_exchange.json and return {padded_cik: {name, ticker, exchange}}."""
+    """
+    Download company_tickers_exchange.json and return {padded_cik: {name, ticker, exchange}}.
+
+    Duplicate CIK handling: the SEC file lists every registered security, so one CIK can
+    appear multiple times (company + its ETFs, warrants, preferred shares).
+    We prefer the first common-stock entry; fall back to the first entry of any kind.
+    """
     logger.info(f"Fetching company metadata from {TICKERS_EXCHANGE_URL}")
     r = requests.get(TICKERS_EXCHANGE_URL, headers=_headers(), timeout=30)
     r.raise_for_status()
     data = r.json()
     fields = data["fields"]  # ['cik', 'name', 'ticker', 'exchange']
-    result = {}
+
+    by_cik: dict[str, list[dict]] = defaultdict(list)
     for row in data["data"]:
         entry = dict(zip(fields, row))
         cik = str(entry["cik"]).zfill(10)
-        result[cik] = {
-            "name": entry.get("name", ""),
-            "ticker": entry.get("ticker"),
+        by_cik[cik].append({
+            "name":     entry.get("name", ""),
+            "ticker":   entry.get("ticker"),
             "exchange": entry.get("exchange"),
-        }
+        })
+
+    result = {}
+    for cik, entries in by_cik.items():
+        common = [e for e in entries if _is_common_stock_entry(e)]
+        result[cik] = common[0] if common else entries[0]
+
     logger.info(f"Total companies: {len(result)}")
     return result
 
