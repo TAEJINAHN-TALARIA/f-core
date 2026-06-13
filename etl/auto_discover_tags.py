@@ -75,47 +75,179 @@ def get_missing_concepts(client, concept_map):
     return missing_list
 
 def extract_candidate_tags(all_tags, concept):
+    """
+    Returns candidate XBRL tags for a concept using compound-keyword rules.
+    Each rule: tag must match ANY of 'any_of' AND NONE of 'none_of' (all lowercased).
+    Using compound substrings (e.g. "netincomeloss") instead of single words
+    (e.g. "income") prevents false positives across unrelated tag families.
+    Returns [] for unknown concepts rather than guessing.
+    """
+    RULES = {
+        "revenue": {
+            "any_of": ["revenue", "netsales"],
+            "none_of": ["cost", "deferred", "unearned", "receivable", "payable",
+                        "tax", "interest", "investment", "comprehensive",
+                        "nonoperating", "liability", "lease", "loan", "mortgage",
+                        "reinsurance", "segment", "proforma", "recognized",
+                        "obligation", "related", "insurance", "premium"],
+        },
+        "gross_profit": {
+            "any_of": ["grossprofit"],
+            "none_of": [],
+        },
+        "operating_income": {
+            "any_of": ["operatingincomeloss", "operatingincome"],
+            "none_of": ["discontinued", "lease", "cost", "expense",
+                        "asset", "liability", "cash", "tax",
+                        "minimum", "future", "segment"],
+        },
+        "net_income": {
+            "any_of": ["netincomeloss", "netincome", "profitloss"],
+            "none_of": ["pershare", "diluted", "basic", "comprehensive",
+                        "noncontrolling", "segment", "operating",
+                        "continuing", "discontinued", "available"],
+        },
+        "eps_basic": {
+            "any_of": ["earningspersharebasic", "incomelossperbasicshare",
+                       "incomepersharebasic"],
+            "none_of": ["weighted", "antidilutive", "par", "price",
+                        "number", "outstanding", "diluted"],
+        },
+        "eps_diluted": {
+            "any_of": ["earningspersharediluted", "incomeperdilutedshare",
+                       "incomelossperdilutedshare"],
+            "none_of": ["weighted", "antidilutive", "par", "price",
+                        "number", "outstanding", "basic"],
+        },
+        "diluted_shares": {
+            "any_of": ["weightedaveragenumberofdiluted", "numberofdilutedshares"],
+            "none_of": ["earnings", "income", "loss", "pershare"],
+        },
+        "sbc": {
+            "any_of": ["allocatedsharebasedcompensation",
+                       "sharebasedcompensation",
+                       "stockbasedcompensation"],
+            "none_of": ["arrangement", "grantsinperiod", "outstandingnumber",
+                        "forfeited", "taxbenefit", "fairvalue",
+                        "exerciseprice", "deferred", "award", "option"],
+        },
+        "rnd": {
+            "any_of": ["researchanddevelopmentexpense",
+                       "researchanddevelopmentcost"],
+            "none_of": ["asset", "capitalized", "acquired", "inprocess",
+                        "arrangement", "contract"],
+        },
+        "interest_expense": {
+            "any_of": ["interestexpense"],
+            "none_of": ["income", "net", "capitalized", "paid",
+                        "accrued", "rate", "deferred"],
+        },
+        "income_tax": {
+            "any_of": ["incometaxexpensebenefit", "currentincometax",
+                       "deferredincometaxexpense"],
+            "none_of": ["rate", "reconciliation", "payable",
+                        "receivable", "government", "continuing"],
+        },
+        "depreciation": {
+            "any_of": ["depreciationdepletionandamortization",
+                       "depreciationandamortization",
+                       "depreciationamortizationandaccretion"],
+            "none_of": ["accumulated", "additions", "goodwill",
+                        "lease", "schedule", "building"],
+        },
+        "assets": {
+            "any_of": ["totalassets"],
+            "none_of": [],
+        },
+        "assets_current": {
+            "any_of": ["assetscurrent"],
+            "none_of": ["noncurrent", "other", "net", "total"],
+        },
+        "liabilities": {
+            "any_of": ["totalliabilities"],
+            "none_of": [],
+        },
+        "liabilities_current": {
+            "any_of": ["liabilitiescurrent"],
+            "none_of": ["noncurrent", "other", "total", "assumed", "net"],
+        },
+        "equity": {
+            "any_of": ["stockholdersequity", "shareholdersequity"],
+            "none_of": ["noncontrolling", "accumulated", "retained",
+                        "additional", "common", "preferred", "treasury",
+                        "component", "other", "comprehensive"],
+        },
+        "long_term_debt": {
+            "any_of": ["longtermdebt"],
+            "none_of": ["current", "net", "fair", "maturities",
+                        "schedule", "less", "excluding"],
+        },
+        "cash_equivalents": {
+            "any_of": ["cashandcashequivalents", "cashequivalents"],
+            "none_of": ["restricted", "increase", "decrease", "change",
+                        "beginning", "end", "effect", "net"],
+        },
+        "retained_earnings": {
+            "any_of": ["retainedearnings", "accumulateddeficit"],
+            "none_of": ["appropriated", "restricted", "distribution"],
+        },
+        "shares_outstanding": {
+            "any_of": ["sharesoutstanding"],
+            "none_of": ["weighted", "issued", "authorized", "treasury",
+                        "preferred", "earnings", "income", "pershare",
+                        "diluted", "basic"],
+        },
+        "shares_issued": {
+            "any_of": ["sharesissued"],
+            "none_of": ["weighted", "outstanding", "authorized", "treasury",
+                        "earnings", "income", "pershare", "price"],
+        },
+        "ppne_net": {
+            "any_of": ["propertyplantandequipmentnet"],
+            "none_of": [],
+        },
+        "operating_cash_flow": {
+            "any_of": ["operatingactivities"],
+            "none_of": ["investing", "financing", "supplemental",
+                        "discontinued", "effect"],
+        },
+        "investing_cash_flow": {
+            "any_of": ["investingactivities"],
+            "none_of": ["operating", "financing", "supplemental",
+                        "discontinued", "effect"],
+        },
+        "financing_cash_flow": {
+            "any_of": ["financingactivities"],
+            "none_of": ["operating", "investing", "supplemental",
+                        "discontinued", "effect"],
+        },
+        "capex": {
+            "any_of": ["paymentstoacquirepropertyplant",
+                       "paymentsforconstructionandacquisition"],
+            "none_of": ["proceeds", "sale", "disposal", "receivable"],
+        },
+        "stock_repurchase": {
+            "any_of": ["paymentsforrepurchaseofcommon",
+                       "paymentsforrepurchaseofequity"],
+            "none_of": ["proceeds", "issuance", "dividends"],
+        },
+        "dividends_paid": {
+            "any_of": ["paymentsofdividends"],
+            "none_of": ["receivable", "payable", "declared",
+                        "accrued", "pershare"],
+        },
+    }
+
+    rule = RULES.get(concept.lower())
+    if not rule:
+        return []
+
     candidates = []
-    
-    concept_lower = concept.lower()
-    if concept_lower == "revenue":
-        keywords = ["revenue", "sales", "income"]
-        exclude = ["unearned", "deferred", "receivable"]
-    elif concept_lower == "operating_income":
-        keywords = ["operating", "income", "profit", "loss"]
-        exclude = ["nonoperating", "netincome", "comprehensive"]
-    elif concept_lower == "net_income":
-        keywords = ["netincome", "loss", "earnings"]
-        exclude = ["operating", "comprehensive", "per_share"]
-    elif concept_lower == "operating_cash_flow":
-        keywords = ["cash", "operating", "activities"]
-        exclude = ["financing", "investing"]
-    elif concept_lower == "eps_basic":
-        keywords = ["earningspershare", "pershare", "per_share", "basic"]
-        exclude = ["diluted"]
-    elif concept_lower == "eps_diluted":
-        keywords = ["earningspershare", "pershare", "per_share", "diluted"]
-        exclude = ["basic"]
-    elif concept_lower == "sbc":
-        keywords = ["sharebased", "stockbased", "compensation"]
-        exclude = []
-    elif concept_lower == "rnd":
-        keywords = ["research", "development"]
-        exclude = []
-    elif concept_lower == "ppne_net":
-        keywords = ["property", "plant", "equipment"]
-        exclude = ["gross"]
-    elif concept_lower == "dividends_paid":
-        keywords = ["dividend", "paid"]
-        exclude = ["receivable", "payable"]
-    else:
-        keywords = [concept_lower.replace("_", " "), concept_lower.split("_")[0]]
-        exclude = []
-        
-    for t in all_tags:
-        tl = t.lower()
-        if any(k in tl for k in keywords) and not any(e in tl for e in exclude):
-            candidates.append(t)
+    for tag in all_tags:
+        tl = tag.lower()
+        if (any(k in tl for k in rule["any_of"]) and
+                not any(e in tl for e in rule["none_of"])):
+            candidates.append(tag)
     return list(set(candidates))
 
 def infer_best_tags_with_llm_chunk(chunk_data):
