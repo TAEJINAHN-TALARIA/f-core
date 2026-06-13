@@ -164,35 +164,40 @@ Example format:
         "contents": [{"parts":[{"text": prompt}]}]
     }
     
-    try:
-        response = requests.post(url, headers={"Content-Type": "application/json"}, data=json.dumps(payload), timeout=30)
-        response.raise_for_status()
-        data = response.json()
-        raw_text = data["candidates"][0]["content"]["parts"][0]["text"].strip()
-        if raw_text.startswith("```json"):
-            raw_text = raw_text[7:-3].strip()
-        elif raw_text.startswith("```"):
-            raw_text = raw_text[3:-3].strip()
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            response = requests.post(url, headers={"Content-Type": "application/json"}, data=json.dumps(payload), timeout=60)
+            response.raise_for_status()
+            data = response.json()
+            raw_text = data["candidates"][0]["content"]["parts"][0]["text"].strip()
+            if raw_text.startswith("```json"):
+                raw_text = raw_text[7:-3].strip()
+            elif raw_text.startswith("```"):
+                raw_text = raw_text[3:-3].strip()
+                
+            result_map = json.loads(raw_text)
             
-        result_map = json.loads(raw_text)
-        
-        # Verify the returned tags are in the candidates list
-        final_map = {}
-        for cik, items in chunk_data.items():
-            final_map[cik] = {}
-            cik_results = result_map.get(cik, {})
-            for item in items:
-                c = item["concept"]
-                tag = cik_results.get(c)
-                if tag == "NONE" or tag not in item["candidates"]:
-                    final_map[cik][c] = None
-                else:
-                    final_map[cik][c] = tag
-        return final_map
-        
-    except Exception as e:
-        logger.error(f"LLM API error during chunk: {e}")
-        return {}
+            # Verify the returned tags are in the candidates list
+            final_map = {}
+            for cik, items in chunk_data.items():
+                final_map[cik] = {}
+                cik_results = result_map.get(cik, {})
+                for item in items:
+                    c = item["concept"]
+                    tag = cik_results.get(c)
+                    if tag == "NONE" or tag not in item["candidates"]:
+                        final_map[cik][c] = None
+                    else:
+                        final_map[cik][c] = tag
+            return final_map
+            
+        except Exception as e:
+            if attempt == max_retries - 1:
+                logger.error(f"LLM API error during chunk after {max_retries} attempts: {e}")
+                return {}
+            logger.warning(f"LLM API error: {e}. Retrying {attempt+1}/{max_retries}...")
+            time.sleep(2)
 
 def auto_commit_tag(concept, tag):
     with open(CONCEPT_MAP_PATH, "r", encoding="utf-8") as f:
