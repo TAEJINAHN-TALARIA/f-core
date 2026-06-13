@@ -1,17 +1,13 @@
 import logging
-import json
-import os
 from collections import defaultdict
 from typing import TYPE_CHECKING
+
+from .config import CONCEPT_MAP
 
 if TYPE_CHECKING:
     from .stats import ParseStats
 
 logger = logging.getLogger(__name__)
-
-CONCEPT_MAP_PATH = os.path.join(os.path.dirname(__file__), "..", "config", "concept_map.json")
-with open(CONCEPT_MAP_PATH, "r", encoding="utf-8") as f:
-    CONCEPT_MAP = json.load(f)
 
 def _get_concept_value(d: dict, concept: str) -> float | None:
     tags = CONCEPT_MAP.get(concept, {}).get("tags", [])
