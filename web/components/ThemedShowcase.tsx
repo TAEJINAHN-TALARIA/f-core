@@ -28,6 +28,7 @@ export default function ThemedShowcase({ locale }: Props) {
   const [activeTab, setActiveTab] = useState("operating-margin-growth");
   const [companies, setCompanies] = useState<ThemeCompany[]>([]);
   const [isPending, startTransition] = useTransition();
+  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
     startTransition(async () => {
@@ -40,6 +41,21 @@ export default function ThemedShowcase({ locale }: Props) {
       }
     });
   }, [activeTab]);
+
+  // 10초 간격 자동 롤링 타이머
+  useEffect(() => {
+    if (isPaused) return;
+
+    const interval = setInterval(() => {
+      setActiveTab((prev) => {
+        const idx = THEMES.findIndex((t) => t.id === prev);
+        const nextIdx = (idx + 1) % THEMES.length;
+        return THEMES[nextIdx].id;
+      });
+    }, 10000); // 10초
+
+    return () => clearInterval(interval);
+  }, [isPaused, activeTab]);
 
   function renderValue(item: ThemeCompany) {
     if (activeTab === "operating-margin-growth") {
@@ -126,7 +142,11 @@ export default function ThemedShowcase({ locale }: Props) {
   }
 
   return (
-    <div className="w-full max-w-4xl px-4 mt-8 space-y-6">
+    <div 
+      className="w-full max-w-4xl px-4 mt-8 space-y-6"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
       <div className="text-center sm:text-left">
         <h2 className="text-lg font-bold text-gray-200 tracking-tight">{t("title")}</h2>
         <p className="text-xs text-gray-500 mt-1">
@@ -135,13 +155,13 @@ export default function ThemedShowcase({ locale }: Props) {
       </div>
 
       {/* Tabs list */}
-      <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 border-b border-border/40 pb-3">
+      <div className="flex flex-nowrap items-center gap-2 border-b border-border/40 pb-3 overflow-x-auto scrollbar-none snap-x">
         {THEMES.map((theme) => (
           <button
             key={theme.id}
             onClick={() => setActiveTab(theme.id)}
             className={cn(
-              "px-3 py-1.5 rounded-lg text-xs font-semibold tracking-tight transition-all duration-200 cursor-pointer",
+              "px-3 py-1.5 rounded-lg text-xs font-semibold tracking-tight transition-all duration-200 cursor-pointer snap-center shrink-0",
               activeTab === theme.id
                 ? "bg-blue-600 text-white shadow-md shadow-blue-900/30"
                 : "text-gray-400 hover:text-gray-200 bg-secondary hover:bg-secondary/80"
