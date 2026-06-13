@@ -16,8 +16,8 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(me
 logger = logging.getLogger(__name__)
 
 def get_missing_concepts(client, concept_map, limit=50):
-    logger.info(f"Scanning up to {limit} companies for missing concepts...")
-    res = client.table("companies").select("cik, name").limit(limit).execute()
+    logger.info("Scanning all companies for missing concepts...")
+    res = client.table("companies").select("cik, name").execute()
     companies = res.data
     
     missing_list = []
