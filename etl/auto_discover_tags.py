@@ -3,6 +3,7 @@ import json
 import logging
 import time
 import requests
+import threading
 from dotenv import load_dotenv
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from collections import defaultdict
@@ -16,6 +17,9 @@ from .downloader import iter_companyfacts
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
+
+# Locks for thread-safe file writing
+file_lock = threading.Lock()
 
 def get_missing_concepts(client, concept_map):
     logger.info("Scanning all companies for missing concepts...")
@@ -110,17 +114,6 @@ def extract_candidate_tags(all_tags, concept):
     return list(set(candidates))
 
 def infer_best_tags_with_llm_chunk(chunk_data):
-    """
-    chunk_data is a dict: 
-    {
-      "0001318605": [
-         {"concept": "revenue", "description": "...", "candidates": [...]},
-         ...
-      ],
-      "0001067983": [ ... ]
-    }
-    Returns a dict mapping CIK -> concept -> best_tag
-    """
     if not chunk_data:
         return {}
         
@@ -138,8 +131,9 @@ def infer_best_tags_with_llm_chunk(chunk_data):
             concept = item["concept"]
             description = item["description"]
             cands = item["candidates"]
-            if len(cands) > 50:
-                cands = cands[:50]
+            # Limit candidates to keep prompt size reasonable
+            if len(cands) > 30:
+                cands = cands[:30]
             prompt += f"- Concept: '{concept}'\n  Description: {description}\n  Candidates: {', '.join(cands)}\n"
         
     prompt += """
@@ -167,6 +161,7 @@ Example format:
     max_retries = 3
     for attempt in range(max_retries):
         try:
+            # 60s timeout should be enough for chunk_size=5 and 30 candidates limit
             response = requests.post(url, headers={"Content-Type": "application/json"}, data=json.dumps(payload), timeout=60)
             response.raise_for_status()
             data = response.json()
@@ -178,7 +173,6 @@ Example format:
                 
             result_map = json.loads(raw_text)
             
-            # Verify the returned tags are in the candidates list
             final_map = {}
             for cik, items in chunk_data.items():
                 final_map[cik] = {}
@@ -198,18 +192,26 @@ Example format:
                 return {}
             logger.warning(f"LLM API error: {e}. Retrying {attempt+1}/{max_retries}...")
             time.sleep(2)
+    return {}
 
 def auto_commit_tag(concept, tag):
-    with open(CONCEPT_MAP_PATH, "r", encoding="utf-8") as f:
-        concept_map = json.load(f)
-        
-    if tag not in concept_map[concept]["tags"]:
-        # Insert at the beginning so it has highest priority
-        concept_map[concept]["tags"].insert(0, tag)
-        with open(CONCEPT_MAP_PATH, "w", encoding="utf-8") as f:
-            json.dump(concept_map, f, indent=4)
-        return True
-    return False
+    with file_lock:
+        with open(CONCEPT_MAP_PATH, "r", encoding="utf-8") as f:
+            concept_map = json.load(f)
+            
+        if tag not in concept_map[concept]["tags"]:
+            # Insert at the beginning so it has highest priority
+            concept_map[concept]["tags"].insert(0, tag)
+            with open(CONCEPT_MAP_PATH, "w", encoding="utf-8") as f:
+                json.dump(concept_map, f, indent=4)
+            return True
+        return False
+
+def write_log(filename, message):
+    log_path = os.path.join(os.path.dirname(__file__), "..", filename)
+    with file_lock:
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(message)
 
 def run_auto_discovery():
     logger.info("=== Starting Auto Discover Tags Pipeline ===")
@@ -225,24 +227,20 @@ def run_auto_discovery():
     for m in missing_list:
         missing_by_cik[m["cik"]].append(m)
         
-    chunk_size = 10
+    # Scale: 5 companies per chunk, 5 chunks in parallel = 25 companies concurrent
+    chunk_size = 5
     ciks = list(missing_by_cik.keys())
     total_chunks = (len(ciks) + chunk_size - 1) // chunk_size
     
-    processed_companies = 0
-    total_companies = len(ciks)
-    
-    for i in range(0, len(ciks), chunk_size):
-        chunk_ciks = ciks[i:i+chunk_size]
-        logger.info(f"\n=== Processing Chunk {i//chunk_size + 1}/{total_chunks} ({len(chunk_ciks)} companies) ===")
-        
+    def process_chunk(chunk_ciks, chunk_index):
+        logger.info(f"--- Started Chunk {chunk_index}/{total_chunks} ({len(chunk_ciks)} companies) ---")
         chunk_data = {}
         names_by_cik = {}
         
+        # Parallel download for the 5 companies in this chunk
         def download_and_extract(cik):
             missing_items = missing_by_cik[cik]
             name = missing_items[0]["name"]
-            logger.info(f"[{processed_companies + chunk_ciks.index(cik) + 1}/{total_companies}] {name} - {cik} | Downloading SEC facts...")
             sec_data = next(iter_companyfacts([cik]), None)
             if not sec_data:
                 logger.warning(f"❌ Could not download SEC facts for CIK {cik}.")
@@ -260,25 +258,22 @@ def run_auto_discovery():
                     c_data.append({"concept": concept, "description": description, "candidates": candidates})
                 else:
                     logger.warning(f"  ❌ No candidates found for '{concept}' ({name}).")
-                    unmapped_log_path = os.path.join(os.path.dirname(__file__), "..", "unmapped_concepts.log")
-                    with open(unmapped_log_path, "a", encoding="utf-8") as f_unmapped:
-                        f_unmapped.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] CIK: {cik} ({name}) -> Failed to find heuristic candidates for '{concept}'\n")
+                    write_log("unmapped_concepts.log", f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] CIK: {cik} ({name}) -> Failed to find heuristic candidates for '{concept}'\n")
             return cik, name, c_data
 
-        with ThreadPoolExecutor(max_workers=chunk_size) as executor:
-            futures = {executor.submit(download_and_extract, c): c for c in chunk_ciks}
+        # Use threads for network IO (downloads)
+        with ThreadPoolExecutor(max_workers=chunk_size) as dl_executor:
+            futures = {dl_executor.submit(download_and_extract, c): c for c in chunk_ciks}
             for future in as_completed(futures):
                 res_cik, res_name, c_data = future.result()
                 names_by_cik[res_cik] = res_name
                 if c_data:
                     chunk_data[res_cik] = c_data
                     
-        processed_companies += len(chunk_ciks)
-        
         if not chunk_data:
-            continue
+            return
             
-        logger.info(f"Batch asking LLM to infer best tags for {len(chunk_data)} companies...")
+        logger.info(f"Batch asking LLM to infer best tags for Chunk {chunk_index} ({len(chunk_data)} companies)...")
         inferred_tags = infer_best_tags_with_llm_chunk(chunk_data)
         
         for cik, items in chunk_data.items():
@@ -288,20 +283,29 @@ def run_auto_discovery():
                 best_tag = inferred_tags.get(cik, {}).get(concept)
                 
                 if best_tag:
-                    logger.info(f"  ✅ LLM inferred tag for {cik} '{concept}': {best_tag}")
+                    logger.info(f"  ✅ [Chunk {chunk_index}] inferred tag for {cik} '{concept}': {best_tag}")
                     success = auto_commit_tag(concept, best_tag)
                     if success:
                         logger.info(f"  Successfully auto-committed '{best_tag}' to '{concept}' in concept_map.json.")
-                        log_path = os.path.join(os.path.dirname(__file__), "..", "tag_updates.log")
-                        with open(log_path, "a", encoding="utf-8") as log_f:
-                            log_f.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] CIK: {cik} ({name}) -> Detected '{concept}' Tag: {best_tag}\n")
+                        write_log("tag_updates.log", f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] CIK: {cik} ({name}) -> Detected '{concept}' Tag: {best_tag}\n")
                 else:
-                    logger.warning(f"  ❌ LLM could not infer tag for {cik} '{concept}'.")
-                    unmapped_log_path = os.path.join(os.path.dirname(__file__), "..", "unmapped_concepts.log")
-                    with open(unmapped_log_path, "a", encoding="utf-8") as f_unmapped:
-                        f_unmapped.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] CIK: {cik} ({name}) -> LLM failed to infer tag for '{concept}' from {len(item['candidates'])} candidates\n")
-        
-        time.sleep(4)  # Rate limiting for Gemini API
+                    logger.warning(f"  ❌ [Chunk {chunk_index}] LLM could not infer tag for {cik} '{concept}'.")
+                    write_log("unmapped_concepts.log", f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] CIK: {cik} ({name}) -> LLM failed to infer tag for '{concept}' from {len(item['candidates'])} candidates\n")
+                    
+        time.sleep(2) # Prevent massive rate limit spikes when chunks finish simultaneously
+        logger.info(f"--- Finished Chunk {chunk_index}/{total_chunks} ---")
+
+    # Run up to 5 chunks concurrently (5 * 5 = 25 companies concurrently)
+    with ThreadPoolExecutor(max_workers=5) as chunk_executor:
+        chunk_futures = []
+        for i in range(0, len(ciks), chunk_size):
+            chunk_ciks = ciks[i:i+chunk_size]
+            chunk_index = i // chunk_size + 1
+            chunk_futures.append(chunk_executor.submit(process_chunk, chunk_ciks, chunk_index))
+            
+        # Wait for all chunks to finish
+        for future in as_completed(chunk_futures):
+            future.result()
 
 if __name__ == "__main__":
     run_auto_discovery()
