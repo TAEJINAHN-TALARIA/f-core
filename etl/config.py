@@ -34,6 +34,7 @@ TARGET_TAGS = {
     "PaymentsOfDividends",
     # 기타
     "InterestExpense",
+    "LongTermDebt",
 }
 
 TAXONOMY = "us-gaap"
