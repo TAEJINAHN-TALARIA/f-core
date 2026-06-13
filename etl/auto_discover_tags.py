@@ -304,15 +304,15 @@ Example format:
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?alt=sse&key={api_key}"
     payload = {
         "contents": [{"parts":[{"text": prompt}]}],
-        # Disable thinking: this is a simple tag-matching task that doesn't benefit
-        # from reasoning, and thinking silently delays the first SSE chunk by 30-60s+.
-        "generationConfig": {"thinkingConfig": {"thinkingBudget": 0}},
+        # Small thinking budget improves selection accuracy without long delays.
+        # SSE streams thinking as separate parts with "thought": true — we filter
+        # those out below so only the final JSON output is accumulated.
+        "generationConfig": {"thinkingConfig": {"thinkingBudget": 1024}},
     }
 
     max_retries = 5
     for attempt in range(max_retries):
         try:
-            # 60s per-chunk timeout as safety net; thinking=0 means first chunk arrives quickly
             response = requests.post(url, headers={"Content-Type": "application/json"}, data=json.dumps(payload), stream=True, timeout=(15, 60))
             response.raise_for_status()
 
@@ -324,7 +324,9 @@ Example format:
                 try:
                     chunk = json.loads(data_str)
                     parts = chunk.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])
-                    full_text += parts[0].get("text", "") if parts else ""
+                    for part in parts:
+                        if not part.get("thought"):   # skip thinking tokens
+                            full_text += part.get("text", "")
                 except (json.JSONDecodeError, IndexError, KeyError):
                     continue
 
