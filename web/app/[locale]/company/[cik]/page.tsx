@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { getTTM, getFinancials, getMetrics, formatValue, formatPercent } from "@/lib/api";
+import { getTTM, getFinancials, getCashFlow, getMetrics, formatValue, formatPercent } from "@/lib/api";
 import MetricCard from "@/components/MetricCard";
 import RevenueChart from "@/components/charts/RevenueChart";
 import MarginChart from "@/components/charts/MarginChart";
@@ -15,14 +15,16 @@ export default async function CompanyOverviewPage({
   const tp = await getTranslations("period");
   const tc = await getTranslations("company");
 
-  const [ttm, financials, metricsRes] = await Promise.allSettled([
+  const [ttm, financials, cashflow, metricsRes] = await Promise.allSettled([
     getTTM(cik),
     getFinancials(cik, "annual"),
+    getCashFlow(cik, "annual"),
     getMetrics(cik, "annual"),
   ]);
 
   const ttmData = ttm.status === "fulfilled" ? ttm.value : null;
   const financialsData = financials.status === "fulfilled" ? financials.value : [];
+  const cashflowData = cashflow.status === "fulfilled" ? cashflow.value : [];
   const metricsData = metricsRes.status === "fulfilled" ? metricsRes.value.data : [];
 
   function getTTMValue(tag: string) {
@@ -129,11 +131,11 @@ export default async function CompanyOverviewPage({
       )}
 
       {/* Shareholder Return Chart */}
-      {financialsData.length > 0 && (
+      {cashflowData.length > 0 && (
         <section>
           <h2 className="text-gray-300 font-semibold mb-3">{t("buybacks")} / {t("dividends")} ({tp("annual")})</h2>
           <div className="bg-card rounded-xl p-4 border border-border shadow-md">
-            <ShareholderReturnChart financials={financialsData} />
+            <ShareholderReturnChart financials={cashflowData} />
           </div>
         </section>
       )}
