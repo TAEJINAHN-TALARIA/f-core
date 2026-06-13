@@ -109,12 +109,19 @@ def extract_candidate_tags(all_tags, concept):
             candidates.append(t)
     return list(set(candidates))
 
-def infer_best_tags_with_llm_batch(batch_data):
+def infer_best_tags_with_llm_chunk(chunk_data):
     """
-    batch_data is a list of dicts: [{"concept": "revenue", "description": "...", "candidates": [...]}, ...]
-    Returns a dict mapping concept -> best_tag or None.
+    chunk_data is a dict: 
+    {
+      "0001318605": [
+         {"concept": "revenue", "description": "...", "candidates": [...]},
+         ...
+      ],
+      "0001067983": [ ... ]
+    }
+    Returns a dict mapping CIK -> concept -> best_tag
     """
-    if not batch_data:
+    if not chunk_data:
         return {}
         
     api_key = os.environ.get("GEMINI_API_KEY")
@@ -122,26 +129,33 @@ def infer_best_tags_with_llm_batch(batch_data):
         logger.error("GEMINI_API_KEY is not set in .env.")
         return {}
         
-    prompt = "We are mapping financial tags from SEC EDGAR. We need the US-GAAP tag that best represents several missing concepts.\n"
-    prompt += "For each concept, we have a curated list of candidate tags.\n\nConcepts to map:\n"
+    prompt = "We are mapping financial tags from SEC EDGAR. We need the US-GAAP tag that best represents several missing concepts for multiple companies.\n"
+    prompt += "For each company (identified by CIK), we have a list of missing concepts and curated candidate tags.\n\nCompanies to map:\n"
     
-    for item in batch_data:
-        concept = item["concept"]
-        description = item["description"]
-        cands = item["candidates"]
-        if len(cands) > 50:
-            cands = cands[:50]
-        prompt += f"- Concept: '{concept}'\n  Description: {description}\n  Candidates: {', '.join(cands)}\n\n"
+    for cik, items in chunk_data.items():
+        prompt += f"\nCompany CIK: {cik}\n"
+        for item in items:
+            concept = item["concept"]
+            description = item["description"]
+            cands = item["candidates"]
+            if len(cands) > 50:
+                cands = cands[:50]
+            prompt += f"- Concept: '{concept}'\n  Description: {description}\n  Candidates: {', '.join(cands)}\n"
         
     prompt += """
-Please return ONLY a valid JSON object mapping each concept to the best candidate tag exactly as it appears in its candidates list.
+Please return ONLY a valid JSON object mapping each CIK to a dictionary of its concepts and their best candidate tag exactly as they appear in their candidate lists.
 If none of the candidates fit accurately, map it to "NONE".
 Do not wrap the JSON in Markdown formatting like ```json.
 Example format:
 {
-  "revenue": "RevenueFromContractWithCustomerExcludingAssessedTax",
-  "gross_profit": "GrossProfit",
-  "operating_income": "NONE"
+  "0001318605": {
+    "revenue": "RevenueFromContractWithCustomerExcludingAssessedTax",
+    "gross_profit": "GrossProfit",
+    "operating_income": "NONE"
+  },
+  "0001067983": {
+    "revenue": "SalesRevenueNet"
+  }
 }
 """
 
@@ -151,7 +165,7 @@ Example format:
     }
     
     try:
-        response = requests.post(url, headers={"Content-Type": "application/json"}, data=json.dumps(payload))
+        response = requests.post(url, headers={"Content-Type": "application/json"}, data=json.dumps(payload), timeout=30)
         response.raise_for_status()
         data = response.json()
         raw_text = data["candidates"][0]["content"]["parts"][0]["text"].strip()
@@ -164,17 +178,20 @@ Example format:
         
         # Verify the returned tags are in the candidates list
         final_map = {}
-        for item in batch_data:
-            c = item["concept"]
-            tag = result_map.get(c)
-            if tag == "NONE" or tag not in item["candidates"]:
-                final_map[c] = None
-            else:
-                final_map[c] = tag
+        for cik, items in chunk_data.items():
+            final_map[cik] = {}
+            cik_results = result_map.get(cik, {})
+            for item in items:
+                c = item["concept"]
+                tag = cik_results.get(c)
+                if tag == "NONE" or tag not in item["candidates"]:
+                    final_map[cik][c] = None
+                else:
+                    final_map[cik][c] = tag
         return final_map
         
     except Exception as e:
-        logger.error(f"LLM API error during batch: {e}")
+        logger.error(f"LLM API error during chunk: {e}")
         return {}
 
 def auto_commit_tag(concept, tag):
@@ -203,64 +220,83 @@ def run_auto_discovery():
     for m in missing_list:
         missing_by_cik[m["cik"]].append(m)
         
-    processed_companies = 0
-    total_companies = len(missing_by_cik)
+    chunk_size = 10
+    ciks = list(missing_by_cik.keys())
+    total_chunks = (len(ciks) + chunk_size - 1) // chunk_size
     
-    for cik, missing_items in missing_by_cik.items():
-        name = missing_items[0]["name"]
-        processed_companies += 1
-        logger.info(f"[{processed_companies}/{total_companies}] {name} - {cik} | {len(missing_items)} missing concepts. Downloading SEC facts...")
+    processed_companies = 0
+    total_companies = len(ciks)
+    
+    for i in range(0, len(ciks), chunk_size):
+        chunk_ciks = ciks[i:i+chunk_size]
+        logger.info(f"\n=== Processing Chunk {i//chunk_size + 1}/{total_chunks} ({len(chunk_ciks)} companies) ===")
         
-        sec_data = next(iter_companyfacts([cik]), None)
-        if not sec_data:
-            logger.warning(f"❌ Could not download SEC facts for CIK {cik}. Skipping.")
-            continue
-            
-        us_gaap = sec_data.get("facts", {}).get("us-gaap", {})
-        all_tags = list(us_gaap.keys())
+        chunk_data = {}
+        names_by_cik = {}
         
-        batch_data = []
-        for missing in missing_items:
-            concept = missing["concept"]
-            description = missing["description"]
-            
-            logger.info(f"  Missing '{concept}'. Extracting candidates...")
-            candidates = extract_candidate_tags(all_tags, concept)
-            logger.info(f"  Found {len(candidates)} heuristic candidates.")
-            
-            if candidates:
-                batch_data.append({"concept": concept, "description": description, "candidates": candidates})
-            else:
-                logger.warning(f"  ❌ No candidates found for '{concept}' (Heuristic failed).")
-                unmapped_log_path = os.path.join(os.path.dirname(__file__), "..", "unmapped_concepts.log")
-                with open(unmapped_log_path, "a", encoding="utf-8") as f_unmapped:
-                    f_unmapped.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] CIK: {cik} ({name}) -> Failed to find heuristic candidates for '{concept}'\n")
+        def download_and_extract(cik):
+            missing_items = missing_by_cik[cik]
+            name = missing_items[0]["name"]
+            logger.info(f"[{processed_companies + chunk_ciks.index(cik) + 1}/{total_companies}] {name} - {cik} | Downloading SEC facts...")
+            sec_data = next(iter_companyfacts([cik]), None)
+            if not sec_data:
+                logger.warning(f"❌ Could not download SEC facts for CIK {cik}.")
+                return cik, name, None
                 
-        if not batch_data:
+            us_gaap = sec_data.get("facts", {}).get("us-gaap", {})
+            all_tags = list(us_gaap.keys())
+            
+            c_data = []
+            for missing in missing_items:
+                concept = missing["concept"]
+                description = missing["description"]
+                candidates = extract_candidate_tags(all_tags, concept)
+                if candidates:
+                    c_data.append({"concept": concept, "description": description, "candidates": candidates})
+                else:
+                    logger.warning(f"  ❌ No candidates found for '{concept}' ({name}).")
+                    unmapped_log_path = os.path.join(os.path.dirname(__file__), "..", "unmapped_concepts.log")
+                    with open(unmapped_log_path, "a", encoding="utf-8") as f_unmapped:
+                        f_unmapped.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] CIK: {cik} ({name}) -> Failed to find heuristic candidates for '{concept}'\n")
+            return cik, name, c_data
+
+        with ThreadPoolExecutor(max_workers=chunk_size) as executor:
+            futures = {executor.submit(download_and_extract, c): c for c in chunk_ciks}
+            for future in as_completed(futures):
+                res_cik, res_name, c_data = future.result()
+                names_by_cik[res_cik] = res_name
+                if c_data:
+                    chunk_data[res_cik] = c_data
+                    
+        processed_companies += len(chunk_ciks)
+        
+        if not chunk_data:
             continue
             
-        logger.info(f"  Batch asking LLM to infer best tags for {len(batch_data)} concepts...")
-        inferred_tags = infer_best_tags_with_llm_batch(batch_data)
+        logger.info(f"Batch asking LLM to infer best tags for {len(chunk_data)} companies...")
+        inferred_tags = infer_best_tags_with_llm_chunk(chunk_data)
         
-        for item in batch_data:
-            concept = item["concept"]
-            best_tag = inferred_tags.get(concept)
-            
-            if best_tag:
-                logger.info(f"  ✅ LLM inferred best tag for '{concept}': {best_tag}")
-                success = auto_commit_tag(concept, best_tag)
-                if success:
-                    logger.info(f"  Successfully auto-committed '{best_tag}' to '{concept}' in concept_map.json.")
-                    log_path = os.path.join(os.path.dirname(__file__), "..", "tag_updates.log")
-                    with open(log_path, "a", encoding="utf-8") as log_f:
-                        log_f.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] CIK: {cik} ({name}) -> Detected '{concept}' Tag: {best_tag}\n")
-            else:
-                logger.warning(f"  ❌ LLM could not infer a good tag for '{concept}'.")
-                unmapped_log_path = os.path.join(os.path.dirname(__file__), "..", "unmapped_concepts.log")
-                with open(unmapped_log_path, "a", encoding="utf-8") as f_unmapped:
-                    f_unmapped.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] CIK: {cik} ({name}) -> LLM failed to infer tag for '{concept}' from {len(item['candidates'])} candidates\n")
+        for cik, items in chunk_data.items():
+            name = names_by_cik[cik]
+            for item in items:
+                concept = item["concept"]
+                best_tag = inferred_tags.get(cik, {}).get(concept)
+                
+                if best_tag:
+                    logger.info(f"  ✅ LLM inferred tag for {cik} '{concept}': {best_tag}")
+                    success = auto_commit_tag(concept, best_tag)
+                    if success:
+                        logger.info(f"  Successfully auto-committed '{best_tag}' to '{concept}' in concept_map.json.")
+                        log_path = os.path.join(os.path.dirname(__file__), "..", "tag_updates.log")
+                        with open(log_path, "a", encoding="utf-8") as log_f:
+                            log_f.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] CIK: {cik} ({name}) -> Detected '{concept}' Tag: {best_tag}\n")
+                else:
+                    logger.warning(f"  ❌ LLM could not infer tag for {cik} '{concept}'.")
+                    unmapped_log_path = os.path.join(os.path.dirname(__file__), "..", "unmapped_concepts.log")
+                    with open(unmapped_log_path, "a", encoding="utf-8") as f_unmapped:
+                        f_unmapped.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] CIK: {cik} ({name}) -> LLM failed to infer tag for '{concept}' from {len(item['candidates'])} candidates\n")
         
-        time.sleep(4)  # Rate limiting for Gemini API, 1 request per company
+        time.sleep(4)  # Rate limiting for Gemini API
 
 if __name__ == "__main__":
     run_auto_discovery()
