@@ -91,29 +91,42 @@ def extract_candidate_tags(all_tags, concept):
             candidates.append(t)
     return list(set(candidates))
 
-def infer_best_tag_with_llm(concept, description, candidates):
-    if not candidates:
-        return None
-    
+def infer_best_tags_with_llm_batch(batch_data):
+    """
+    batch_data is a list of dicts: [{"concept": "revenue", "description": "...", "candidates": [...]}, ...]
+    Returns a dict mapping concept -> best_tag or None.
+    """
+    if not batch_data:
+        return {}
+        
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
         logger.error("GEMINI_API_KEY is not set in .env.")
-        return None
+        return {}
         
-    # Limit candidates to a reasonable number to save tokens and avoid confusion
-    if len(candidates) > 50:
-        candidates = candidates[:50]
+    prompt = "We are mapping financial tags from SEC EDGAR. We need the US-GAAP tag that best represents several missing concepts.\n"
+    prompt += "For each concept, we have a curated list of candidate tags.\n\nConcepts to map:\n"
     
-    prompt = f"""
-We are mapping financial tags from SEC EDGAR. We need the US-GAAP tag that best represents '{concept}' ({description}).
-Here is a list of candidate tags extracted from a company's SEC filing:
-{', '.join(candidates)}
-
-Which of these tags is the absolute best match for the main '{concept}' metric?
-Please return ONLY the tag name exactly as it appears in the list. Do not include any other text, explanation, or quotes.
-If none of them fit the concept accurately, return exactly the string "NONE".
+    for item in batch_data:
+        concept = item["concept"]
+        description = item["description"]
+        cands = item["candidates"]
+        if len(cands) > 50:
+            cands = cands[:50]
+        prompt += f"- Concept: '{concept}'\n  Description: {description}\n  Candidates: {', '.join(cands)}\n\n"
+        
+    prompt += """
+Please return ONLY a valid JSON object mapping each concept to the best candidate tag exactly as it appears in its candidates list.
+If none of the candidates fit accurately, map it to "NONE".
+Do not wrap the JSON in Markdown formatting like ```json.
+Example format:
+{
+  "revenue": "RevenueFromContractWithCustomerExcludingAssessedTax",
+  "gross_profit": "GrossProfit",
+  "operating_income": "NONE"
+}
 """
-    
+
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
     payload = {
         "contents": [{"parts":[{"text": prompt}]}]
@@ -123,14 +136,28 @@ If none of them fit the concept accurately, return exactly the string "NONE".
         response = requests.post(url, headers={"Content-Type": "application/json"}, data=json.dumps(payload))
         response.raise_for_status()
         data = response.json()
-        tag = data["candidates"][0]["content"]["parts"][0]["text"].strip().strip("'\"")
+        raw_text = data["candidates"][0]["content"]["parts"][0]["text"].strip()
+        if raw_text.startswith("```json"):
+            raw_text = raw_text[7:-3].strip()
+        elif raw_text.startswith("```"):
+            raw_text = raw_text[3:-3].strip()
+            
+        result_map = json.loads(raw_text)
         
-        if tag == "NONE" or tag not in candidates:
-            return None
-        return tag
+        # Verify the returned tags are in the candidates list
+        final_map = {}
+        for item in batch_data:
+            c = item["concept"]
+            tag = result_map.get(c)
+            if tag == "NONE" or tag not in item["candidates"]:
+                final_map[c] = None
+            else:
+                final_map[c] = tag
+        return final_map
+        
     except Exception as e:
-        logger.error(f"LLM API error: {e}")
-        return None
+        logger.error(f"LLM API error during batch: {e}")
+        return {}
 
 def auto_commit_tag(concept, tag):
     with open(CONCEPT_MAP_PATH, "r", encoding="utf-8") as f:
@@ -174,6 +201,7 @@ def run_auto_discovery():
         us_gaap = sec_data.get("facts", {}).get("us-gaap", {})
         all_tags = list(us_gaap.keys())
         
+        batch_data = []
         for missing in missing_items:
             concept = missing["concept"]
             description = missing["description"]
@@ -182,10 +210,18 @@ def run_auto_discovery():
             candidates = extract_candidate_tags(all_tags, concept)
             logger.info(f"  Found {len(candidates)} heuristic candidates.")
             
-            if not candidates:
-                continue
+            if candidates:
+                batch_data.append({"concept": concept, "description": description, "candidates": candidates})
                 
-            best_tag = infer_best_tag_with_llm(concept, description, candidates)
+        if not batch_data:
+            continue
+            
+        logger.info(f"  Batch asking LLM to infer best tags for {len(batch_data)} concepts...")
+        inferred_tags = infer_best_tags_with_llm_batch(batch_data)
+        
+        for item in batch_data:
+            concept = item["concept"]
+            best_tag = inferred_tags.get(concept)
             
             if best_tag:
                 logger.info(f"  ✅ LLM inferred best tag for '{concept}': {best_tag}")
@@ -197,8 +233,8 @@ def run_auto_discovery():
                         log_f.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] CIK: {cik} ({name}) -> Detected '{concept}' Tag: {best_tag}\n")
             else:
                 logger.warning(f"  ❌ LLM could not infer a good tag for '{concept}'.")
-            
-            time.sleep(4)  # Rate limiting for Gemini API
+        
+        time.sleep(4)  # Rate limiting for Gemini API, 1 request per company
 
 if __name__ == "__main__":
     run_auto_discovery()
