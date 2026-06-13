@@ -44,7 +44,7 @@ export default function ThemedShowcase({ locale }: Props) {
   useEffect(() => {
     startTransition(async () => {
       try {
-        const data = await getThemeCompanies(activeTab, 8);
+        const data = await getThemeCompanies(activeTab, 50);
         setCompanies(data);
       } catch (err) {
         console.error("Failed to fetch themed companies", err);
