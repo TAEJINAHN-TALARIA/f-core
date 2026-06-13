@@ -17,8 +17,8 @@ interface Props {
 }
 
 const COLORS: Record<string, string> = {
-  gross_margin:     "#10b981",
-  operating_margin: "#f59e0b",
+  gross_margin:     "#f59e0b",
+  operating_margin: "#10b981",
   net_margin:       "#8b5cf6",
 };
 
@@ -85,6 +85,7 @@ export default function MarginChart({ metrics }: Props) {
           axisLine={false}
           tick={{ fill: "#9ca3af", fontSize: 11 }}
           tickFormatter={fmtDate}
+          padding={{ left: 12, right: 12 }}
         />
         <YAxis
           tickLine={false}

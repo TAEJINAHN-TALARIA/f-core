@@ -95,6 +95,7 @@ export default function CashFlowChart({ cashflow }: Props) {
           axisLine={false}
           tick={{ fill: "#9ca3af", fontSize: 11 }}
           tickFormatter={fmtDate}
+          padding={{ left: 12, right: 12 }}
         />
         <YAxis
           yAxisId="left"

@@ -4,6 +4,7 @@ import {
   ComposedChart,
   Area,
   Bar,
+  Line,
   CartesianGrid,
   XAxis,
   YAxis,
@@ -112,12 +113,13 @@ export default function RevenueChart({ financials }: Props) {
           axisLine={false}
           tick={{ fill: "#9ca3af", fontSize: 11 }}
           tickFormatter={fmtDate}
+          padding={{ left: 12, right: 12 }}
         />
         <YAxis
           yAxisId="left"
           tickLine={false}
           axisLine={false}
-          tick={{ fill: "#9ca3af", fontSize: 11 }}
+          tick={{ fill: COLORS.revenue, fontSize: 11, fontWeight: 600 }}
           tickFormatter={(v) => formatValue(v, "USD").replace("$", "")}
         />
         <YAxis
@@ -125,7 +127,7 @@ export default function RevenueChart({ financials }: Props) {
           orientation="right"
           tickLine={false}
           axisLine={false}
-          tick={{ fill: "#9ca3af", fontSize: 11 }}
+          tick={{ fill: COLORS.operatingIncome, fontSize: 11, fontWeight: 600 }}
           tickFormatter={(v) => formatValue(v, "USD").replace("$", "")}
         />
         <ReferenceLine y={0} yAxisId="right" stroke="#374151" strokeDasharray="4 2" />
@@ -144,35 +146,37 @@ export default function RevenueChart({ financials }: Props) {
         <ChartLegend content={<ChartLegendContent />} />
         
         {presentKeys.includes("revenue") && (
-          <Area
+          <Bar
             yAxisId="left"
-            type="monotone"
             dataKey="revenue"
-            stroke={COLORS.revenue}
-            strokeWidth={2}
-            fill="url(#grad-revenue)"
-            dot={false}
-            activeDot={{ r: 4, strokeWidth: 0, fill: COLORS.revenue }}
+            fill={COLORS.revenue}
+            radius={[4, 4, 0, 0]}
+            maxBarSize={36}
+            opacity={0.75}
           />
         )}
         
         {presentKeys.includes("operatingIncome") && (
-          <Bar
+          <Line
             yAxisId="right"
+            type="monotone"
             dataKey="operatingIncome"
-            fill={COLORS.operatingIncome}
-            radius={[3, 3, 0, 0]}
-            maxBarSize={18}
+            stroke={COLORS.operatingIncome}
+            strokeWidth={3}
+            dot={{ r: 3, fill: COLORS.operatingIncome, strokeWidth: 0 }}
+            activeDot={{ r: 6, strokeWidth: 2, stroke: "#fff", fill: COLORS.operatingIncome }}
           />
         )}
         
         {presentKeys.includes("netIncome") && (
-          <Bar
+          <Line
             yAxisId="right"
+            type="monotone"
             dataKey="netIncome"
-            fill={COLORS.netIncome}
-            radius={[3, 3, 0, 0]}
-            maxBarSize={18}
+            stroke={COLORS.netIncome}
+            strokeWidth={3}
+            dot={{ r: 3, fill: COLORS.netIncome, strokeWidth: 0 }}
+            activeDot={{ r: 6, strokeWidth: 2, stroke: "#fff", fill: COLORS.netIncome }}
           />
         )}
       </ComposedChart>
