@@ -29,11 +29,14 @@ def get_missing_concepts(client, concept_map):
 
     def fetch_covered_ciks(tags):
         """Return the set of CIKs that have at least one of the given tags."""
+        # Each thread needs its own client — sharing one httpx/HTTP2 client across
+        # threads causes RemoteProtocolError ("Server disconnected").
+        thread_client = get_client()
         covered = set()
         page_size = 1000
         offset = 0
         while True:
-            res = (client.table("facts")
+            res = (thread_client.table("facts")
                    .select("cik")
                    .in_("tag", tags)
                    .range(offset, offset + page_size - 1)
