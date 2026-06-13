@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState, useTransition, useRef } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { getThemeCompanies, type ThemeCompany, formatValue } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
@@ -28,6 +29,17 @@ export default function ThemedShowcase({ locale }: Props) {
   const [companies, setCompanies] = useState<ThemeCompany[]>([]);
   const [isPending, startTransition] = useTransition();
   const [isPaused, setIsPaused] = useState(false);
+  const tabsRef = useRef<HTMLDivElement>(null);
+
+  const scrollTabs = (direction: "left" | "right") => {
+    if (tabsRef.current) {
+      const scrollAmount = 200;
+      tabsRef.current.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
 
   useEffect(() => {
     startTransition(async () => {
@@ -144,22 +156,46 @@ export default function ThemedShowcase({ locale }: Props) {
         </p>
       </div>
 
-      {/* Tabs list */}
-      <div className="flex flex-nowrap items-center gap-2 border-b border-border/40 pb-3 overflow-x-auto scrollbar-none snap-x">
-        {THEMES.map((theme) => (
-          <button
-            key={theme.id}
-            onClick={() => setActiveTab(theme.id)}
-            className={cn(
-              "px-3 py-1.5 rounded-lg text-xs font-semibold tracking-tight transition-all duration-200 cursor-pointer snap-center shrink-0",
-              activeTab === theme.id
-                ? "bg-blue-600 text-white shadow-md shadow-blue-900/30"
-                : "text-gray-400 hover:text-gray-200 bg-secondary hover:bg-secondary/80"
-            )}
-          >
-            {t(theme.labelKey as any)}
-          </button>
-        ))}
+      {/* Tabs list with Arrow Navigators */}
+      <div className="relative w-full group/arrows">
+        {/* Left Arrow */}
+        <button
+          onClick={() => scrollTabs("left")}
+          className="absolute left-0 top-1/2 -translate-y-1/2 -ml-3 z-10 p-1.5 bg-card/90 border border-border rounded-full text-gray-400 hover:text-gray-200 hover:bg-secondary transition-all opacity-0 group-hover/arrows:opacity-100 focus:opacity-100 cursor-pointer shadow-lg hover:scale-105 active:scale-95 duration-200"
+          aria-label="Scroll Left"
+        >
+          <ChevronLeft className="w-4 h-4" />
+        </button>
+
+        {/* Tabs Scroll Area */}
+        <div
+          ref={tabsRef}
+          className="flex flex-nowrap items-center gap-2 border-b border-border/40 pb-3 overflow-x-auto scrollbar-none snap-x px-3 scroll-smooth"
+        >
+          {THEMES.map((theme) => (
+            <button
+              key={theme.id}
+              onClick={() => setActiveTab(theme.id)}
+              className={cn(
+                "px-3 py-1.5 rounded-lg text-xs font-semibold tracking-tight transition-all duration-200 cursor-pointer snap-center shrink-0",
+                activeTab === theme.id
+                  ? "bg-blue-600 text-white shadow-md shadow-blue-900/30"
+                  : "text-gray-400 hover:text-gray-200 bg-secondary hover:bg-secondary/80"
+              )}
+            >
+              {t(theme.labelKey as any)}
+            </button>
+          ))}
+        </div>
+
+        {/* Right Arrow */}
+        <button
+          onClick={() => scrollTabs("right")}
+          className="absolute right-0 top-1/2 -translate-y-1/2 -mr-3 z-10 p-1.5 bg-card/90 border border-border rounded-full text-gray-400 hover:text-gray-200 hover:bg-secondary transition-all opacity-0 group-hover/arrows:opacity-100 focus:opacity-100 cursor-pointer shadow-lg hover:scale-105 active:scale-95 duration-200"
+          aria-label="Scroll Right"
+        >
+          <ChevronRight className="w-4 h-4" />
+        </button>
       </div>
 
       {/* Showcase Cards Grid */}

@@ -51,6 +51,7 @@
   - **자본잠식 금융 엣지 케이스 픽스**: 부채 비율이 음수(-)인 자본잠식 기업들이 `zero-debt-safe` 등에 노출되는 오류를 막기 위해 비음수(`debt_to_equity >= 0`) 제약을 추가했습니다.
 - **UI/UX 고도화, 자동 롤링 및 다국어 지원**:
   - 10대 테마로 늘어난 탭이 여러 줄로 꺾여 화면을 많이 차지하지 않도록 **한 줄 가로 스크롤 레이아웃**(`flex-nowrap overflow-x-auto scrollbar-none snap-x`)으로 개선하고 스냅 정렬을 추가했습니다.
+  - 사용자가 가로 스크롤을 마우스로 편리하게 조작할 수 있도록 **양측에 absolute 배치된 화살표 네비게이터 버튼(ChevronLeft/Right)**을 추가했습니다. (스크롤 영역 마우스 호버 시 화살표 노출)
   - 사용자가 수동으로 바꾸지 않아도 **10초 간격으로 우측 테마로 자동 전환(Auto-Rotation)**되도록 구현했으며, 마우스 호버 시 타이머가 일시정지(`Pause-on-Hover`)되고 클릭 시 타이머가 리셋되는 디테일을 가미해 사용성을 최적화했습니다.
   - [ko.json](file:///c:/Users/TAEJIN/Documents/f-core/web/messages/ko.json) 및 [en.json](file:///c:/Users/TAEJIN/Documents/f-core/web/messages/en.json) 로케일 번역 키 추가를 완료했습니다.
 
