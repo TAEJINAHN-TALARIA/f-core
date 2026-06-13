@@ -89,11 +89,12 @@ def extract_candidate_tags(all_tags, concept):
                         "tax", "interest", "investment", "comprehensive",
                         "nonoperating", "liability", "lease", "loan", "mortgage",
                         "reinsurance", "segment", "proforma", "recognized",
-                        "obligation", "related", "insurance", "premium"],
+                        "obligation", "related", "insurance", "premium",
+                        "discontinued", "disposal", "acquisition"],
         },
         "gross_profit": {
             "any_of": ["grossprofit"],
-            "none_of": [],
+            "none_of": ["discontinued", "disposal"],
         },
         "operating_income": {
             "any_of": ["operatingincomeloss", "operatingincome"],
@@ -111,7 +112,7 @@ def extract_candidate_tags(all_tags, concept):
             "any_of": ["earningspersharebasic", "incomelossperbasicshare",
                        "incomepersharebasic"],
             "none_of": ["weighted", "antidilutive", "par", "price",
-                        "number", "outstanding", "diluted"],
+                        "number", "outstanding", "diluted", "proforma", "acquisition"],
         },
         "eps_diluted": {
             "any_of": ["earningspersharediluted", "incomeperdilutedshare",
@@ -144,10 +145,9 @@ def extract_candidate_tags(all_tags, concept):
                         "accrued", "rate", "deferred", "noninterest", "offering"],
         },
         "income_tax": {
-            "any_of": ["incometaxexpensebenefit", "currentincometax",
-                       "deferredincometaxexpense"],
+            "any_of": ["incometaxexpensebenefit", "currentincometax"],
             "none_of": ["rate", "reconciliation", "payable",
-                        "receivable", "government", "continuing"],
+                        "receivable", "government", "continuing", "deferred"],
         },
         "depreciation": {
             "any_of": ["depreciationdepletionandamortization",
@@ -171,7 +171,7 @@ def extract_candidate_tags(all_tags, concept):
         "liabilities_current": {
             "any_of": ["liabilitiescurrent"],
             "none_of": ["noncurrent", "other", "total", "assumed", "net",
-                        "accrued", "derivative", "accounts"],
+                        "accrued", "derivative", "accounts", "employee", "related"],
         },
         "equity": {
             "any_of": ["stockholdersequity", "shareholdersequity"],
@@ -190,7 +190,8 @@ def extract_candidate_tags(all_tags, concept):
         "cash_equivalents": {
             "any_of": ["cashandcashequivalents", "cashequivalents"],
             "none_of": ["restricted", "increase", "decrease", "change",
-                        "beginning", "end", "effect", "net"],
+                        "beginning", "end", "effect", "net",
+                        "acquisition", "purchase", "allocation"],
         },
         "retained_earnings": {
             "any_of": ["retainedearnings", "accumulateddeficit"],
@@ -202,14 +203,14 @@ def extract_candidate_tags(all_tags, concept):
             "any_of": ["sharesoutstanding"],
             "none_of": ["weighted", "issued", "authorized", "treasury",
                         "preferred", "earnings", "income", "pershare",
-                        "diluted", "basic"],
+                        "diluted", "basic", "excess"],
         },
         "shares_issued": {
             "any_of": ["sharesissued"],
             "none_of": ["weighted", "outstanding", "authorized", "treasury",
                         "earnings", "income", "pershare", "price",
                         "arrangement", "services", "value", "net", "excess",
-                        "sale", "temporary", "restricted"],
+                        "sale", "temporary", "restricted", "acquisition"],
         },
         "ppne_net": {
             "any_of": ["propertyplantandequipmentnet"],

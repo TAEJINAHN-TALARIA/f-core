@@ -8,7 +8,6 @@
             "SalesRevenueServicesNet",
             "LicenseAndServicesRevenue",
             "FinancialServicesRevenue",
-            "DisposalGroupIncludingDiscontinuedOperationRevenue",
             "ReimbursementRevenue",
             "RegulatedAndUnregulatedOperatingRevenue",
             "OperatingRevenues",
@@ -20,7 +19,6 @@
     },
     "gross_profit": {
         "tags": [
-            "DisposalGroupIncludingDiscontinuedOperationGrossProfitLoss",
             "GrossProfit"
         ],
         "category": "income"
@@ -40,7 +38,6 @@
     },
     "eps_basic": {
         "tags": [
-            "BusinessAcquisitionProFormaEarningsPerShareBasic",
             "EarningsPerShareBasic"
         ],
         "category": "income"
@@ -91,8 +88,6 @@
     },
     "income_tax": {
         "tags": [
-            "DeferredIncomeTaxExpenseBenefit",
-            "DeferredFederalIncomeTaxExpenseBenefit",
             "CurrentIncomeTaxExpenseBenefit",
             "IncomeTaxExpenseBenefit"
         ],
@@ -130,7 +125,6 @@
     },
     "liabilities_current": {
         "tags": [
-            "EmployeeRelatedLiabilitiesCurrent",
             "LiabilitiesCurrent"
         ],
         "category": "balance_sheet"
@@ -155,7 +149,6 @@
     },
     "cash_equivalents": {
         "tags": [
-            "BusinessAcquisitionPurchasePriceAllocationCurrentAssetsCashAndCashEquivalents",
             "CashCashEquivalentsAndShortTermInvestments",
             "CashCashEquivalentsAndFederalFundsSold",
             "CashEquivalentsAtCarryingValue",
@@ -171,7 +164,6 @@
     },
     "shares_outstanding": {
         "tags": [
-            "ExcessStockSharesOutstanding",
             "TemporaryEquitySharesOutstanding",
             "SharesOutstanding",
             "WeightedAverageNumberOfSharesOutstandingBasic",
@@ -181,7 +173,6 @@
     },
     "shares_issued": {
         "tags": [
-            "BusinessAcquisitionEquityInterestsIssuedOrIssuableNumberOfSharesIssued",
             "SharesIssued",
             "PreferredStockSharesIssued",
             "CommonStockSharesIssued"
