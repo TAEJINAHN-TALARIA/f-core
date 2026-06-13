@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+const SITE_URL = rawSiteUrl.endsWith("/") ? rawSiteUrl.slice(0, -1) : rawSiteUrl;
 
 export default function robots(): MetadataRoute.Robots {
   return {
