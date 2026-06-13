@@ -41,7 +41,7 @@ jobs:
         with:
           commit_message: "🤖 [Auto-commit] Detected and mapped missing XBRL tags"
           branch: master
-          file_pattern: "web/lib/concept_map.json tag_updates.log unmapped_concepts.log"
+          file_pattern: "web/lib/concept_map.json"
           commit_user_name: "github-actions[bot]"
           commit_user_email: "github-actions[bot]@users.noreply.github.com"
           commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
