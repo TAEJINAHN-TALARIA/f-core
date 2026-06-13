@@ -27,12 +27,19 @@ def get_missing_concepts(client, concept_map):
     def process_company(comp):
         cik = comp["cik"]
         name = comp["name"]
-        try:
-            facts_res = client.table("facts").select("tag").eq("cik", cik).execute()
-            existing_tags = set(r["tag"] for r in facts_res.data)
-        except Exception as e:
-            logger.error(f"Error fetching facts for {cik}: {e}")
-            return []
+        
+        # Add retry logic for Supabase API rate limits / connection drops
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                facts_res = client.table("facts").select("tag").eq("cik", cik).execute()
+                existing_tags = set(r["tag"] for r in facts_res.data)
+                break
+            except Exception as e:
+                if attempt == max_retries - 1:
+                    logger.error(f"Error fetching facts for {cik} after {max_retries} attempts: {e}")
+                    return []
+                time.sleep(1 + attempt)  # simple exponential backoff
             
         found_missing = []
         for concept, info in concept_map.items():
@@ -47,7 +54,7 @@ def get_missing_concepts(client, concept_map):
     # Parallelize DB lookups
     total_comps = len(companies)
     completed = 0
-    with ThreadPoolExecutor(max_workers=20) as executor:
+    with ThreadPoolExecutor(max_workers=10) as executor:
         futures = {executor.submit(process_company, comp): comp for comp in companies}
         for future in as_completed(futures):
             res = future.result()
