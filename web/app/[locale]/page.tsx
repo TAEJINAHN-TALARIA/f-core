@@ -1,4 +1,4 @@
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import CompanySearch from "@/components/CompanySearch";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import ThemedShowcase from "@/components/ThemedShowcase";
@@ -9,7 +9,7 @@ export default async function HomePage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const t = useTranslations("home");
+  const t = await getTranslations("home");
 
   return (
     <main className="min-h-screen flex flex-col bg-background relative overflow-hidden">
