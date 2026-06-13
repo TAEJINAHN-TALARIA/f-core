@@ -8,7 +8,22 @@
     "title": "US Stock Financials",
     "subtitle": "SEC EDGAR filing data updated daily",
     "searchPlaceholder": "Search by ticker or company name (e.g. AAPL, Apple)",
-    "searchHint": "Press Enter or click a result to view company details"
+    "searchHint": "Press Enter or click a result to view company details",
+    "themedShowcase": {
+      "title": "💡 Recommended Value Themes",
+      "operatingMarginGrowth": "5-Yr Margin Growth",
+      "operatingMarginGrowthDesc": "Companies with operating margins that grew year-over-year for the last 5 consecutive years",
+      "dividendGrowth": "Consistent Dividend Growth",
+      "dividendGrowthDesc": "Companies with total annual dividend payouts that grew year-over-year for the last 5 consecutive years",
+      "highRoe": "High ROE & Safe Debt",
+      "highRoeDesc": "Companies with latest ROE >= 15% and Debt-to-Equity <= 100%",
+      "metricLabel": "Key Metric",
+      "latestMargin": "Latest Margin",
+      "latestDividend": "Latest Annual Dividend",
+      "latestRoe": "Latest ROE",
+      "debtToEquity": "Debt / Equity",
+      "noThemeData": "No companies match this theme yet."
+    }
   },
   "company": {
     "overview": "Overview",

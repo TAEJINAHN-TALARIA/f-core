@@ -15,6 +15,17 @@ export interface Company {
   sic_description: string | null;
 }
 
+export interface ThemeCompany {
+  cik: string;
+  name: string;
+  ticker: string | null;
+  exchange: string | null;
+  sic: string | null;
+  sic_description: string | null;
+  value: number;
+  history: number[] | null;
+}
+
 export interface FactPoint {
   end_date: string;
   period_type: string;
@@ -72,6 +83,13 @@ export function searchCompanies(q: string): Promise<Company[]> {
 
 export function getCompany(cik: string): Promise<Company> {
   return apiFetch(`/companies/${cik}`);
+}
+
+export function getThemeCompanies(
+  themeType: string,
+  limit = 10
+): Promise<ThemeCompany[]> {
+  return apiFetch(`/companies/themes/${themeType}?limit=${limit}`);
 }
 
 export function getFinancials(

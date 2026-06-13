@@ -60,3 +60,14 @@ class Filing(BaseModel):
 class FilingsResponse(BaseModel):
     cik: str
     data: list[Filing]
+
+
+class ThemeCompany(BaseModel):
+    cik: str
+    name: str
+    ticker: Optional[str] = None
+    exchange: Optional[str] = None
+    sic: Optional[str] = None
+    sic_description: Optional[str] = None
+    value: float
+    history: Optional[list[float]] = None

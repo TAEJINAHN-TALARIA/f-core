@@ -8,7 +8,22 @@
     "title": "미국 주식 재무 데이터",
     "subtitle": "SEC EDGAR 공시 데이터 매일 업데이트",
     "searchPlaceholder": "티커 또는 기업명 검색 (예: AAPL, Apple)",
-    "searchHint": "Enter 키를 누르거나 결과를 클릭하면 기업 상세 정보로 이동합니다"
+    "searchHint": "Enter 키를 누르거나 결과를 클릭하면 기업 상세 정보로 이동합니다",
+    "themedShowcase": {
+      "title": "💡 추천 가치투자 테마",
+      "operatingMarginGrowth": "영업이익률 5년 연속 상승",
+      "operatingMarginGrowthDesc": "최근 5개년 연간 영업이익률이 매년 연속으로 개선된 우량 성장 기업",
+      "dividendGrowth": "배당성장 (5년 연속)",
+      "dividendGrowthDesc": "최근 5개년 연간 배당 지출액의 절대 규모가 매년 연속으로 상승한 배당 성장 기업",
+      "highRoe": "고ROE & 저부채 우량주",
+      "highRoeDesc": "최근 연도 ROE 15% 이상, 부채비율 100% 이하인 효율적이고 안전한 기업",
+      "metricLabel": "해당 지표",
+      "latestMargin": "최근 영업이익률",
+      "latestDividend": "최근 연간 배당금",
+      "latestRoe": "최근 ROE",
+      "debtToEquity": "부채비율",
+      "noThemeData": "이 테마에 해당하는 조건의 기업이 아직 없습니다."
+    }
   },
   "company": {
     "overview": "개요",
