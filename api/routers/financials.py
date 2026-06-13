@@ -16,48 +16,25 @@ from ..services.ttm import compute_ttm
 
 router = APIRouter()
 
-# Canonical tag sets per financial statement
-INCOME_TAGS = [
-    "Revenues",
-    "RevenueFromContractWithCustomerExcludingAssessedTax",
-    "GrossProfit",
-    "OperatingIncomeLoss",
-    "NetIncomeLoss",
-    "EarningsPerShareBasic",
-    "EarningsPerShareDiluted",
-    "WeightedAverageNumberOfDilutedSharesOutstanding",
-    "ShareBasedCompensation",
-    "ResearchAndDevelopmentExpense",
-    "InterestExpense",
-    "IncomeTaxExpenseBenefit",
-    "DepreciationDepletionAndAmortization",
-    "Depreciation",
-]
+import json
+import os
 
-BALANCE_TAGS = [
-    "Assets",
-    "AssetsCurrent",
-    "Liabilities",
-    "LiabilitiesCurrent",
-    "LongTermDebt",
-    "StockholdersEquity",
-    "CashAndCashEquivalentsAtCarryingValue",
-    "RetainedEarningsAccumulatedDeficit",
-    "CommonStockSharesOutstanding",
-    "PropertyPlantAndEquipmentNet",
-    "CommonStockSharesIssued",
-]
+CONCEPT_MAP_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "web", "lib", "concept_map.json")
+with open(CONCEPT_MAP_PATH, "r", encoding="utf-8") as f:
+    CONCEPT_MAP = json.load(f)
 
-CASHFLOW_TAGS = [
-    "NetCashProvidedByUsedInOperatingActivities",
-    "NetCashProvidedByUsedInInvestingActivities",
-    "NetCashProvidedByUsedInFinancingActivities",
-    "PaymentsToAcquirePropertyPlantAndEquipment",
-    "PaymentsForRepurchaseOfCommonStock",
-    "PaymentsForRepurchaseOfEquity",
-    "PaymentsOfDividendsCommonStock",
-    "PaymentsOfDividends",
-]
+INCOME_TAGS = []
+BALANCE_TAGS = []
+CASHFLOW_TAGS = []
+
+for concept, info in CONCEPT_MAP.items():
+    if info.get("category") == "income":
+        INCOME_TAGS.extend(info.get("tags", []))
+    elif info.get("category") == "balance_sheet":
+        BALANCE_TAGS.extend(info.get("tags", []))
+    elif info.get("category") == "cashflow":
+        CASHFLOW_TAGS.extend(info.get("tags", []))
+
 
 
 def _fetch_facts(

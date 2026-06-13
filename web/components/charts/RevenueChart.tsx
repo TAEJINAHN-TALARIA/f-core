@@ -26,19 +26,10 @@ interface Props {
   financials: FinancialsResponse[];
 }
 
-const PRIORITY = [
-  "Revenues",
-  "RevenueFromContractWithCustomerExcludingAssessedTax",
-  "OperatingIncomeLoss",
-  "NetIncomeLoss",
-];
+import conceptMapData from "../../lib/concept_map.json";
 
-const TAG_KEY: Record<string, string> = {
-  Revenues: "revenue",
-  RevenueFromContractWithCustomerExcludingAssessedTax: "revenue",
-  OperatingIncomeLoss: "operatingIncome",
-  NetIncomeLoss: "netIncome",
-};
+// Type assertion since we know the shape
+const conceptMap = conceptMapData as Record<string, { tags: string[], category: string }>;
 
 const COLORS: Record<string, string> = {
   revenue:         "#3b82f6",
@@ -49,30 +40,30 @@ const COLORS: Record<string, string> = {
 function buildChartData(financials: FinancialsResponse[]) {
   const dateMap: Record<string, Record<string, number>> = {};
 
-  // 1. Merge revenue values from both possible tags.
-  // If a date has both, 'Revenues' will override 'RevenueFromContract...' as it is the broader term.
-  const revTags = ["Revenues", "RevenueFromContractWithCustomerExcludingAssessedTax"];
-  const revSeries = financials.filter((f) => revTags.includes(f.tag));
-  
-  for (const tag of ["RevenueFromContractWithCustomerExcludingAssessedTax", "Revenues"]) {
-    const series = revSeries.find((s) => s.tag === tag);
-    if (series) {
-      for (const point of series.data) {
-        dateMap[point.end_date] ??= {};
-        dateMap[point.end_date]["revenue"] = point.value;
-      }
-    }
-  }
+  // We are interested in these specific concepts for this chart
+  const targetConcepts: Record<string, string> = {
+    revenue: "revenue",
+    operating_income: "operatingIncome",
+    net_income: "netIncome"
+  };
 
-  // 2. Populate operating income and net income.
-  const otherTags = ["OperatingIncomeLoss", "NetIncomeLoss"];
-  const otherSeries = financials.filter((f) => otherTags.includes(f.tag));
-  for (const series of otherSeries) {
-    const key = TAG_KEY[series.tag];
-    if (!key) continue;
-    for (const point of series.data) {
-      dateMap[point.end_date] ??= {};
-      dateMap[point.end_date][key] = point.value;
+  for (const [conceptName, chartKey] of Object.entries(targetConcepts)) {
+    const info = conceptMap[conceptName];
+    if (!info) continue;
+
+    const seriesList = financials.filter((f) => info.tags.includes(f.tag));
+    
+    // Reverse the tags so that higher priority tags (earlier in the array) overwrite lower ones
+    const reversedTags = [...info.tags].reverse();
+    
+    for (const tag of reversedTags) {
+      const series = seriesList.find((s) => s.tag === tag);
+      if (series) {
+        for (const point of series.data) {
+          dateMap[point.end_date] ??= {};
+          dateMap[point.end_date][chartKey] = point.value;
+        }
+      }
     }
   }
 

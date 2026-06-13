@@ -12,29 +12,16 @@ SUPABASE_KEY = os.environ["SUPABASE_KEY"]
 HISTORY_YEARS = 10
 HISTORY_CUTOFF = (date.today() - timedelta(days=HISTORY_YEARS * 365)).isoformat()
 
-# 일반 투자자 관점의 핵심 XBRL 태그
-TARGET_TAGS = {
-    # 손익계산서
-    "Revenues",
-    "RevenueFromContractWithCustomerExcludingAssessedTax",
-    "GrossProfit",
-    "OperatingIncomeLoss",
-    "NetIncomeLoss",
-    # 재무상태표
-    "Assets",
-    "Liabilities",
-    "StockholdersEquity",
-    # 현금흐름
-    "NetCashProvidedByUsedInOperatingActivities",
-    "PaymentsToAcquirePropertyPlantAndEquipment",
-    # 주주환원
-    "PaymentsForRepurchaseOfCommonStock",
-    "PaymentsForRepurchaseOfEquity",
-    "PaymentsOfDividendsCommonStock",
-    "PaymentsOfDividends",
-    # 기타
-    "InterestExpense",
-    "LongTermDebt",
-}
+import json
+
+# Load concept map
+CONCEPT_MAP_PATH = os.path.join(os.path.dirname(__file__), "..", "web", "lib", "concept_map.json")
+with open(CONCEPT_MAP_PATH, "r", encoding="utf-8") as f:
+    CONCEPT_MAP = json.load(f)
+
+# 일반 투자자 관점의 핵심 XBRL 태그 (동적 로드)
+TARGET_TAGS = set()
+for concept, data in CONCEPT_MAP.items():
+    TARGET_TAGS.update(data["tags"])
 
 TAXONOMY = "us-gaap"

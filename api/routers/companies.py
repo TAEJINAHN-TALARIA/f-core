@@ -1,4 +1,6 @@
 import statistics
+import json
+import os
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 from supabase import Client
@@ -7,6 +9,17 @@ from ..dependencies import get_supabase
 from ..schemas import Company, ThemeCompany
 
 router = APIRouter()
+
+CONCEPT_MAP_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "web", "lib", "concept_map.json")
+with open(CONCEPT_MAP_PATH, "r", encoding="utf-8") as f:
+    CONCEPT_MAP = json.load(f)
+
+TAGS_REVENUE = CONCEPT_MAP.get("revenue", {}).get("tags", [])
+TAGS_DIVIDENDS = CONCEPT_MAP.get("dividends_paid", {}).get("tags", [])
+TAGS_BUYBACKS = CONCEPT_MAP.get("stock_repurchase", {}).get("tags", [])
+TAGS_NET_INCOME = CONCEPT_MAP.get("net_income", {}).get("tags", [])
+TAGS_INTEREST = CONCEPT_MAP.get("interest_expense", {}).get("tags", [])
+TAGS_LONG_TERM_DEBT = CONCEPT_MAP.get("long_term_debt", {}).get("tags", [])
 
 # Simple In-memory Cache to avoid repeated DB scans
 _THEME_CACHE: dict[str, list[ThemeCompany]] = {}
@@ -105,7 +118,7 @@ def get_theme_companies(
         res = (
             db.table("facts")
             .select("cik,end_date,value")
-            .in_("tag", ["PaymentsOfDividendsCommonStock", "PaymentsOfDividends"])
+            .in_("tag", TAGS_DIVIDENDS)
             .eq("period_type", "annual")
             .execute()
         )
@@ -189,14 +202,14 @@ def get_theme_companies(
         res_dividends = (
             db.table("facts")
             .select("cik,end_date,value")
-            .in_("tag", ["PaymentsOfDividendsCommonStock", "PaymentsOfDividends"])
+            .in_("tag", TAGS_DIVIDENDS)
             .eq("period_type", "annual")
             .execute()
         )
         res_buybacks = (
             db.table("facts")
             .select("cik,end_date,value")
-            .in_("tag", ["PaymentsForRepurchaseOfCommonStock", "PaymentsForRepurchaseOfEquity"])
+            .in_("tag", TAGS_BUYBACKS)
             .eq("period_type", "annual")
             .execute()
         )
@@ -297,7 +310,7 @@ def get_theme_companies(
         res_revenue = (
             db.table("facts")
             .select("cik,end_date,value")
-            .in_("tag", ["Revenues", "RevenueFromContractWithCustomerExcludingAssessedTax"])
+            .in_("tag", TAGS_REVENUE)
             .eq("period_type", "annual")
             .execute()
         )
@@ -388,7 +401,7 @@ def get_theme_companies(
         res_revenue = (
             db.table("facts")
             .select("cik,end_date,value")
-            .in_("tag", ["Revenues", "RevenueFromContractWithCustomerExcludingAssessedTax"])
+            .in_("tag", TAGS_REVENUE)
             .eq("period_type", "annual")
             .execute()
         )
@@ -445,7 +458,7 @@ def get_theme_companies(
         res_netinc = (
             db.table("facts")
             .select("cik,end_date,value")
-            .eq("tag", "NetIncomeLoss")
+            .in_("tag", TAGS_NET_INCOME)
             .eq("period_type", "annual")
             .execute()
         )
@@ -498,14 +511,14 @@ def get_theme_companies(
         res_interest = (
             db.table("facts")
             .select("cik,end_date,value")
-            .eq("tag", "InterestExpense")
+            .in_("tag", TAGS_INTEREST)
             .eq("period_type", "annual")
             .execute()
         )
         res_ltdebt = (
             db.table("facts")
             .select("cik,end_date,value")
-            .eq("tag", "LongTermDebt")
+            .in_("tag", TAGS_LONG_TERM_DEBT)
             .execute()
         )
         res_debt = (

@@ -1,8 +1,10 @@
 import type { MetadataRoute } from "next";
 
-const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+export const dynamic = 'force-dynamic';
+
+const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://f-core-omega.vercel.app";
 const SITE_URL = rawSiteUrl.endsWith("/") ? rawSiteUrl.slice(0, -1) : rawSiteUrl;
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 const LOCALES = ["en", "ko"] as const;
 
 async function fetchCompanyCiks(): Promise<string[]> {
@@ -30,8 +32,6 @@ async function fetchCompanyCiks(): Promise<string[]> {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  if (!SITE_URL) return [];
-
   const ciks = await fetchCompanyCiks();
 
   const homePages: MetadataRoute.Sitemap = [

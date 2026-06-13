@@ -1,0 +1,197 @@
+{
+    "revenue": {
+        "tags": [
+            "RegulatedAndUnregulatedOperatingRevenue",
+            "OperatingRevenues",
+            "RevenueFromContractWithCustomerExcludingAssessedTax",
+            "SalesRevenueNet",
+            "Revenues"
+        ],
+        "category": "income"
+    },
+    "gross_profit": {
+        "tags": [
+            "GrossProfit"
+        ],
+        "category": "income"
+    },
+    "operating_income": {
+        "tags": [
+            "IncomeLossFromContinuingOperationsBeforeIncomeTaxesMinorityInterestAndIncomeLossFromEquityMethodInvestments",
+            "OperatingIncomeLoss"
+        ],
+        "category": "income"
+    },
+    "net_income": {
+        "tags": [
+            "NetIncomeLoss"
+        ],
+        "category": "income"
+    },
+    "eps_basic": {
+        "tags": [
+            "EarningsPerShareBasic"
+        ],
+        "category": "income"
+    },
+    "eps_diluted": {
+        "tags": [
+            "EarningsPerShareDiluted"
+        ],
+        "category": "income"
+    },
+    "diluted_shares": {
+        "tags": [
+            "WeightedAverageNumberOfDilutedSharesOutstanding"
+        ],
+        "category": "income"
+    },
+    "sbc": {
+        "tags": [
+            "ShareBasedCompensation"
+        ],
+        "category": "income"
+    },
+    "rnd": {
+        "tags": [
+            "ResearchAndDevelopmentExpense"
+        ],
+        "category": "income"
+    },
+    "interest_expense": {
+        "tags": [
+            "InterestExpenseNonoperating",
+            "InterestExpenseDebt",
+            "InterestExpense"
+        ],
+        "category": "income"
+    },
+    "income_tax": {
+        "tags": [
+            "CurrentIncomeTaxExpenseBenefit",
+            "IncomeTaxExpenseBenefit"
+        ],
+        "category": "income"
+    },
+    "depreciation": {
+        "tags": [
+            "DepreciationAmortizationAndAccretionNet",
+            "DepreciationDepletionAndAmortization",
+            "Depreciation"
+        ],
+        "category": "income"
+    },
+    "assets": {
+        "tags": [
+            "Assets"
+        ],
+        "category": "balance_sheet"
+    },
+    "assets_current": {
+        "tags": [
+            "AssetsCurrent"
+        ],
+        "category": "balance_sheet"
+    },
+    "liabilities": {
+        "tags": [
+            "Liabilities"
+        ],
+        "category": "balance_sheet"
+    },
+    "liabilities_current": {
+        "tags": [
+            "AccountsPayableAndOtherAccruedLiabilities",
+            "BusinessCombinationRecognizedIdentifiableAssetsAcquiredAndLiabilitiesAssumedCurrentLiabilities",
+            "LiabilitiesCurrent"
+        ],
+        "category": "balance_sheet"
+    },
+    "equity": {
+        "tags": [
+            "StockholdersEquity"
+        ],
+        "category": "balance_sheet"
+    },
+    "long_term_debt": {
+        "tags": [
+            "LongTermDebt"
+        ],
+        "category": "balance_sheet"
+    },
+    "cash_equivalents": {
+        "tags": [
+            "CashEquivalentsAtCarryingValue",
+            "CashAndCashEquivalentsAtCarryingValue"
+        ],
+        "category": "balance_sheet"
+    },
+    "retained_earnings": {
+        "tags": [
+            "RetainedEarningsAccumulatedDeficit"
+        ],
+        "category": "balance_sheet"
+    },
+    "shares_outstanding": {
+        "tags": [
+            "SharesOutstanding",
+            "WeightedAverageNumberOfSharesOutstandingBasic",
+            "CommonStockSharesOutstanding"
+        ],
+        "category": "balance_sheet"
+    },
+    "shares_issued": {
+        "tags": [
+            "SharesIssued",
+            "PreferredStockSharesIssued",
+            "CommonStockSharesIssued"
+        ],
+        "category": "balance_sheet"
+    },
+    "ppne_net": {
+        "tags": [
+            "PropertyPlantAndEquipmentNet"
+        ],
+        "category": "balance_sheet"
+    },
+    "operating_cash_flow": {
+        "tags": [
+            "NetCashProvidedByUsedInOperatingActivities"
+        ],
+        "category": "cashflow"
+    },
+    "investing_cash_flow": {
+        "tags": [
+            "NetCashProvidedByUsedInInvestingActivities"
+        ],
+        "category": "cashflow"
+    },
+    "financing_cash_flow": {
+        "tags": [
+            "NetCashProvidedByUsedInFinancingActivities"
+        ],
+        "category": "cashflow"
+    },
+    "capex": {
+        "tags": [
+            "PaymentsForConstructionAndAcquisitionOfPropertyPlantAndEquipment",
+            "PaymentsToAcquirePropertyPlantAndEquipment"
+        ],
+        "category": "cashflow"
+    },
+    "stock_repurchase": {
+        "tags": [
+            "PaymentsForRepurchaseOfCommonStock",
+            "PaymentsForRepurchaseOfEquity"
+        ],
+        "category": "cashflow"
+    },
+    "dividends_paid": {
+        "tags": [
+            "OtherPreferredStockDividendsAndAdjustments",
+            "PaymentsOfDividendsCommonStock",
+            "PaymentsOfDividends"
+        ],
+        "category": "cashflow"
+    }
+}

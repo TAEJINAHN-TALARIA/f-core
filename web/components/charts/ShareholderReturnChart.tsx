@@ -24,15 +24,12 @@ interface Props {
   financials: FinancialsResponse[];
 }
 
-const BUYBACK_TAGS = [
-  "PaymentsForRepurchaseOfCommonStock",
-  "PaymentsForRepurchaseOfEquity",
-];
+import conceptMapData from "../../lib/concept_map.json";
 
-const DIVIDEND_TAGS = [
-  "PaymentsOfDividendsCommonStock",
-  "PaymentsOfDividends",
-];
+const conceptMap = conceptMapData as Record<string, { tags: string[], category: string }>;
+
+const BUYBACK_TAGS = conceptMap["stock_repurchase"]?.tags || [];
+const DIVIDEND_TAGS = conceptMap["dividends_paid"]?.tags || [];
 
 const COLORS = {
   buybacks:  "#f59e0b", // 주황 (자사주 매입)

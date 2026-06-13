@@ -25,12 +25,24 @@ interface Props {
   cashflow: FinancialsResponse[];
 }
 
-const TAG_KEY: Record<string, string> = {
-  NetCashProvidedByUsedInOperatingActivities: "operatingCF",
-  NetCashProvidedByUsedInInvestingActivities: "investingCF",
-  NetCashProvidedByUsedInFinancingActivities: "financingCF",
-  PaymentsToAcquirePropertyPlantAndEquipment: "capex",
+import conceptMapData from "../../lib/concept_map.json";
+
+const conceptMap = conceptMapData as Record<string, { tags: string[], category: string }>;
+
+const targetConcepts: Record<string, string> = {
+  operating_cash_flow: "operatingCF",
+  investing_cash_flow: "investingCF",
+  financing_cash_flow: "financingCF",
+  capex: "capex"
 };
+
+const TAG_KEY: Record<string, string> = {};
+for (const [conceptName, chartKey] of Object.entries(targetConcepts)) {
+  const tags = conceptMap[conceptName]?.tags || [];
+  for (const tag of tags) {
+    TAG_KEY[tag] = chartKey;
+  }
+}
 
 const COLORS: Record<string, string> = {
   operatingCF: "#3b82f6",

@@ -1,4 +1,6 @@
 import logging
+import json
+import os
 from collections import defaultdict
 from typing import TYPE_CHECKING
 
@@ -6,6 +8,17 @@ if TYPE_CHECKING:
     from .stats import ParseStats
 
 logger = logging.getLogger(__name__)
+
+CONCEPT_MAP_PATH = os.path.join(os.path.dirname(__file__), "..", "config", "concept_map.json")
+with open(CONCEPT_MAP_PATH, "r", encoding="utf-8") as f:
+    CONCEPT_MAP = json.load(f)
+
+def _get_concept_value(d: dict, concept: str) -> float | None:
+    tags = CONCEPT_MAP.get(concept, {}).get("tags", [])
+    for tag in tags:
+        if tag in d:
+            return d[tag]
+    return None
 
 
 def deduplicate_facts(facts: list[dict]) -> list[dict]:
@@ -80,19 +93,20 @@ def _derive(t: dict) -> tuple[dict, dict]:
     """
     Returns:
         computed: metric → value (None if couldn't compute)
-        missing:  metric → 누락된 재료 태그 이름
+        missing:  metric → 누락된 재료 개념 이름
     """
-    revenue = _first(t, "Revenues", "RevenueFromContractWithCustomerExcludingAssessedTax")
-    net_income = t.get("NetIncomeLoss")
-    equity = t.get("StockholdersEquity")
-    liabilities = t.get("Liabilities")
-    op_cf = t.get("NetCashProvidedByUsedInOperatingActivities")
-    capex = t.get("PaymentsToAcquirePropertyPlantAndEquipment")
-    gross_profit = t.get("GrossProfit")
-    operating_income = t.get("OperatingIncomeLoss")
-    interest_expense = t.get("InterestExpense")
-    buybacks = _first(t, "PaymentsForRepurchaseOfCommonStock", "PaymentsForRepurchaseOfEquity")
-    dividends = _first(t, "PaymentsOfDividendsCommonStock", "PaymentsOfDividends")
+    revenue = _get_concept_value(t, "revenue")
+    net_income = _get_concept_value(t, "net_income")
+    equity = _get_concept_value(t, "equity")
+    liabilities = _get_concept_value(t, "liabilities")
+    op_cf = _get_concept_value(t, "operating_cash_flow")
+    capex = _get_concept_value(t, "capex")
+    gross_profit = _get_concept_value(t, "gross_profit")
+    operating_income = _get_concept_value(t, "operating_income")
+    interest_expense = _get_concept_value(t, "interest_expense")
+    buybacks = _get_concept_value(t, "stock_repurchase")
+    dividends = _get_concept_value(t, "dividends_paid")
+    
     fcf_val = _safe_sub(op_cf, abs(capex) if capex is not None else None)
 
     computed = {
@@ -110,28 +124,21 @@ def _derive(t: dict) -> tuple[dict, dict]:
     # 계산 실패 시 어떤 재료가 없었는지 기록
     missing: dict[str, str] = {}
     if computed["gross_margin"] is None:
-        missing["gross_margin"] = "GrossProfit" if revenue else "revenue"
+        missing["gross_margin"] = "gross_profit" if revenue else "revenue"
     if computed["operating_margin"] is None:
-        missing["operating_margin"] = "OperatingIncomeLoss" if revenue else "revenue"
+        missing["operating_margin"] = "operating_income" if revenue else "revenue"
     if computed["net_margin"] is None:
-        missing["net_margin"] = "NetIncomeLoss" if revenue else "revenue"
+        missing["net_margin"] = "net_income" if revenue else "revenue"
     if computed["roe"] is None:
-        missing["roe"] = "StockholdersEquity" if net_income else "NetIncomeLoss"
+        missing["roe"] = "equity" if net_income else "net_income"
     if computed["debt_to_equity"] is None:
-        missing["debt_to_equity"] = "StockholdersEquity" if liabilities else "Liabilities"
+        missing["debt_to_equity"] = "equity" if liabilities else "liabilities"
     if computed["interest_coverage"] is None:
-        missing["interest_coverage"] = "InterestExpense" if operating_income else "OperatingIncomeLoss"
+        missing["interest_coverage"] = "interest_expense" if operating_income else "operating_income"
     if computed["fcf"] is None:
-        missing["fcf"] = "PaymentsToAcquirePropertyPlantAndEquipment" if op_cf else "NetCashProvidedByUsedInOperatingActivities"
+        missing["fcf"] = "capex" if op_cf else "operating_cash_flow"
 
     return computed, missing
-
-
-def _first(d: dict, *keys: str):
-    for k in keys:
-        if k in d:
-            return d[k]
-    return None
 
 
 def _safe_div(a, b) -> float | None:

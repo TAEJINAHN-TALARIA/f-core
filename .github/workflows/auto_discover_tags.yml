@@ -1,0 +1,47 @@
+name: Auto Discover Missing Tags
+
+on:
+  schedule:
+    # Run at 00:00 on the 1st of every month
+    - cron: "0 0 1 * *"
+  workflow_dispatch:
+    # Allow manual triggering from the GitHub UI
+
+jobs:
+  auto_discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Required to allow git-auto-commit-action to push back to the repository
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tag discovery pipeline
+        env:
+          EDGAR_USER_AGENT: ${{ secrets.EDGAR_USER_AGENT }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python -m etl.auto_discover_tags
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "🤖 [Auto-commit] Detected and mapped missing XBRL tags"
+          branch: master
+          file_pattern: "web/lib/concept_map.json tag_updates.log"
+          commit_user_name: "github-actions[bot]"
+          commit_user_email: "github-actions[bot]@users.noreply.github.com"
+          commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
