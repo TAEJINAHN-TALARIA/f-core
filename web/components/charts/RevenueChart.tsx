@@ -47,14 +47,27 @@ const COLORS: Record<string, string> = {
 };
 
 function buildChartData(financials: FinancialsResponse[]) {
-  const available = financials.filter((f) => PRIORITY.includes(f.tag));
-  const hasRevenues = available.some((f) => f.tag === "Revenues");
-  const filtered = available.filter(
-    (f) => f.tag !== "RevenueFromContractWithCustomerExcludingAssessedTax" || !hasRevenues
-  );
-
   const dateMap: Record<string, Record<string, number>> = {};
-  for (const series of filtered) {
+
+  // 1. Merge revenue values from both possible tags.
+  // If a date has both, 'Revenues' will override 'RevenueFromContract...' as it is the broader term.
+  const revTags = ["Revenues", "RevenueFromContractWithCustomerExcludingAssessedTax"];
+  const revSeries = financials.filter((f) => revTags.includes(f.tag));
+  
+  for (const tag of ["RevenueFromContractWithCustomerExcludingAssessedTax", "Revenues"]) {
+    const series = revSeries.find((s) => s.tag === tag);
+    if (series) {
+      for (const point of series.data) {
+        dateMap[point.end_date] ??= {};
+        dateMap[point.end_date]["revenue"] = point.value;
+      }
+    }
+  }
+
+  // 2. Populate operating income and net income.
+  const otherTags = ["OperatingIncomeLoss", "NetIncomeLoss"];
+  const otherSeries = financials.filter((f) => otherTags.includes(f.tag));
+  for (const series of otherSeries) {
     const key = TAG_KEY[series.tag];
     if (!key) continue;
     for (const point of series.data) {

@@ -1,45 +1,52 @@
 {
-  "generated_at": "2026-06-13T00:28:44.576477+00:00",
+  "generated_at": "2026-06-13T07:03:11.948642+00:00",
   "companies": {
     "fetched": 6936,
     "no_xbrl_404": 0,
-    "no_target_tags": 913,
-    "no_facts_after_filter": 853,
-    "with_facts": 5170
+    "no_target_tags": 912,
+    "no_facts_after_filter": 831,
+    "with_facts": 5193
   },
   "entries": {
-    "scanned": 5463089,
-    "extracted": 426509,
-    "after_dedup": 207984,
-    "skipped_total": 5006241,
+    "scanned": 5581472,
+    "extracted": 852565,
+    "after_dedup": 389001,
+    "skipped_total": 4532091,
     "skip_breakdown": {
       "null_value": 0,
-      "past_cutoff": 1101266,
-      "future_date": 1,
-      "invalid_value": {},
+      "past_cutoff": 542791,
+      "future_date": 10,
+      "invalid_value": {
+        "LongTermDebt": {
+          "exceeds_max_usd": 1
+        },
+        "Liabilities": {
+          "negative_not_allowed": 9
+        }
+      },
       "unknown_form": {
-        "10-Q": 3633605,
-        "20-F": 73134,
-        "10-Q/A": 65427,
-        "6-K": 32084,
-        "8-K": 26362,
+        "10-Q": 3712322,
+        "20-F": 74736,
+        "10-Q/A": 66348,
+        "6-K": 32909,
+        "8-K": 27047,
         "DEF 14A": 5896,
-        "20-F/A": 5569,
-        "10-KT": 4245,
-        "40-F": 2620,
-        "6-K/A": 1468,
-        "S-1": 1244,
-        "8-K/A": 1189,
-        "POS AM": 794,
-        "S-1/A": 722,
+        "20-F/A": 5662,
+        "10-KT": 4340,
+        "40-F": 2758,
+        "6-K/A": 1513,
+        "S-1": 1273,
+        "8-K/A": 1216,
+        "POS AM": 801,
+        "S-1/A": 735,
         "PRE 14A": 629,
-        "10-QT": 512,
-        "S-4/A": 437,
-        "F-1": 326,
-        "40-F/A": 241,
-        "10-KT/A": 194,
-        "S-4": 180,
-        "F-1/A": 150,
+        "10-QT": 526,
+        "S-4/A": 443,
+        "F-1": 336,
+        "40-F/A": 252,
+        "10-KT/A": 195,
+        "S-4": 181,
+        "F-1/A": 152,
         "DEFR14A": 58,
         "PRER14A": 55,
         "DEFC14A": 31,
@@ -50,22 +57,22 @@
         "10-QT/A": 18
       },
       "unknown_unit": {
-        "CNY": 25924,
-        "CAD": 8879,
-        "JPY": 5806,
-        "HKD": 2025,
-        "EUR": 1886,
-        "SGD": 1423,
-        "INR": 420,
-        "KRW": 297,
-        "RUB": 287,
-        "CHF": 150,
-        "ILS": 141,
-        "BRL": 128,
-        "TWD": 77,
+        "CNY": 26351,
+        "CAD": 8983,
+        "JPY": 6071,
+        "HKD": 2076,
+        "EUR": 1954,
+        "SGD": 1480,
+        "INR": 452,
+        "KRW": 301,
+        "RUB": 291,
+        "CHF": 167,
+        "ILS": 154,
+        "BRL": 138,
+        "TWD": 81,
         "VND": 76,
-        "GBP": 44,
-        "MYR": 29,
+        "GBP": 49,
+        "MYR": 32,
         "CLP": 8,
         "MXN": 7,
         "ZAR": 7,
@@ -84,6 +91,7 @@
     "PaymentsToAcquirePropertyPlantAndEquipment": 4564,
     "InterestExpense": 4185,
     "Revenues": 3761,
+    "LongTermDebt": 3470,
     "PaymentsForRepurchaseOfCommonStock": 3381,
     "RevenueFromContractWithCustomerExcludingAssessedTax": 3240,
     "GrossProfit": 3047,
@@ -144,35 +152,35 @@
     "LesseeOperatingLeaseLiabilityPaymentsDueYearFour": 4162
   },
   "metrics": {
-    "computed": 115556,
+    "computed": 207781,
     "missing_by_metric": {
       "debt_to_equity": {
-        "Liabilities": 3090,
-        "StockholdersEquity": 1069
+        "Liabilities": 6750,
+        "StockholdersEquity": 1725
       },
       "fcf": {
-        "PaymentsToAcquirePropertyPlantAndEquipment": 7611,
-        "NetCashProvidedByUsedInOperatingActivities": 502
+        "PaymentsToAcquirePropertyPlantAndEquipment": 12700,
+        "NetCashProvidedByUsedInOperatingActivities": 1161
       },
       "gross_margin": {
-        "GrossProfit": 8426,
-        "revenue": 6127
+        "GrossProfit": 15080,
+        "revenue": 10778
       },
       "interest_coverage": {
-        "InterestExpense": 11013,
-        "OperatingIncomeLoss": 4667
+        "InterestExpense": 16456,
+        "OperatingIncomeLoss": 8441
       },
       "net_margin": {
-        "revenue": 6127,
-        "NetIncomeLoss": 776
+        "revenue": 10778,
+        "NetIncomeLoss": 1528
       },
       "operating_margin": {
-        "revenue": 6127,
-        "OperatingIncomeLoss": 2425
+        "revenue": 10778,
+        "OperatingIncomeLoss": 4356
       },
       "roe": {
-        "StockholdersEquity": 1277,
-        "NetIncomeLoss": 967
+        "StockholdersEquity": 2198,
+        "NetIncomeLoss": 1972
       }
     }
   }

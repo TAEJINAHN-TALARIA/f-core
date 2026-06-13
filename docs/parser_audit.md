@@ -1,6 +1,6 @@
 # Parser 감사 보고서
 
-> 생성: 2026-06-13 00:28 UTC
+> 생성: 2026-06-13 07:03 UTC
 
 ---
 
@@ -10,9 +10,9 @@
 |------|----|
 | API 호출 (fetched) | 6,936 |
 | XBRL 없음 (404) | 0 |
-| TARGET_TAGS 전무 | 913 |
-| 필터 후 facts 0건 | 853 |
-| **facts 있음** | **5,170** |
+| TARGET_TAGS 전무 | 912 |
+| 필터 후 facts 0건 | 831 |
+| **facts 있음** | **5,193** |
 
 ---
 
@@ -20,63 +20,70 @@
 
 | 구분 | 수 |
 |------|----|
-| 전체 스캔 | 5,463,089 |
-| skip 합계 | 5,006,241 |
-| 추출 성공 | 426,509 |
-| 중복 제거 후 | 207,984 |
+| 전체 스캔 | 5,581,472 |
+| skip 합계 | 4,532,091 |
+| 추출 성공 | 852,565 |
+| 중복 제거 후 | 389,001 |
 
 ### Skip 상세
 
 | 사유 | 건수 |
 |------|------|
 | null value | 0 |
-| past_cutoff | 1,101,266 |
-| future_date | 1 |
+| past_cutoff | 542,791 |
+| future_date | 10 |
 
 **미허용 form (skip_unknown_form)**
 
 | form | 건수 |
 |------|------|
-| `10-Q` | 3,633,605 |
-| `20-F` | 73,134 |
-| `10-Q/A` | 65,427 |
-| `6-K` | 32,084 |
-| `8-K` | 26,362 |
+| `10-Q` | 3,712,322 |
+| `20-F` | 74,736 |
+| `10-Q/A` | 66,348 |
+| `6-K` | 32,909 |
+| `8-K` | 27,047 |
 | `DEF 14A` | 5,896 |
-| `20-F/A` | 5,569 |
-| `10-KT` | 4,245 |
-| `40-F` | 2,620 |
-| `6-K/A` | 1,468 |
-| `S-1` | 1,244 |
-| `8-K/A` | 1,189 |
-| `POS AM` | 794 |
-| `S-1/A` | 722 |
+| `20-F/A` | 5,662 |
+| `10-KT` | 4,340 |
+| `40-F` | 2,758 |
+| `6-K/A` | 1,513 |
+| `S-1` | 1,273 |
+| `8-K/A` | 1,216 |
+| `POS AM` | 801 |
+| `S-1/A` | 735 |
 | `PRE 14A` | 629 |
-| `10-QT` | 512 |
-| `S-4/A` | 437 |
-| `F-1` | 326 |
-| `40-F/A` | 241 |
-| `10-KT/A` | 194 |
+| `10-QT` | 526 |
+| `S-4/A` | 443 |
+| `F-1` | 336 |
+| `40-F/A` | 252 |
+| `10-KT/A` | 195 |
 
 **미허용 unit (skip_unknown_unit)**
 
 | unit | 건수 |
 |------|------|
-| `CNY` | 25,924 |
-| `CAD` | 8,879 |
-| `JPY` | 5,806 |
-| `HKD` | 2,025 |
-| `EUR` | 1,886 |
-| `SGD` | 1,423 |
-| `INR` | 420 |
-| `KRW` | 297 |
-| `RUB` | 287 |
-| `CHF` | 150 |
-| `ILS` | 141 |
-| `BRL` | 128 |
-| `TWD` | 77 |
+| `CNY` | 26,351 |
+| `CAD` | 8,983 |
+| `JPY` | 6,071 |
+| `HKD` | 2,076 |
+| `EUR` | 1,954 |
+| `SGD` | 1,480 |
+| `INR` | 452 |
+| `KRW` | 301 |
+| `RUB` | 291 |
+| `CHF` | 167 |
+| `ILS` | 154 |
+| `BRL` | 138 |
+| `TWD` | 81 |
 | `VND` | 76 |
-| `GBP` | 44 |
+| `GBP` | 49 |
+
+**이상값 skip (invalid_value)**
+
+| 태그 | 사유 | 건수 |
+|------|------|------|
+| `Liabilities` | negative_not_allowed | 9 |
+| `LongTermDebt` | exceeds_max_usd | 1 |
 
 ---
 
@@ -93,6 +100,7 @@
 | `PaymentsToAcquirePropertyPlantAndEquipment` | 4,564 |
 | `InterestExpense` | 4,185 |
 | `Revenues` | 3,761 |
+| `LongTermDebt` | 3,470 |
 | `PaymentsForRepurchaseOfCommonStock` | 3,381 |
 | `RevenueFromContractWithCustomerExcludingAssessedTax` | 3,240 |
 | `GrossProfit` | 3,047 |
@@ -165,17 +173,17 @@
 
 | Metric | 누락 재료 태그 | 기업 수 |
 |--------|--------------|---------|
-| `debt_to_equity` | `Liabilities` | 3,090 |
-| `debt_to_equity` | `StockholdersEquity` | 1,069 |
-| `fcf` | `PaymentsToAcquirePropertyPlantAndEquipment` | 7,611 |
-| `fcf` | `NetCashProvidedByUsedInOperatingActivities` | 502 |
-| `gross_margin` | `GrossProfit` | 8,426 |
-| `gross_margin` | `revenue` | 6,127 |
-| `interest_coverage` | `InterestExpense` | 11,013 |
-| `interest_coverage` | `OperatingIncomeLoss` | 4,667 |
-| `net_margin` | `revenue` | 6,127 |
-| `net_margin` | `NetIncomeLoss` | 776 |
-| `operating_margin` | `revenue` | 6,127 |
-| `operating_margin` | `OperatingIncomeLoss` | 2,425 |
-| `roe` | `StockholdersEquity` | 1,277 |
-| `roe` | `NetIncomeLoss` | 967 |
+| `debt_to_equity` | `Liabilities` | 6,750 |
+| `debt_to_equity` | `StockholdersEquity` | 1,725 |
+| `fcf` | `PaymentsToAcquirePropertyPlantAndEquipment` | 12,700 |
+| `fcf` | `NetCashProvidedByUsedInOperatingActivities` | 1,161 |
+| `gross_margin` | `GrossProfit` | 15,080 |
+| `gross_margin` | `revenue` | 10,778 |
+| `interest_coverage` | `InterestExpense` | 16,456 |
+| `interest_coverage` | `OperatingIncomeLoss` | 8,441 |
+| `net_margin` | `revenue` | 10,778 |
+| `net_margin` | `NetIncomeLoss` | 1,528 |
+| `operating_margin` | `revenue` | 10,778 |
+| `operating_margin` | `OperatingIncomeLoss` | 4,356 |
+| `roe` | `StockholdersEquity` | 2,198 |
+| `roe` | `NetIncomeLoss` | 1,972 |
