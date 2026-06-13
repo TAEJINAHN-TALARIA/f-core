@@ -1,6 +1,7 @@
 {
     "revenue": {
         "tags": [
+            "ReimbursementRevenue",
             "RegulatedAndUnregulatedOperatingRevenue",
             "OperatingRevenues",
             "RevenueFromContractWithCustomerExcludingAssessedTax",
@@ -23,6 +24,7 @@
     },
     "net_income": {
         "tags": [
+            "ProfitLoss",
             "NetIncomeLoss"
         ],
         "category": "income"
@@ -47,18 +49,26 @@
     },
     "sbc": {
         "tags": [
+            "StockIssuedDuringPeriodValueShareBasedCompensation",
+            "StockGrantedDuringPeriodValueSharebasedCompensation",
+            "AllocatedShareBasedCompensationExpense",
+            "EmployeeBenefitsAndShareBasedCompensation",
             "ShareBasedCompensation"
         ],
         "category": "income"
     },
     "rnd": {
         "tags": [
+            "OtherResearchAndDevelopmentExpense",
             "ResearchAndDevelopmentExpense"
         ],
         "category": "income"
     },
     "interest_expense": {
         "tags": [
+            "FinanceLeaseInterestExpense",
+            "InterestExpenseOperating",
+            "InterestExpenseBorrowings",
             "InterestExpenseNonoperating",
             "InterestExpenseDebt",
             "InterestExpense"
@@ -74,6 +84,8 @@
     },
     "depreciation": {
         "tags": [
+            "OtherDepreciationAndAmortization",
+            "DepreciationAndAmortization",
             "DepreciationAmortizationAndAccretionNet",
             "DepreciationDepletionAndAmortization",
             "Depreciation"
@@ -113,6 +125,10 @@
     },
     "long_term_debt": {
         "tags": [
+            "UnsecuredLongTermDebt",
+            "LongTermDebtAndCapitalLeaseObligations",
+            "SecuredLongTermDebt",
+            "OtherLongTermDebt",
             "LongTermDebt"
         ],
         "category": "balance_sheet"
@@ -132,6 +148,7 @@
     },
     "shares_outstanding": {
         "tags": [
+            "TemporaryEquitySharesOutstanding",
             "SharesOutstanding",
             "WeightedAverageNumberOfSharesOutstandingBasic",
             "CommonStockSharesOutstanding"
@@ -186,6 +203,7 @@
     },
     "dividends_paid": {
         "tags": [
+            "PaymentsOfDividendsMinorityInterest",
             "OtherPreferredStockDividendsAndAdjustments",
             "PaymentsOfDividendsCommonStock",
             "PaymentsOfDividends"
