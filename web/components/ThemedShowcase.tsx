@@ -157,45 +157,50 @@ export default function ThemedShowcase({ locale }: Props) {
       </div>
 
       {/* Tabs list with Arrow Navigators */}
-      <div className="relative w-full group/arrows">
-        {/* Left Arrow */}
-        <button
-          onClick={() => scrollTabs("left")}
-          className="absolute left-0 top-1/2 -translate-y-1/2 -ml-3 z-10 p-1.5 bg-card/90 border border-border rounded-full text-gray-400 hover:text-gray-200 hover:bg-secondary transition-all opacity-0 group-hover/arrows:opacity-100 focus:opacity-100 cursor-pointer shadow-lg hover:scale-105 active:scale-95 duration-200"
-          aria-label="Scroll Left"
-        >
-          <ChevronLeft className="w-4 h-4" />
-        </button>
+      <div className="w-full border-b border-border/40 pb-3">
+        <div className="relative w-full group/arrows flex items-center">
+          {/* Left Arrow */}
+          <button
+            onClick={() => scrollTabs("left")}
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 p-1.5 bg-card/90 border border-border rounded-full text-gray-400 hover:text-gray-200 hover:bg-secondary transition-all opacity-0 group-hover/arrows:opacity-100 focus:opacity-100 cursor-pointer shadow-lg hover:scale-105 active:scale-95 duration-200"
+            aria-label="Scroll Left"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
 
-        {/* Tabs Scroll Area */}
-        <div
-          ref={tabsRef}
-          className="flex flex-nowrap items-center gap-2 border-b border-border/40 pb-3 overflow-x-auto scrollbar-none snap-x px-3 scroll-smooth"
-        >
-          {THEMES.map((theme) => (
-            <button
-              key={theme.id}
-              onClick={() => setActiveTab(theme.id)}
-              className={cn(
-                "px-3 py-1.5 rounded-lg text-xs font-semibold tracking-tight transition-all duration-200 cursor-pointer snap-center shrink-0",
-                activeTab === theme.id
-                  ? "bg-blue-600 text-white shadow-md shadow-blue-900/30"
-                  : "text-gray-400 hover:text-gray-200 bg-secondary hover:bg-secondary/80"
-              )}
+          {/* Scroll Wrapper to prevent arrows from overlapping with badges */}
+          <div className="w-full mx-8 overflow-hidden">
+            {/* Tabs Scroll Area */}
+            <div
+              ref={tabsRef}
+              className="flex flex-nowrap items-center gap-2 overflow-x-auto scrollbar-none snap-x scroll-smooth py-0.5"
             >
-              {t(theme.labelKey as any)}
-            </button>
-          ))}
-        </div>
+              {THEMES.map((theme) => (
+                <button
+                  key={theme.id}
+                  onClick={() => setActiveTab(theme.id)}
+                  className={cn(
+                    "px-3 py-1.5 rounded-lg text-xs font-semibold tracking-tight transition-all duration-200 cursor-pointer snap-center shrink-0",
+                    activeTab === theme.id
+                      ? "bg-blue-600 text-white shadow-md shadow-blue-900/30"
+                      : "text-gray-400 hover:text-gray-200 bg-secondary hover:bg-secondary/80"
+                  )}
+                >
+                  {t(theme.labelKey as any)}
+                </button>
+              ))}
+            </div>
+          </div>
 
-        {/* Right Arrow */}
-        <button
-          onClick={() => scrollTabs("right")}
-          className="absolute right-0 top-1/2 -translate-y-1/2 -mr-3 z-10 p-1.5 bg-card/90 border border-border rounded-full text-gray-400 hover:text-gray-200 hover:bg-secondary transition-all opacity-0 group-hover/arrows:opacity-100 focus:opacity-100 cursor-pointer shadow-lg hover:scale-105 active:scale-95 duration-200"
-          aria-label="Scroll Right"
-        >
-          <ChevronRight className="w-4 h-4" />
-        </button>
+          {/* Right Arrow */}
+          <button
+            onClick={() => scrollTabs("right")}
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 p-1.5 bg-card/90 border border-border rounded-full text-gray-400 hover:text-gray-200 hover:bg-secondary transition-all opacity-0 group-hover/arrows:opacity-100 focus:opacity-100 cursor-pointer shadow-lg hover:scale-105 active:scale-95 duration-200"
+            aria-label="Scroll Right"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* Showcase Cards Grid */}
