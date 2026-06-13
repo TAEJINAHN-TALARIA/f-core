@@ -17,7 +17,6 @@
     },
     "operating_income": {
         "tags": [
-            "IncomeLossFromContinuingOperationsBeforeIncomeTaxesMinorityInterestAndIncomeLossFromEquityMethodInvestments",
             "OperatingIncomeLoss"
         ],
         "category": "income"
@@ -101,15 +100,14 @@
     },
     "liabilities_current": {
         "tags": [
-            "AccountsPayableAndOtherAccruedLiabilities",
-            "BusinessCombinationRecognizedIdentifiableAssetsAcquiredAndLiabilitiesAssumedCurrentLiabilities",
             "LiabilitiesCurrent"
         ],
         "category": "balance_sheet"
     },
     "equity": {
         "tags": [
-            "StockholdersEquity"
+            "StockholdersEquity",
+            "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest"
         ],
         "category": "balance_sheet"
     },

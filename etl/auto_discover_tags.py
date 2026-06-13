@@ -23,50 +23,52 @@ file_lock = threading.Lock()
 
 def get_missing_concepts(client, concept_map):
     logger.info("Scanning all companies for missing concepts...")
-    res = client.table("companies").select("cik, name").execute()
-    companies = res.data
-    
+
+    companies_res = client.table("companies").select("cik, name").execute()
+    companies = companies_res.data
+
+    def fetch_covered_ciks(tags):
+        """Return the set of CIKs that have at least one of the given tags."""
+        covered = set()
+        page_size = 1000
+        offset = 0
+        while True:
+            res = (client.table("facts")
+                   .select("cik")
+                   .in_("tag", tags)
+                   .range(offset, offset + page_size - 1)
+                   .execute())
+            for r in res.data:
+                covered.add(r["cik"])
+            if len(res.data) < page_size:
+                break
+            offset += page_size
+        return covered
+
+    # Fetch coverage for all concepts in parallel (~10 concurrent queries with pagination)
+    # instead of one query per company (6,900 queries).
+    concept_covered = {}
+    concepts_with_tags = {c: info for c, info in concept_map.items() if info.get("tags")}
+    with ThreadPoolExecutor(max_workers=len(concepts_with_tags)) as executor:
+        future_to_concept = {
+            executor.submit(fetch_covered_ciks, list(info["tags"])): concept
+            for concept, info in concepts_with_tags.items()
+        }
+        for future in as_completed(future_to_concept):
+            concept = future_to_concept[future]
+            concept_covered[concept] = future.result()
+            logger.info(f"  '{concept}' covered by {len(concept_covered[concept])} companies.")
+
     missing_list = []
-    
-    def process_company(comp):
+    for comp in companies:
         cik = comp["cik"]
         name = comp["name"]
-        
-        # Add retry logic for Supabase API rate limits / connection drops
-        max_retries = 3
-        for attempt in range(max_retries):
-            try:
-                facts_res = client.table("facts").select("tag").eq("cik", cik).execute()
-                existing_tags = set(r["tag"] for r in facts_res.data)
-                break
-            except Exception as e:
-                if attempt == max_retries - 1:
-                    logger.error(f"Error fetching facts for {cik} after {max_retries} attempts: {e}")
-                    return []
-                time.sleep(1 + attempt)  # simple exponential backoff
-            
-        found_missing = []
         for concept, info in concept_map.items():
-            target_tags = set(info.get("tags", []))
-            if not target_tags:
+            if not info.get("tags"):
                 continue
-            # If the company has none of the mapped tags
-            if not existing_tags.intersection(target_tags):
-                found_missing.append({"cik": cik, "name": name, "concept": concept, "description": info.get("description", concept)})
-        return found_missing
+            if cik not in concept_covered.get(concept, set()):
+                missing_list.append({"cik": cik, "name": name, "concept": concept, "description": info.get("description", concept)})
 
-    # Parallelize DB lookups
-    total_comps = len(companies)
-    completed = 0
-    with ThreadPoolExecutor(max_workers=10) as executor:
-        futures = {executor.submit(process_company, comp): comp for comp in companies}
-        for future in as_completed(futures):
-            res = future.result()
-            missing_list.extend(res)
-            completed += 1
-            if completed % 1000 == 0:
-                logger.info(f"Scanned {completed}/{total_comps} companies for missing concepts...")
-                
     return missing_list
 
 def extract_candidate_tags(all_tags, concept):
@@ -132,8 +134,8 @@ def infer_best_tags_with_llm_chunk(chunk_data):
             description = item["description"]
             cands = item["candidates"]
             # Limit candidates to keep prompt size reasonable
-            if len(cands) > 30:
-                cands = cands[:30]
+            if len(cands) > 20:
+                cands = cands[:20]
             prompt += f"- Concept: '{concept}'\n  Description: {description}\n  Candidates: {', '.join(cands)}\n"
         
     prompt += """
@@ -153,26 +155,40 @@ Example format:
 }
 """
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+    # streamGenerateContent+SSE keeps the connection alive while tokens generate,
+    # avoiding read timeouts that occur with the blocking generateContent endpoint.
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?alt=sse&key={api_key}"
     payload = {
         "contents": [{"parts":[{"text": prompt}]}]
     }
-    
-    max_retries = 3
+
+    max_retries = 5
     for attempt in range(max_retries):
         try:
-            # 60s timeout should be enough for chunk_size=5 and 30 candidates limit
-            response = requests.post(url, headers={"Content-Type": "application/json"}, data=json.dumps(payload), timeout=60)
+            # (connect_timeout, per-chunk read timeout) — streaming keeps data flowing so 30s per chunk is safe
+            response = requests.post(url, headers={"Content-Type": "application/json"}, data=json.dumps(payload), stream=True, timeout=(15, 30))
             response.raise_for_status()
-            data = response.json()
-            raw_text = data["candidates"][0]["content"]["parts"][0]["text"].strip()
+
+            full_text = ""
+            for line in response.iter_lines(decode_unicode=True):
+                if not line or not line.startswith("data: "):
+                    continue
+                data_str = line[6:]
+                try:
+                    chunk = json.loads(data_str)
+                    parts = chunk.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])
+                    full_text += parts[0].get("text", "") if parts else ""
+                except (json.JSONDecodeError, IndexError, KeyError):
+                    continue
+
+            raw_text = full_text.strip()
             if raw_text.startswith("```json"):
                 raw_text = raw_text[7:-3].strip()
             elif raw_text.startswith("```"):
                 raw_text = raw_text[3:-3].strip()
-                
+
             result_map = json.loads(raw_text)
-            
+
             final_map = {}
             for cik, items in chunk_data.items():
                 final_map[cik] = {}
@@ -185,13 +201,14 @@ Example format:
                     else:
                         final_map[cik][c] = tag
             return final_map
-            
+
         except Exception as e:
             if attempt == max_retries - 1:
                 logger.error(f"LLM API error during chunk after {max_retries} attempts: {e}")
                 return {}
-            logger.warning(f"LLM API error: {e}. Retrying {attempt+1}/{max_retries}...")
-            time.sleep(2)
+            delay = 4 * (2 ** attempt)  # 4, 8, 16, 32s
+            logger.warning(f"LLM API error: {e}. Retrying in {delay}s ({attempt+1}/{max_retries})...")
+            time.sleep(delay)
     return {}
 
 def auto_commit_tag(concept, tag):
@@ -227,8 +244,8 @@ def run_auto_discovery():
     for m in missing_list:
         missing_by_cik[m["cik"]].append(m)
         
-    # Scale: 5 companies per chunk, 5 chunks in parallel = 25 companies concurrent
-    chunk_size = 5
+    # Scale: 10 companies per chunk, 10 chunks in parallel = 100 companies concurrent
+    chunk_size = 10
     ciks = list(missing_by_cik.keys())
     total_chunks = (len(ciks) + chunk_size - 1) // chunk_size
     
@@ -237,7 +254,7 @@ def run_auto_discovery():
         chunk_data = {}
         names_by_cik = {}
         
-        # Parallel download for the 5 companies in this chunk
+        # Parallel download for the companies in this chunk
         def download_and_extract(cik):
             missing_items = missing_by_cik[cik]
             name = missing_items[0]["name"]
@@ -292,11 +309,10 @@ def run_auto_discovery():
                     logger.warning(f"  ❌ [Chunk {chunk_index}] LLM could not infer tag for {cik} '{concept}'.")
                     write_log("unmapped_concepts.log", f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] CIK: {cik} ({name}) -> LLM failed to infer tag for '{concept}' from {len(item['candidates'])} candidates\n")
                     
-        time.sleep(2) # Prevent massive rate limit spikes when chunks finish simultaneously
         logger.info(f"--- Finished Chunk {chunk_index}/{total_chunks} ---")
 
-    # Run up to 5 chunks concurrently (5 * 5 = 25 companies concurrently)
-    with ThreadPoolExecutor(max_workers=5) as chunk_executor:
+    # Run up to 10 chunks concurrently (10 * 10 = 100 companies concurrently)
+    with ThreadPoolExecutor(max_workers=10) as chunk_executor:
         chunk_futures = []
         for i in range(0, len(ciks), chunk_size):
             chunk_ciks = ciks[i:i+chunk_size]
