@@ -99,7 +99,7 @@ def extract_candidate_tags(all_tags, concept):
             "any_of": ["operatingincomeloss", "operatingincome"],
             "none_of": ["discontinued", "lease", "cost", "expense",
                         "asset", "liability", "cash", "tax",
-                        "minimum", "future", "segment"],
+                        "minimum", "future", "segment", "nonoperating", "other"],
         },
         "net_income": {
             "any_of": ["netincomeloss", "netincome", "profitloss"],
@@ -117,7 +117,7 @@ def extract_candidate_tags(all_tags, concept):
             "any_of": ["earningspersharediluted", "incomeperdilutedshare",
                        "incomelossperdilutedshare"],
             "none_of": ["weighted", "antidilutive", "par", "price",
-                        "number", "outstanding", "basic"],
+                        "number", "outstanding", "basic", "proforma", "acquisition"],
         },
         "diluted_shares": {
             "any_of": ["weightedaveragenumberofdiluted", "numberofdilutedshares"],
@@ -129,7 +129,8 @@ def extract_candidate_tags(all_tags, concept):
                        "stockbasedcompensation"],
             "none_of": ["arrangement", "grantsinperiod", "outstandingnumber",
                         "forfeited", "taxbenefit", "fairvalue",
-                        "exerciseprice", "deferred", "award", "option"],
+                        "exerciseprice", "deferred", "award", "option",
+                        "shares", "numberof", "adjustmentsto", "taxeffect"],
         },
         "rnd": {
             "any_of": ["researchanddevelopmentexpense",
@@ -140,7 +141,7 @@ def extract_candidate_tags(all_tags, concept):
         "interest_expense": {
             "any_of": ["interestexpense"],
             "none_of": ["income", "net", "capitalized", "paid",
-                        "accrued", "rate", "deferred"],
+                        "accrued", "rate", "deferred", "noninterest", "offering"],
         },
         "income_tax": {
             "any_of": ["incometaxexpensebenefit", "currentincometax",
@@ -169,18 +170,22 @@ def extract_candidate_tags(all_tags, concept):
         },
         "liabilities_current": {
             "any_of": ["liabilitiescurrent"],
-            "none_of": ["noncurrent", "other", "total", "assumed", "net"],
+            "none_of": ["noncurrent", "other", "total", "assumed", "net",
+                        "accrued", "derivative", "accounts"],
         },
         "equity": {
             "any_of": ["stockholdersequity", "shareholdersequity"],
             "none_of": ["noncontrolling", "accumulated", "retained",
                         "additional", "common", "preferred", "treasury",
-                        "component", "other", "comprehensive"],
+                        "component", "other", "comprehensive",
+                        "liabilitiesand", "ratio", "note", "split"],
         },
         "long_term_debt": {
             "any_of": ["longtermdebt"],
-            "none_of": ["current", "net", "fair", "maturities",
-                        "schedule", "less", "excluding"],
+            "none_of": ["current", "net", "fair", "maturities", "schedule",
+                        "less", "excluding", "proceeds", "repayments",
+                        "issuance", "interest", "rate", "weighted", "average",
+                        "percentage", "capitalization"],
         },
         "cash_equivalents": {
             "any_of": ["cashandcashequivalents", "cashequivalents"],
@@ -189,7 +194,9 @@ def extract_candidate_tags(all_tags, concept):
         },
         "retained_earnings": {
             "any_of": ["retainedearnings", "accumulateddeficit"],
-            "none_of": ["appropriated", "restricted", "distribution"],
+            "none_of": ["appropriated", "restricted", "distribution",
+                        "undistributed", "statutory", "cumulative",
+                        "notavailable", "effect"],
         },
         "shares_outstanding": {
             "any_of": ["sharesoutstanding"],
@@ -200,7 +207,9 @@ def extract_candidate_tags(all_tags, concept):
         "shares_issued": {
             "any_of": ["sharesissued"],
             "none_of": ["weighted", "outstanding", "authorized", "treasury",
-                        "earnings", "income", "pershare", "price"],
+                        "earnings", "income", "pershare", "price",
+                        "arrangement", "services", "value", "net", "excess",
+                        "sale", "temporary", "restricted"],
         },
         "ppne_net": {
             "any_of": ["propertyplantandequipmentnet"],
