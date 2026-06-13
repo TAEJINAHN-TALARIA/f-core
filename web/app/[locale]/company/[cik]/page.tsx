@@ -55,7 +55,7 @@ export default async function CompanyOverviewPage({
     interestCoverageStr = `${interestCoverage.toFixed(1)}x`;
     interestCoveragePositive = interestCoverage >= 1.5;
   } else if (operatingIncome != null && operatingIncome >= 0 && (interestExpense == null || interestExpense <= 0)) {
-    interestCoverageStr = "무차입 (Safe)";
+    interestCoverageStr = t("safeDebtFree");
     interestCoveragePositive = true;
   }
 

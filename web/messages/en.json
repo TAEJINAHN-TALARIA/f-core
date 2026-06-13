@@ -79,7 +79,8 @@
     "buybacks": "Stock Buybacks",
     "dividends": "Dividends Paid",
     "buybackToFcf": "Buyback / FCF",
-    "shareholderReturn": "Shareholder Return"
+    "shareholderReturn": "Shareholder Return",
+    "safeDebtFree": "No Debt (Safe)"
   },
   "period": {
     "annual": "Annual",

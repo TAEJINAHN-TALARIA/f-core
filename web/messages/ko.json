@@ -79,7 +79,8 @@
     "buybacks": "자사주 매입",
     "dividends": "현금 배당",
     "buybackToFcf": "자사주매입/FCF",
-    "shareholderReturn": "총 주주환원액"
+    "shareholderReturn": "총 주주환원액",
+    "safeDebtFree": "무차입 (Safe)"
   },
   "period": {
     "annual": "연간",
