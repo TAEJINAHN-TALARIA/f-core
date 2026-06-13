@@ -19,12 +19,9 @@ export default async function IncomePage({ params }: { params: Promise<{ cik: st
   const t = await getTranslations("metrics");
   const tp = await getTranslations("period");
 
-  const [quarterly, annual] = await Promise.all([
-    getFinancials(cik, "quarterly"),
-    getFinancials(cik, "annual"),
-  ]);
+  const annual = await getFinancials(cik, "annual");
 
-  function renderTable(data: typeof quarterly, periodLabel: string) {
+  function renderTable(data: typeof annual, periodLabel: string) {
     if (!data.length) return null;
 
     const tagOrder = [
@@ -39,7 +36,7 @@ export default async function IncomePage({ params }: { params: Promise<{ cik: st
 
     const filtered = tagOrder
       .map((tag) => data.find((d) => d.tag === tag))
-      .filter(Boolean) as typeof quarterly;
+      .filter(Boolean) as typeof annual;
 
     const hasRevenues = filtered.some((f) => f.tag === "Revenues");
     const deduped = filtered.filter(
@@ -96,9 +93,8 @@ export default async function IncomePage({ params }: { params: Promise<{ cik: st
   return (
     <div className="space-y-6">
       <div className="bg-card rounded-xl p-4 border border-border shadow-md">
-        <RevenueChart financials={quarterly} />
+        <RevenueChart financials={annual} />
       </div>
-      {renderTable(quarterly, tp("quarterly"))}
       {renderTable(annual, tp("annual"))}
     </div>
   );

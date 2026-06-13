@@ -28,15 +28,12 @@ export default async function CashflowPage({ params }: { params: Promise<{ cik: 
   const { cik } = await params;
   const tp = await getTranslations("period");
 
-  const [quarterly, annual] = await Promise.all([
-    getCashFlow(cik, "quarterly"),
-    getCashFlow(cik, "annual"),
-  ]);
+  const annual = await getCashFlow(cik, "annual");
 
-  function renderTable(data: typeof quarterly, periodLabel: string) {
+  function renderTable(data: typeof annual, periodLabel: string) {
     if (!data.length) return null;
 
-    const ordered = TAG_ORDER.map((tag) => data.find((d) => d.tag === tag)).filter(Boolean) as typeof quarterly;
+    const ordered = TAG_ORDER.map((tag) => data.find((d) => d.tag === tag)).filter(Boolean) as typeof annual;
     const dates = [...new Set(ordered.flatMap((f) => f.data.map((p) => p.end_date)))]
       .sort()
       .slice(-8);
@@ -89,9 +86,8 @@ export default async function CashflowPage({ params }: { params: Promise<{ cik: 
   return (
     <div className="space-y-6">
       <div className="bg-card rounded-xl p-4 border border-border shadow-md">
-        <CashFlowChart cashflow={quarterly} />
+        <CashFlowChart cashflow={annual} />
       </div>
-      {renderTable(quarterly, tp("quarterly"))}
       {renderTable(annual, tp("annual"))}
     </div>
   );
