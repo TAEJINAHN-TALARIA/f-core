@@ -1,6 +1,14 @@
 {
     "revenue": {
         "tags": [
+            "SalesRevenueGoodsNet",
+            "RealEstateRevenueNet",
+            "RevenueFromGrants",
+            "BrokerageCommissionsRevenue",
+            "SalesRevenueServicesNet",
+            "LicenseAndServicesRevenue",
+            "FinancialServicesRevenue",
+            "DisposalGroupIncludingDiscontinuedOperationRevenue",
             "ReimbursementRevenue",
             "RegulatedAndUnregulatedOperatingRevenue",
             "OperatingRevenues",
@@ -12,6 +20,7 @@
     },
     "gross_profit": {
         "tags": [
+            "DisposalGroupIncludingDiscontinuedOperationGrossProfitLoss",
             "GrossProfit"
         ],
         "category": "income"
@@ -31,6 +40,7 @@
     },
     "eps_basic": {
         "tags": [
+            "BusinessAcquisitionProFormaEarningsPerShareBasic",
             "EarningsPerShareBasic"
         ],
         "category": "income"
@@ -66,6 +76,10 @@
     },
     "interest_expense": {
         "tags": [
+            "InterestExpenseDebtExcludingAmortization",
+            "InterestExpenseLongTermDebt",
+            "FinancingInterestExpense",
+            "InterestExpenseOther",
             "FinanceLeaseInterestExpense",
             "InterestExpenseOperating",
             "InterestExpenseBorrowings",
@@ -77,6 +91,8 @@
     },
     "income_tax": {
         "tags": [
+            "DeferredIncomeTaxExpenseBenefit",
+            "DeferredFederalIncomeTaxExpenseBenefit",
             "CurrentIncomeTaxExpenseBenefit",
             "IncomeTaxExpenseBenefit"
         ],
@@ -84,6 +100,8 @@
     },
     "depreciation": {
         "tags": [
+            "CostOfServicesDepreciationAndAmortization",
+            "CostOfGoodsAndServicesSoldDepreciationAndAmortization",
             "OtherDepreciationAndAmortization",
             "DepreciationAndAmortization",
             "DepreciationAmortizationAndAccretionNet",
@@ -112,6 +130,7 @@
     },
     "liabilities_current": {
         "tags": [
+            "EmployeeRelatedLiabilitiesCurrent",
             "LiabilitiesCurrent"
         ],
         "category": "balance_sheet"
@@ -125,6 +144,7 @@
     },
     "long_term_debt": {
         "tags": [
+            "SubordinatedLongTermDebt",
             "UnsecuredLongTermDebt",
             "LongTermDebtAndCapitalLeaseObligations",
             "SecuredLongTermDebt",
@@ -135,6 +155,9 @@
     },
     "cash_equivalents": {
         "tags": [
+            "BusinessAcquisitionPurchasePriceAllocationCurrentAssetsCashAndCashEquivalents",
+            "CashCashEquivalentsAndShortTermInvestments",
+            "CashCashEquivalentsAndFederalFundsSold",
             "CashEquivalentsAtCarryingValue",
             "CashAndCashEquivalentsAtCarryingValue"
         ],
@@ -148,6 +171,7 @@
     },
     "shares_outstanding": {
         "tags": [
+            "ExcessStockSharesOutstanding",
             "TemporaryEquitySharesOutstanding",
             "SharesOutstanding",
             "WeightedAverageNumberOfSharesOutstandingBasic",
@@ -157,6 +181,7 @@
     },
     "shares_issued": {
         "tags": [
+            "BusinessAcquisitionEquityInterestsIssuedOrIssuableNumberOfSharesIssued",
             "SharesIssued",
             "PreferredStockSharesIssued",
             "CommonStockSharesIssued"
@@ -165,24 +190,28 @@
     },
     "ppne_net": {
         "tags": [
+            "PublicUtilitiesPropertyPlantAndEquipmentNet",
             "PropertyPlantAndEquipmentNet"
         ],
         "category": "balance_sheet"
     },
     "operating_cash_flow": {
         "tags": [
+            "NetCashProvidedByUsedInOperatingActivitiesContinuingOperations",
             "NetCashProvidedByUsedInOperatingActivities"
         ],
         "category": "cashflow"
     },
     "investing_cash_flow": {
         "tags": [
+            "NetCashProvidedByUsedInInvestingActivitiesContinuingOperations",
             "NetCashProvidedByUsedInInvestingActivities"
         ],
         "category": "cashflow"
     },
     "financing_cash_flow": {
         "tags": [
+            "NetCashProvidedByUsedInFinancingActivitiesContinuingOperations",
             "NetCashProvidedByUsedInFinancingActivities"
         ],
         "category": "cashflow"
@@ -203,6 +232,7 @@
     },
     "dividends_paid": {
         "tags": [
+            "PaymentsOfDividendsPreferredStockAndPreferenceStock",
             "PaymentsOfDividendsMinorityInterest",
             "OtherPreferredStockDividendsAndAdjustments",
             "PaymentsOfDividendsCommonStock",
