@@ -3,7 +3,7 @@
 import { useEffect, useState, useTransition, useRef } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Play, Pause } from "lucide-react";
 import { getThemeCompanies, type ThemeCompany, formatValue } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
@@ -29,6 +29,7 @@ export default function ThemedShowcase({ locale }: Props) {
   const [companies, setCompanies] = useState<ThemeCompany[]>([]);
   const [isPending, startTransition] = useTransition();
   const [isPaused, setIsPaused] = useState(false);
+  const [isManuallyPaused, setIsManuallyPaused] = useState(false);
   const tabsRef = useRef<HTMLDivElement>(null);
 
   const scrollTabs = (direction: "left" | "right") => {
@@ -55,7 +56,7 @@ export default function ThemedShowcase({ locale }: Props) {
 
   // 10초 간격 자동 롤링 타이머
   useEffect(() => {
-    if (isPaused) return;
+    if (isPaused || isManuallyPaused) return;
 
     const interval = setInterval(() => {
       setActiveTab((prev) => {
@@ -66,7 +67,7 @@ export default function ThemedShowcase({ locale }: Props) {
     }, 10000); // 10초
 
     return () => clearInterval(interval);
-  }, [isPaused, activeTab]);
+  }, [isPaused, isManuallyPaused, activeTab]);
 
   function renderValue(item: ThemeCompany) {
     if (activeTab === "high-roe-low-debt") {
@@ -149,11 +150,22 @@ export default function ThemedShowcase({ locale }: Props) {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      <div className="text-center sm:text-left">
-        <h2 className="text-lg font-bold text-gray-200 tracking-tight">{t("title")}</h2>
-        <p className="text-xs text-gray-500 mt-1">
-          {t(THEMES.find((th) => th.id === activeTab)?.descKey as any)}
-        </p>
+      <div className="flex items-center justify-between sm:justify-start gap-4">
+        <div className="text-center sm:text-left">
+          <h2 className="text-lg font-bold text-gray-200 tracking-tight flex items-center gap-2">
+            {t("title")}
+            <button
+              onClick={() => setIsManuallyPaused(!isManuallyPaused)}
+              className="p-1 rounded-full bg-secondary border border-border text-gray-400 hover:text-white hover:bg-gray-800 transition-all focus:outline-none"
+              title={isManuallyPaused ? "재생 (Auto-rolling Play)" : "정지 (Auto-rolling Pause)"}
+            >
+              {isManuallyPaused ? <Play className="w-3.5 h-3.5" /> : <Pause className="w-3.5 h-3.5" />}
+            </button>
+          </h2>
+          <p className="text-xs text-gray-500 mt-1">
+            {t(THEMES.find((th) => th.id === activeTab)?.descKey as any)}
+          </p>
+        </div>
       </div>
 
       {/* Tabs list with Arrow Navigators */}
