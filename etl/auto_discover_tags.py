@@ -162,14 +162,17 @@ Example format:
     # avoiding read timeouts that occur with the blocking generateContent endpoint.
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?alt=sse&key={api_key}"
     payload = {
-        "contents": [{"parts":[{"text": prompt}]}]
+        "contents": [{"parts":[{"text": prompt}]}],
+        # Disable thinking: this is a simple tag-matching task that doesn't benefit
+        # from reasoning, and thinking silently delays the first SSE chunk by 30-60s+.
+        "generationConfig": {"thinkingConfig": {"thinkingBudget": 0}},
     }
 
     max_retries = 5
     for attempt in range(max_retries):
         try:
-            # (connect_timeout, per-chunk read timeout) — streaming keeps data flowing so 30s per chunk is safe
-            response = requests.post(url, headers={"Content-Type": "application/json"}, data=json.dumps(payload), stream=True, timeout=(15, 30))
+            # 60s per-chunk timeout as safety net; thinking=0 means first chunk arrives quickly
+            response = requests.post(url, headers={"Content-Type": "application/json"}, data=json.dumps(payload), stream=True, timeout=(15, 60))
             response.raise_for_status()
 
             full_text = ""
