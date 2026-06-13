@@ -113,7 +113,7 @@ export default async function CompanyOverviewPage({
       {/* Revenue Chart */}
       {financialsData.length > 0 && (
         <section>
-          <h2 className="text-gray-300 font-semibold mb-3">{t("revenue")} / {t("grossProfit")} / {t("netIncome")}</h2>
+          <h2 className="text-gray-300 font-semibold mb-3">{t("revenue")} / {t("operatingIncome")} / {t("netIncome")}</h2>
           <div className="bg-card rounded-xl p-4 border border-border shadow-md">
             <RevenueChart financials={financialsData} />
           </div>

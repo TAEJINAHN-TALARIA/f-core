@@ -114,12 +114,21 @@ export default function RevenueChart({ financials }: Props) {
           tickFormatter={fmtDate}
         />
         <YAxis
+          yAxisId="left"
           tickLine={false}
           axisLine={false}
           tick={{ fill: "#9ca3af", fontSize: 11 }}
           tickFormatter={(v) => formatValue(v, "USD").replace("$", "")}
         />
-        <ReferenceLine y={0} stroke="#374151" strokeDasharray="4 2" />
+        <YAxis
+          yAxisId="right"
+          orientation="right"
+          tickLine={false}
+          axisLine={false}
+          tick={{ fill: "#9ca3af", fontSize: 11 }}
+          tickFormatter={(v) => formatValue(v, "USD").replace("$", "")}
+        />
+        <ReferenceLine y={0} yAxisId="right" stroke="#374151" strokeDasharray="4 2" />
         <ChartTooltip
           cursor={{ stroke: "#1a1d27" }}
           content={
@@ -136,6 +145,7 @@ export default function RevenueChart({ financials }: Props) {
         
         {presentKeys.includes("revenue") && (
           <Area
+            yAxisId="left"
             type="monotone"
             dataKey="revenue"
             stroke={COLORS.revenue}
@@ -148,6 +158,7 @@ export default function RevenueChart({ financials }: Props) {
         
         {presentKeys.includes("operatingIncome") && (
           <Bar
+            yAxisId="right"
             dataKey="operatingIncome"
             fill={COLORS.operatingIncome}
             radius={[3, 3, 0, 0]}
@@ -157,6 +168,7 @@ export default function RevenueChart({ financials }: Props) {
         
         {presentKeys.includes("netIncome") && (
           <Bar
+            yAxisId="right"
             dataKey="netIncome"
             fill={COLORS.netIncome}
             radius={[3, 3, 0, 0]}
