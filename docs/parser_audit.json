@@ -1,0 +1,179 @@
+{
+  "generated_at": "2026-06-13T00:28:44.576477+00:00",
+  "companies": {
+    "fetched": 6936,
+    "no_xbrl_404": 0,
+    "no_target_tags": 913,
+    "no_facts_after_filter": 853,
+    "with_facts": 5170
+  },
+  "entries": {
+    "scanned": 5463089,
+    "extracted": 426509,
+    "after_dedup": 207984,
+    "skipped_total": 5006241,
+    "skip_breakdown": {
+      "null_value": 0,
+      "past_cutoff": 1101266,
+      "future_date": 1,
+      "invalid_value": {},
+      "unknown_form": {
+        "10-Q": 3633605,
+        "20-F": 73134,
+        "10-Q/A": 65427,
+        "6-K": 32084,
+        "8-K": 26362,
+        "DEF 14A": 5896,
+        "20-F/A": 5569,
+        "10-KT": 4245,
+        "40-F": 2620,
+        "6-K/A": 1468,
+        "S-1": 1244,
+        "8-K/A": 1189,
+        "POS AM": 794,
+        "S-1/A": 722,
+        "PRE 14A": 629,
+        "10-QT": 512,
+        "S-4/A": 437,
+        "F-1": 326,
+        "40-F/A": 241,
+        "10-KT/A": 194,
+        "S-4": 180,
+        "F-1/A": 150,
+        "DEFR14A": 58,
+        "PRER14A": 55,
+        "DEFC14A": 31,
+        "F-3": 29,
+        "F-4/A": 28,
+        "PREC14A": 21,
+        "S-11": 20,
+        "10-QT/A": 18
+      },
+      "unknown_unit": {
+        "CNY": 25924,
+        "CAD": 8879,
+        "JPY": 5806,
+        "HKD": 2025,
+        "EUR": 1886,
+        "SGD": 1423,
+        "INR": 420,
+        "KRW": 297,
+        "RUB": 287,
+        "CHF": 150,
+        "ILS": 141,
+        "BRL": 128,
+        "TWD": 77,
+        "VND": 76,
+        "GBP": 44,
+        "MYR": 29,
+        "CLP": 8,
+        "MXN": 7,
+        "ZAR": 7,
+        "COP": 3
+      }
+    }
+  },
+  "form_period_mismatch": {},
+  "target_tag_company_coverage": {
+    "Assets": 5982,
+    "NetIncomeLoss": 5946,
+    "NetCashProvidedByUsedInOperatingActivities": 5934,
+    "StockholdersEquity": 5822,
+    "Liabilities": 5463,
+    "OperatingIncomeLoss": 5107,
+    "PaymentsToAcquirePropertyPlantAndEquipment": 4564,
+    "InterestExpense": 4185,
+    "Revenues": 3761,
+    "PaymentsForRepurchaseOfCommonStock": 3381,
+    "RevenueFromContractWithCustomerExcludingAssessedTax": 3240,
+    "GrossProfit": 3047,
+    "PaymentsOfDividends": 1543,
+    "PaymentsOfDividendsCommonStock": 1429,
+    "PaymentsForRepurchaseOfEquity": 477
+  },
+  "unknown_tags_top50": {
+    "NetCashProvidedByUsedInFinancingActivities": 5925,
+    "LiabilitiesAndStockholdersEquity": 5900,
+    "RetainedEarningsAccumulatedDeficit": 5793,
+    "NetCashProvidedByUsedInInvestingActivities": 5746,
+    "CashAndCashEquivalentsAtCarryingValue": 5580,
+    "EarningsPerShareBasic": 5552,
+    "WeightedAverageNumberOfSharesOutstandingBasic": 5540,
+    "EarningsPerShareDiluted": 5509,
+    "WeightedAverageNumberOfDilutedSharesOutstanding": 5501,
+    "IncomeTaxExpenseBenefit": 5308,
+    "CommonStockSharesIssued": 5140,
+    "CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalents": 5129,
+    "EffectiveIncomeTaxRateReconciliationAtFederalStatutoryIncomeTaxRate": 5066,
+    "CommonStockSharesAuthorized": 5061,
+    "PropertyPlantAndEquipmentNet": 5039,
+    "CommonStockValue": 5034,
+    "AssetsCurrent": 5013,
+    "LiabilitiesCurrent": 5002,
+    "CommonStockParOrStatedValuePerShare": 4954,
+    "CommonStockSharesOutstanding": 4943,
+    "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest": 4940,
+    "ShareBasedCompensation": 4905,
+    "CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseIncludingExchangeRateEffect": 4902,
+    "DeferredTaxAssetsValuationAllowance": 4861,
+    "OperatingLeaseRightOfUseAsset": 4811,
+    "AccumulatedDepreciationDepletionAndAmortizationPropertyPlantAndEquipment": 4731,
+    "EffectiveIncomeTaxRateContinuingOperations": 4729,
+    "OperatingLeaseLiability": 4729,
+    "InterestPaidNet": 4692,
+    "StockIssuedDuringPeriodValueNewIssues": 4636,
+    "LesseeOperatingLeaseLiabilityPaymentsDue": 4606,
+    "LesseeOperatingLeaseLiabilityPaymentsDueNextTwelveMonths": 4543,
+    "LesseeOperatingLeaseLiabilityPaymentsDueYearTwo": 4522,
+    "NumberOfReportableSegments": 4521,
+    "PropertyPlantAndEquipmentGross": 4471,
+    "LesseeOperatingLeaseLiabilityUndiscountedExcessAmount": 4467,
+    "DeferredTaxAssetsGross": 4407,
+    "ComprehensiveIncomeNetOfTax": 4400,
+    "IncomeTaxReconciliationIncomeTaxExpenseBenefitAtFederalStatutoryIncomeTaxRate": 4385,
+    "LesseeOperatingLeaseLiabilityPaymentsDueYearThree": 4376,
+    "OperatingLeaseWeightedAverageDiscountRatePercent": 4339,
+    "AccumulatedOtherComprehensiveIncomeLossNetOfTax": 4306,
+    "Depreciation": 4261,
+    "IncomeTaxesPaidNet": 4241,
+    "AdditionalPaidInCapital": 4240,
+    "PreferredStockSharesAuthorized": 4222,
+    "ProfitLoss": 4190,
+    "DeferredIncomeTaxExpenseBenefit": 4175,
+    "DeferredTaxAssetsOperatingLossCarryforwards": 4167,
+    "LesseeOperatingLeaseLiabilityPaymentsDueYearFour": 4162
+  },
+  "metrics": {
+    "computed": 115556,
+    "missing_by_metric": {
+      "debt_to_equity": {
+        "Liabilities": 3090,
+        "StockholdersEquity": 1069
+      },
+      "fcf": {
+        "PaymentsToAcquirePropertyPlantAndEquipment": 7611,
+        "NetCashProvidedByUsedInOperatingActivities": 502
+      },
+      "gross_margin": {
+        "GrossProfit": 8426,
+        "revenue": 6127
+      },
+      "interest_coverage": {
+        "InterestExpense": 11013,
+        "OperatingIncomeLoss": 4667
+      },
+      "net_margin": {
+        "revenue": 6127,
+        "NetIncomeLoss": 776
+      },
+      "operating_margin": {
+        "revenue": 6127,
+        "OperatingIncomeLoss": 2425
+      },
+      "roe": {
+        "StockholdersEquity": 1277,
+        "NetIncomeLoss": 967
+      }
+    }
+  }
+}

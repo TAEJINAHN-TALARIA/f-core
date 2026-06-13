@@ -14,6 +14,13 @@ const THEMES = [
   { id: "operating-margin-growth", labelKey: "operatingMarginGrowth", descKey: "operatingMarginGrowthDesc" },
   { id: "dividend-growth", labelKey: "dividendGrowth", descKey: "dividendGrowthDesc" },
   { id: "high-roe", labelKey: "highRoe", descKey: "highRoeDesc" },
+  { id: "fcf-positive-10yr", labelKey: "fcfPositive10yr", descKey: "fcfPositive10yrDesc" },
+  { id: "buyback-growth-5yr", labelKey: "buybackGrowth5yr", descKey: "buybackGrowth5yrDesc" },
+  { id: "zero-debt-safe", labelKey: "zeroDebtSafe", descKey: "zeroDebtSafeDesc" },
+  { id: "roe-consistent-10yr", labelKey: "roeConsistent10yr", descKey: "roeConsistent10yrDesc" },
+  { id: "deleveraging-5yr", labelKey: "deleveraging5yr", descKey: "deleveraging5yrDesc" },
+  { id: "shareholder-payout-high", labelKey: "shareholderPayoutHigh", descKey: "shareholderPayoutHighDesc" },
+  { id: "fcf-to-revenue-high", labelKey: "fcfToRevenueHigh", descKey: "fcfToRevenueHighDesc" },
 ];
 
 export default function ThemedShowcase({ locale }: Props) {
@@ -42,9 +49,12 @@ export default function ThemedShowcase({ locale }: Props) {
         </span>
       );
     }
-    if (activeTab === "dividend-growth") {
+    if (activeTab === "dividend-growth" || activeTab === "buyback-growth-5yr" || activeTab === "fcf-positive-10yr") {
+      const colorClass = 
+        activeTab === "dividend-growth" ? "text-amber-400" :
+        activeTab === "buyback-growth-5yr" ? "text-blue-400" : "text-emerald-400";
       return (
-        <span className="text-amber-400 font-bold font-mono text-xs">
+        <span className={cn("font-bold font-mono text-xs", colorClass)}>
           {formatValue(item.value, "USD")}
         </span>
       );
@@ -63,6 +73,41 @@ export default function ThemedShowcase({ locale }: Props) {
         </div>
       );
     }
+    if (activeTab === "zero-debt-safe") {
+      return (
+        <span className="text-sky-400 font-bold font-mono text-xs">
+          부채 {item.value}%
+        </span>
+      );
+    }
+    if (activeTab === "roe-consistent-10yr") {
+      return (
+        <span className="text-amber-400 font-bold font-mono text-xs">
+          ROE {item.value}%
+        </span>
+      );
+    }
+    if (activeTab === "deleveraging-5yr") {
+      return (
+        <span className="text-cyan-400 font-bold font-mono text-xs">
+          부채 {item.value}%
+        </span>
+      );
+    }
+    if (activeTab === "shareholder-payout-high") {
+      return (
+        <span className="text-rose-400 font-bold font-mono text-xs">
+          {item.value}%
+        </span>
+      );
+    }
+    if (activeTab === "fcf-to-revenue-high") {
+      return (
+        <span className="text-indigo-400 font-bold font-mono text-xs">
+          {item.value}%
+        </span>
+      );
+    }
     return null;
   }
 
@@ -70,6 +115,13 @@ export default function ThemedShowcase({ locale }: Props) {
     if (activeTab === "operating-margin-growth") return t("latestMargin");
     if (activeTab === "dividend-growth") return t("latestDividend");
     if (activeTab === "high-roe") return t("latestRoe");
+    if (activeTab === "fcf-positive-10yr") return t("latestFcf");
+    if (activeTab === "buyback-growth-5yr") return t("latestBuyback");
+    if (activeTab === "zero-debt-safe") return t("latestDebtToEquity");
+    if (activeTab === "roe-consistent-10yr") return t("latestRoe");
+    if (activeTab === "deleveraging-5yr") return t("latestDebtToEquity");
+    if (activeTab === "shareholder-payout-high") return t("latestPayoutRatio");
+    if (activeTab === "fcf-to-revenue-high") return t("latestFcfMargin");
     return "";
   }
 

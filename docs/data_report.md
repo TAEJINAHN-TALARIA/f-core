@@ -1,6 +1,6 @@
 # DB 데이터 현황 보고서
 
-> 생성일시: 2026-05-25 01:27 UTC  
+> 생성일시: 2026-06-13 04:43 UTC  
 > Supabase 프로젝트: `cfpplvqcfvxiozmdusgl`
 
 ---
@@ -9,137 +9,121 @@
 
 | 테이블 | 행 수 | 비고 |
 |--------|-------|------|
-| `companies` | 6,895 | 정확 |
-| `facts` | 1,799,452 | planner 추정 *(query planner 추정값)* |
-| `metrics` | 659,551 | planner 추정 *(query planner 추정값)* |
+| `companies` | 6,963 | 정확 |
+| `facts` | 208,338 | planner 추정 *(query planner 추정값)* |
+| `metrics` | 115,093 | planner 추정 *(query planner 추정값)* |
 
 ---
 
 ## 2. companies 테이블
 
-- **총 기업 수:** 6,895개 (전수)
-- **티커 보유:** 6,895개 / 미보유: 0개
-- **최근 업데이트:** 2026-05-24
-- **최초 업데이트:** 2026-05-24
+- **총 기업 수:** 6,963개 (전수)
+- **티커 보유:** 6,963개 / 미보유: 0개
+- **최근 업데이트:** 2026-06-13
+- **최초 업데이트:** 2026-05-25
 
 ### 거래소별 분포
 
 | 거래소 | 기업 수 |
 |--------|---------|
-| `Nasdaq` | 3,288 |
-| `NYSE` | 2,278 |
-| `OTC` | 1,227 |
-| `NULL` | 83 |
+| `Nasdaq` | 3,309 |
+| `NYSE` | 2,291 |
+| `OTC` | 1,237 |
+| `NULL` | 107 |
 | `CBOE` | 19 |
 
 ### SIC 업종별 Top 10
 
 | 업종 | 기업 수 |
 |------|---------|
-| Unknown | 6,895 |
+| Pharmaceutical Preparations | 588 |
+| Blank Checks | 323 |
+| Services-Prepackaged Software | 280 |
+| Unknown | 279 |
+| Real Estate Investment Trusts | 204 |
+| State Commercial Banks | 186 |
+| Biological Products, (No Diagnostic Substances) | 176 |
+| Finance Services | 152 |
+| Surgical & Medical Instruments & Apparatus | 149 |
+| Services-Business Services, NEC | 135 |
 
 ---
 
 ## 3. facts 테이블
 
-- **총 레코드:** 1,799,452개 (planner 추정)
+- **총 레코드:** 208,338개 (planner 추정)
 - **분포 분석:** 샘플 50,000건 기준
-- **샘플 내 기업 수:** 628개
-- **데이터 기간:** 2021-05-29 ~ 2033-03-31
+- **샘플 내 기업 수:** 1,076개
+- **데이터 기간:** 2021-06-23 ~ 2026-04-30
 
 ### period_type 분포
 
 | period_type | 건수 (샘플 내) |
 |-------------|----------------|
-| `quarterly` | 23,844 |
-| `instant` | 17,901 |
-| `annual` | 8,233 |
-| `other` | 22 |
+| `annual` | 35,612 |
+| `instant` | 14,388 |
 
 ### unit 분포
 
 | unit | 건수 (샘플 내) |
 |------|----------------|
-| `USD` | 41,222 |
-| `USD/shares` | 4,475 |
-| `shares` | 4,303 |
+| `USD` | 50,000 |
 
 ### 제출 양식(form) 분포 Top 10
 
 | form | 건수 (샘플 내) |
 |------|----------------|
-| `10-Q` | 36,895 |
-| `10-K` | 12,409 |
-| `10-K/A` | 464 |
-| `10-Q/A` | 232 |
+| `10-K` | 49,695 |
+| `10-K/A` | 305 |
 
-### XBRL 태그별 현황 (29개 태그 감지)
+### XBRL 태그별 현황 (15개 태그 감지)
 
 | 태그 | 건수 (샘플 내) | 기업 수 (샘플 내) |
 |------|----------------|-------------------|
-| `NetCashProvidedByUsedInOperatingActivities` | 2,622 | 190 |
-| `NetCashProvidedByUsedInFinancingActivities` | 2,590 | 179 |
-| `StockholdersEquity` | 2,559 | 182 |
-| `NetIncomeLoss` | 2,529 | 192 |
-| `WeightedAverageNumberOfSharesOutstandingBasic` | 2,450 | 180 |
-| `NetCashProvidedByUsedInInvestingActivities` | 2,388 | 175 |
-| `RetainedEarningsAccumulatedDeficit` | 2,381 | 177 |
-| `EarningsPerShareBasic` | 2,285 | 172 |
-| `Assets` | 2,283 | 187 |
-| `Liabilities` | 2,231 | 163 |
-| `EarningsPerShareDiluted` | 2,190 | 165 |
-| `CashAndCashEquivalentsAtCarryingValue` | 2,083 | 155 |
-| `IncomeTaxExpenseBenefit` | 2,069 | 176 |
-| `PaymentsToAcquirePropertyPlantAndEquipment` | 1,987 | 148 |
-| `OperatingIncomeLoss` | 1,946 | 149 |
-| `LiabilitiesCurrent` | 1,888 | 139 |
-| `CommonStockSharesOutstanding` | 1,853 | 138 |
-| `AssetsCurrent` | 1,763 | 136 |
-| `RevenueFromContractWithCustomerExcludingAssessedTax` | 1,410 | 128 |
-| `DepreciationDepletionAndAmortization` | 1,346 | 108 |
-| `InterestExpense` | 1,113 | 110 |
-| `GrossProfit` | 1,039 | 86 |
-| `PaymentsForRepurchaseOfCommonStock` | 1,036 | 111 |
-| `Revenues` | 953 | 94 |
-| `ResearchAndDevelopmentExpense` | 927 | 74 |
-| `LongTermDebt` | 825 | 90 |
-| `PaymentsOfDividendsCommonStock` | 670 | 49 |
-| `PaymentsOfDividends` | 501 | 42 |
-| `PaymentsForRepurchaseOfEquity` | 83 | 11 |
+| `Assets` | 5,243 | 1,067 |
+| `NetCashProvidedByUsedInOperatingActivities` | 5,115 | 1,055 |
+| `StockholdersEquity` | 4,946 | 1,011 |
+| `NetIncomeLoss` | 4,888 | 1,011 |
+| `OperatingIncomeLoss` | 4,130 | 852 |
+| `Liabilities` | 4,085 | 842 |
+| `PaymentsForRepurchaseOfCommonStock` | 3,867 | 856 |
+| `PaymentsToAcquirePropertyPlantAndEquipment` | 3,653 | 771 |
+| `RevenueFromContractWithCustomerExcludingAssessedTax` | 3,427 | 720 |
+| `InterestExpense` | 2,640 | 731 |
+| `Revenues` | 2,282 | 495 |
+| `PaymentsOfDividendsCommonStock` | 2,157 | 435 |
+| `GrossProfit` | 2,125 | 448 |
+| `PaymentsOfDividends` | 1,315 | 288 |
+| `PaymentsForRepurchaseOfEquity` | 127 | 35 |
 
 ---
 
 ## 4. metrics 테이블
 
-- **총 레코드:** 659,551개 (planner 추정)
+- **총 레코드:** 115,093개 (planner 추정)
 - **분포 분석:** 샘플 50,000건 기준
-- **샘플 내 기업 수:** 798개
-- **데이터 기간:** 2021-05-29 ~ 2026-04-30
+- **샘플 내 기업 수:** 1,868개
+- **데이터 기간:** 2021-06-25 ~ 2026-04-30
 
 ### period_type 분포
 
 | period_type | 건수 (샘플 내) |
 |-------------|----------------|
-| `quarterly` | 34,974 |
-| `annual` | 11,721 |
-| `instant` | 3,250 |
-| `other` | 55 |
+| `annual` | 50,000 |
 
 ### 파생 지표 목록
 
 | metric | 건수 (샘플 내) |
 |--------|----------------|
-| `debt_ratio` | 7,693 |
-| `debt_to_equity` | 7,190 |
-| `roa` | 6,449 |
-| `roe` | 6,149 |
-| `net_margin` | 5,041 |
-| `operating_margin` | 4,518 |
-| `fcf` | 4,419 |
-| `gross_margin` | 2,687 |
-| `interest_coverage` | 2,136 |
-| `dividend_payout` | 2,086 |
-| `buyback_to_fcf` | 1,632 |
+| `roe` | 8,040 |
+| `net_margin` | 7,416 |
+| `debt_to_equity` | 6,885 |
+| `operating_margin` | 6,468 |
+| `fcf` | 6,357 |
+| `dividend_payout` | 4,250 |
+| `buyback_to_fcf` | 3,908 |
+| `gross_margin` | 3,488 |
+| `interest_coverage` | 3,188 |
 
 ---
 
@@ -147,7 +131,7 @@
 
 ### 데이터 갭 / 주의사항
 
-- facts는 ETL `TARGET_TAGS` 기준 29개 XBRL 태그만 수집 (전체 us-gaap 중 선택적 수집)
+- facts는 ETL `TARGET_TAGS` 기준 15개 XBRL 태그만 수집 (전체 us-gaap 중 선택적 수집)
 - `period_type=instant`인 facts는 재무상태표 항목이며 `start_date=NULL`이 정상
 - 동일 기업이 여러 태그명으로 같은 개념을 보고할 수 있음
   - 예: `Revenues` vs `RevenueFromContractWithCustomerExcludingAssessedTax`

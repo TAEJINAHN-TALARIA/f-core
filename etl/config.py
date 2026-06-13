@@ -9,7 +9,7 @@ SUPABASE_URL = os.environ["SUPABASE_URL"]
 SUPABASE_KEY = os.environ["SUPABASE_KEY"]
 
 # 수집할 과거 데이터 범위 (오늘 기준 N년 전 이후만 저장)
-HISTORY_YEARS = 5
+HISTORY_YEARS = 10
 HISTORY_CUTOFF = (date.today() - timedelta(days=HISTORY_YEARS * 365)).isoformat()
 
 # 일반 투자자 관점의 핵심 XBRL 태그
