@@ -97,12 +97,21 @@ export default function CashFlowChart({ cashflow }: Props) {
           tickFormatter={fmtDate}
         />
         <YAxis
+          yAxisId="left"
           tickLine={false}
           axisLine={false}
           tick={{ fill: "#9ca3af", fontSize: 11 }}
           tickFormatter={(v) => formatValue(v, "USD").replace("$", "")}
         />
-        <ReferenceLine y={0} stroke="#374151" strokeDasharray="4 2" />
+        <YAxis
+          yAxisId="right"
+          orientation="right"
+          tickLine={false}
+          axisLine={false}
+          tick={{ fill: "#9ca3af", fontSize: 11 }}
+          tickFormatter={(v) => formatValue(v, "USD").replace("$", "")}
+        />
+        <ReferenceLine y={0} yAxisId="left" stroke="#374151" strokeDasharray="4 2" />
         <ChartTooltip
           cursor={{ stroke: "#1a1d27" }}
           content={
@@ -117,10 +126,11 @@ export default function CashFlowChart({ cashflow }: Props) {
         />
         <ChartLegend content={<ChartLegendContent />} />
         {barKeys.map((key) => (
-          <Bar key={key} dataKey={key} fill={COLORS[key]} radius={[3, 3, 0, 0]} maxBarSize={28} />
+          <Bar key={key} yAxisId="left" dataKey={key} fill={COLORS[key]} radius={[3, 3, 0, 0]} maxBarSize={28} />
         ))}
         {hasCapex && (
           <Line
+            yAxisId="right"
             type="monotone"
             dataKey="capex"
             stroke={COLORS.capex}
