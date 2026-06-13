@@ -230,6 +230,11 @@ def run_auto_discovery():
             
             if candidates:
                 batch_data.append({"concept": concept, "description": description, "candidates": candidates})
+            else:
+                logger.warning(f"  ❌ No candidates found for '{concept}' (Heuristic failed).")
+                unmapped_log_path = os.path.join(os.path.dirname(__file__), "..", "unmapped_concepts.log")
+                with open(unmapped_log_path, "a", encoding="utf-8") as f_unmapped:
+                    f_unmapped.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] CIK: {cik} ({name}) -> Failed to find heuristic candidates for '{concept}'\n")
                 
         if not batch_data:
             continue
@@ -251,6 +256,9 @@ def run_auto_discovery():
                         log_f.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] CIK: {cik} ({name}) -> Detected '{concept}' Tag: {best_tag}\n")
             else:
                 logger.warning(f"  ❌ LLM could not infer a good tag for '{concept}'.")
+                unmapped_log_path = os.path.join(os.path.dirname(__file__), "..", "unmapped_concepts.log")
+                with open(unmapped_log_path, "a", encoding="utf-8") as f_unmapped:
+                    f_unmapped.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] CIK: {cik} ({name}) -> LLM failed to infer tag for '{concept}' from {len(item['candidates'])} candidates\n")
         
         time.sleep(4)  # Rate limiting for Gemini API, 1 request per company
 
