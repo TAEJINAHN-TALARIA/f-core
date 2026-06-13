@@ -81,6 +81,24 @@ def extract_candidate_tags(all_tags, concept):
     elif concept_lower == "operating_cash_flow":
         keywords = ["cash", "operating", "activities"]
         exclude = ["financing", "investing"]
+    elif concept_lower == "eps_basic":
+        keywords = ["earningspershare", "pershare", "per_share", "basic"]
+        exclude = ["diluted"]
+    elif concept_lower == "eps_diluted":
+        keywords = ["earningspershare", "pershare", "per_share", "diluted"]
+        exclude = ["basic"]
+    elif concept_lower == "sbc":
+        keywords = ["sharebased", "stockbased", "compensation"]
+        exclude = []
+    elif concept_lower == "rnd":
+        keywords = ["research", "development"]
+        exclude = []
+    elif concept_lower == "ppne_net":
+        keywords = ["property", "plant", "equipment"]
+        exclude = ["gross"]
+    elif concept_lower == "dividends_paid":
+        keywords = ["dividend", "paid"]
+        exclude = ["receivable", "payable"]
     else:
         keywords = [concept_lower.replace("_", " "), concept_lower.split("_")[0]]
         exclude = []
