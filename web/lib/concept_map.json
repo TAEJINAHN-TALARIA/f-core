@@ -1,6 +1,15 @@
 {
     "revenue": {
         "tags": [
+            "RealEstateRevenueNet",
+            "RevenueFromGrants",
+            "SalesRevenueGoodsNet",
+            "SalesRevenueServicesNet",
+            "BrokerageCommissionsRevenue",
+            "RevenueNotFromContractWithCustomer",
+            "FinancialServicesRevenue",
+            "DisposalGroupIncludingDiscontinuedOperationRevenue",
+            "PrincipalTransactionsRevenue",
             "RegulatedAndUnregulatedOperatingRevenue",
             "OperatingRevenues",
             "RevenueFromContractWithCustomerExcludingAssessedTax",
@@ -17,12 +26,16 @@
     },
     "operating_income": {
         "tags": [
+            "OtherNonoperatingIncome",
+            "NoninterestIncomeOtherOperatingIncome",
+            "OtherOperatingIncome",
             "OperatingIncomeLoss"
         ],
         "category": "income"
     },
     "net_income": {
         "tags": [
+            "ProfitLoss",
             "NetIncomeLoss"
         ],
         "category": "income"
@@ -35,6 +48,7 @@
     },
     "eps_diluted": {
         "tags": [
+            "BusinessAcquisitionProFormaEarningsPerShareDiluted",
             "EarningsPerShareDiluted"
         ],
         "category": "income"
@@ -47,18 +61,36 @@
     },
     "sbc": {
         "tags": [
+            "AdjustmentsToAdditionalPaidInCapitalSharebasedCompensationOtherLongtermIncentivePlansRequisiteServicePeriodRecognition",
+            "StockIssuedDuringPeriodSharesShareBasedCompensation",
+            "StockIssuedDuringPeriodSharesShareBasedCompensationGross",
+            "StockGrantedDuringPeriodValueSharebasedCompensation",
+            "AdjustmentsToAdditionalPaidInCapitalSharebasedCompensationRequisiteServicePeriodRecognitionValue",
+            "AdjustmentsToAdditionalPaidInCapitalTaxEffectFromShareBasedCompensation",
+            "StockIssuedDuringPeriodValueShareBasedCompensation",
+            "AllocatedShareBasedCompensationExpense",
+            "EmployeeBenefitsAndShareBasedCompensation",
             "ShareBasedCompensation"
         ],
         "category": "income"
     },
     "rnd": {
         "tags": [
+            "OtherResearchAndDevelopmentExpense",
             "ResearchAndDevelopmentExpense"
         ],
         "category": "income"
     },
     "interest_expense": {
         "tags": [
+            "InterestExpenseDebtExcludingAmortization",
+            "NoninterestExpenseOfferingCost",
+            "InterestExpenseLongTermDebt",
+            "FinancingInterestExpense",
+            "InterestExpenseOperating",
+            "InterestExpenseOther",
+            "FinanceLeaseInterestExpense",
+            "InterestExpenseBorrowings",
             "InterestExpenseNonoperating",
             "InterestExpenseDebt",
             "InterestExpense"
@@ -67,6 +99,8 @@
     },
     "income_tax": {
         "tags": [
+            "DeferredIncomeTaxExpenseBenefit",
+            "DeferredFederalIncomeTaxExpenseBenefit",
             "CurrentIncomeTaxExpenseBenefit",
             "IncomeTaxExpenseBenefit"
         ],
@@ -74,6 +108,10 @@
     },
     "depreciation": {
         "tags": [
+            "CostOfServicesDepreciationAndAmortization",
+            "CostOfGoodsAndServicesSoldDepreciationAndAmortization",
+            "OtherDepreciationAndAmortization",
+            "DepreciationAndAmortization",
             "DepreciationAmortizationAndAccretionNet",
             "DepreciationDepletionAndAmortization",
             "Depreciation"
@@ -100,12 +138,17 @@
     },
     "liabilities_current": {
         "tags": [
+            "AccruedLiabilitiesCurrent",
+            "DerivativeLiabilitiesCurrent",
+            "AccountsPayableAndAccruedLiabilitiesCurrent",
             "LiabilitiesCurrent"
         ],
         "category": "balance_sheet"
     },
     "equity": {
         "tags": [
+            "StockholdersEquityNoteStockSplitConversionRatio1",
+            "LiabilitiesAndStockholdersEquity",
             "StockholdersEquity",
             "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest"
         ],
@@ -113,12 +156,33 @@
     },
     "long_term_debt": {
         "tags": [
+            "SubordinatedLongTermDebt",
+            "ProceedsFromIssuanceOfSeniorLongTermDebt",
+            "ProceedsFromIssuanceOfSubordinatedLongTermDebt",
+            "RepaymentsOfOtherLongTermDebt",
+            "SecuredLongTermDebt",
+            "InterestExpenseOtherLongTermDebt",
+            "LongTermDebtPercentageBearingVariableInterestRate",
+            "ProceedsFromRepaymentsOfLongTermDebtAndCapitalSecurities",
+            "CapitalizationLongtermDebtAndEquity",
+            "LongtermDebtWeightedAverageInterestRate",
+            "UnsecuredLongTermDebt",
+            "LongTermDebtAverageAmountOutstanding",
+            "ProceedsFromRepaymentsOfOtherLongTermDebt",
+            "RepaymentsOfLongTermDebtAndCapitalSecurities",
+            "ProceedsFromIssuanceOfLongTermDebt",
+            "LongTermDebtPercentageBearingFixedInterestRate",
+            "OtherLongTermDebt",
+            "LongTermDebtAndCapitalLeaseObligations",
+            "RepaymentsOfLongTermDebt",
             "LongTermDebt"
         ],
         "category": "balance_sheet"
     },
     "cash_equivalents": {
         "tags": [
+            "CashCashEquivalentsAndShortTermInvestments",
+            "CashCashEquivalentsAndFederalFundsSold",
             "CashEquivalentsAtCarryingValue",
             "CashAndCashEquivalentsAtCarryingValue"
         ],
@@ -126,12 +190,16 @@
     },
     "retained_earnings": {
         "tags": [
+            "RetainedEarningsUndistributedEarningsFromEquityMethodInvestees",
+            "StatutoryAccountingPracticesRetainedEarningsNotAvailableForDividends",
+            "CumulativeEffectOnRetainedEarningsNetOfTax1",
             "RetainedEarningsAccumulatedDeficit"
         ],
         "category": "balance_sheet"
     },
     "shares_outstanding": {
         "tags": [
+            "TemporaryEquitySharesOutstanding",
             "SharesOutstanding",
             "WeightedAverageNumberOfSharesOutstandingBasic",
             "CommonStockSharesOutstanding"
@@ -140,6 +208,12 @@
     },
     "shares_issued": {
         "tags": [
+            "ShareBasedCompensationArrangementByShareBasedPaymentAwardSharesIssuedInPeriod",
+            "RestrictedStockValueSharesIssuedNetOfTaxWithholdings",
+            "ExcessStockSharesIssued",
+            "TemporaryEquitySharesIssued",
+            "SaleOfStockNumberOfSharesIssuedInTransaction",
+            "StockIssuedDuringPeriodSharesIssuedForServices",
             "SharesIssued",
             "PreferredStockSharesIssued",
             "CommonStockSharesIssued"
@@ -148,24 +222,28 @@
     },
     "ppne_net": {
         "tags": [
+            "PublicUtilitiesPropertyPlantAndEquipmentNet",
             "PropertyPlantAndEquipmentNet"
         ],
         "category": "balance_sheet"
     },
     "operating_cash_flow": {
         "tags": [
+            "NetCashProvidedByUsedInOperatingActivitiesContinuingOperations",
             "NetCashProvidedByUsedInOperatingActivities"
         ],
         "category": "cashflow"
     },
     "investing_cash_flow": {
         "tags": [
+            "NetCashProvidedByUsedInInvestingActivitiesContinuingOperations",
             "NetCashProvidedByUsedInInvestingActivities"
         ],
         "category": "cashflow"
     },
     "financing_cash_flow": {
         "tags": [
+            "NetCashProvidedByUsedInFinancingActivitiesContinuingOperations",
             "NetCashProvidedByUsedInFinancingActivities"
         ],
         "category": "cashflow"
@@ -186,6 +264,8 @@
     },
     "dividends_paid": {
         "tags": [
+            "PaymentsOfDividendsPreferredStockAndPreferenceStock",
+            "PaymentsOfDividendsMinorityInterest",
             "OtherPreferredStockDividendsAndAdjustments",
             "PaymentsOfDividendsCommonStock",
             "PaymentsOfDividends"
