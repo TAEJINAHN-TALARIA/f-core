@@ -1,5 +1,6 @@
 import re
 import logging
+import threading
 import time
 import requests
 from collections import defaultdict
@@ -37,8 +38,41 @@ TICKERS_EXCHANGE_URL = "https://www.sec.gov/files/company_tickers_exchange.json"
 COMPANYFACTS_URL = "https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json"
 SUBMISSIONS_URL = "https://data.sec.gov/submissions/CIK{cik}.json"
 
-# SEC EDGAR rate limit: max 10 req/s. We target 8 to be safe.
+# SEC EDGAR rate limit: max 10 req/s per IP. Target 8 to leave headroom.
+# Lock + monotonic timestamp are MODULE-level so the cap holds across threads —
+# auto_discover_tags fans out 10×10 concurrent downloads, and per-call limiting
+# would otherwise let the actual request rate reach ~100/s and trigger 429s.
 _MIN_INTERVAL = 1 / 8
+_rate_lock = threading.Lock()
+_last_request_at = 0.0
+
+
+def _throttle() -> None:
+    """Block until at least _MIN_INTERVAL has elapsed since the previous SEC hit."""
+    global _last_request_at
+    with _rate_lock:
+        elapsed = time.monotonic() - _last_request_at
+        if elapsed < _MIN_INTERVAL:
+            time.sleep(_MIN_INTERVAL - elapsed)
+        _last_request_at = time.monotonic()
+
+
+def _get_with_retry(session: requests.Session, url: str, *, max_attempts: int = 4) -> requests.Response:
+    """GET with global throttle and 429-aware backoff. Other HTTP errors propagate via raise_for_status caller."""
+    for attempt in range(max_attempts):
+        _throttle()
+        r = session.get(url, timeout=30)
+        if r.status_code != 429:
+            return r
+        retry_after = r.headers.get("Retry-After")
+        try:
+            wait = float(retry_after) if retry_after else 2 ** attempt
+        except ValueError:
+            wait = 2 ** attempt
+        wait = min(max(wait, 1.0), 30.0)
+        logger.warning(f"429 from SEC for {url}; backing off {wait:.1f}s (attempt {attempt+1}/{max_attempts})")
+        time.sleep(wait)
+    return r  # final 429 — let caller handle via raise_for_status
 
 
 def _headers() -> dict:
@@ -84,16 +118,10 @@ def get_sic_map(ciks: list[str]) -> dict[str, dict]:
     session = requests.Session()
     session.headers.update(_headers())
     total = len(ciks)
-    last_request = 0.0
 
     for i, cik in enumerate(ciks):
-        elapsed = time.monotonic() - last_request
-        if elapsed < _MIN_INTERVAL:
-            time.sleep(_MIN_INTERVAL - elapsed)
-
         try:
-            r = session.get(SUBMISSIONS_URL.format(cik=cik), timeout=30)
-            last_request = time.monotonic()
+            r = _get_with_retry(session, SUBMISSIONS_URL.format(cik=cik))
             if r.status_code == 404:
                 continue
             r.raise_for_status()
@@ -106,7 +134,6 @@ def get_sic_map(ciks: list[str]) -> dict[str, dict]:
                 }
         except requests.RequestException as e:
             logger.warning(f"[{i+1}/{total}] SIC fetch failed CIK {cik}: {e}")
-            last_request = time.monotonic()
 
         if (i + 1) % 1000 == 0:
             logger.info(f"SIC fetch progress: {i+1}/{total}")
@@ -116,23 +143,17 @@ def get_sic_map(ciks: list[str]) -> dict[str, dict]:
 
 
 def iter_companyfacts(ciks: list[str], ticker_map: dict | None = None) -> Generator[dict, None, None]:
-    """Fetch companyfacts JSON for each CIK with SEC rate limiting."""
+    """Fetch companyfacts JSON for each CIK. Rate limiting and 429 retry are global
+    (see _throttle / _get_with_retry) so multi-threaded callers stay within SEC's
+    10 req/s cap."""
     total = len(ciks)
     session = requests.Session()
     session.headers.update(_headers())
 
-    last_request = 0.0
     for i, cik in enumerate(ciks):
-        # Rate limiting
-        elapsed = time.monotonic() - last_request
-        if elapsed < _MIN_INTERVAL:
-            time.sleep(_MIN_INTERVAL - elapsed)
-
         url = COMPANYFACTS_URL.format(cik=cik)
         try:
-            r = session.get(url, timeout=30)
-            last_request = time.monotonic()
-
+            r = _get_with_retry(session, url)
             if r.status_code == 404:
                 continue  # Company has no XBRL data
             r.raise_for_status()
@@ -140,10 +161,8 @@ def iter_companyfacts(ciks: list[str], ticker_map: dict | None = None) -> Genera
             if ticker_map and cik in ticker_map:
                 data["_meta"] = ticker_map[cik]
             yield data
-
         except requests.RequestException as e:
             logger.warning(f"[{i+1}/{total}] Failed CIK {cik}: {e}")
-            last_request = time.monotonic()
             continue
 
         if (i + 1) % 500 == 0:
