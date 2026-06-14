@@ -18,45 +18,185 @@
             "SalesRevenueNet",
             "Revenues"
         ],
-        "category": "income"
+        "category": "income",
+        "tag_meta": {
+            "Revenues": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "RevenueFromContractWithCustomerExcludingAssessedTax": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "SalesRevenueNet": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "OperatingRevenues": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "RegulatedAndUnregulatedOperatingRevenue": {
+                "scope": "industry_specific",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "FinancialServicesRevenue": {
+                "scope": "industry_specific",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "RealEstateRevenueNet": {
+                "scope": "industry_specific",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            }
+        }
     },
     "gross_profit": {
         "tags": [
             "GrossProfit"
         ],
-        "category": "income"
+        "category": "income",
+        "tag_meta": {
+            "GrossProfit": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            }
+        }
     },
     "operating_income": {
         "tags": [
             "OperatingIncomeLoss"
         ],
-        "category": "income"
+        "category": "income",
+        "tag_meta": {
+            "OperatingIncomeLoss": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            }
+        }
     },
     "net_income": {
         "tags": [
             "ProfitLoss",
             "NetIncomeLoss"
         ],
-        "category": "income"
+        "category": "income",
+        "tag_meta": {
+            "NetIncomeLoss": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "ProfitLoss": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            }
+        }
     },
     "eps_basic": {
         "tags": [
             "EarningsPerShareBasicUndistributed",
             "EarningsPerShareBasic"
         ],
-        "category": "income"
+        "category": "income",
+        "tag_meta": {
+            "EarningsPerShareBasic": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            }
+        }
     },
     "eps_diluted": {
         "tags": [
             "EarningsPerShareDiluted"
         ],
-        "category": "income"
+        "category": "income",
+        "tag_meta": {
+            "EarningsPerShareDiluted": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            }
+        }
     },
     "diluted_shares": {
         "tags": [
             "WeightedAverageNumberOfDilutedSharesOutstanding"
         ],
-        "category": "income"
+        "category": "income",
+        "tag_meta": {
+            "WeightedAverageNumberOfDilutedSharesOutstanding": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            }
+        }
     },
     "sbc": {
         "tags": [
@@ -67,14 +207,75 @@
             "EmployeeBenefitsAndShareBasedCompensation",
             "ShareBasedCompensation"
         ],
-        "category": "income"
+        "category": "income",
+        "tag_meta": {
+            "ShareBasedCompensation": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "AllocatedShareBasedCompensationExpense": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "StockIssuedDuringPeriodValueShareBasedCompensation": {
+                "scope": "total",
+                "status": "deprecated",
+                "priority": 999,
+                "provenance": {
+                    "source": "manual",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                },
+                "notes": "share issuance VALUE, not compensation expense"
+            },
+            "StockGrantedDuringPeriodValueSharebasedCompensation": {
+                "scope": "total",
+                "status": "deprecated",
+                "priority": 999,
+                "provenance": {
+                    "source": "manual",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                },
+                "notes": "share grant VALUE, not compensation expense"
+            },
+            "EmployeeBenefitsAndShareBasedCompensation": {
+                "scope": "total",
+                "status": "deprecated",
+                "priority": 999,
+                "provenance": {
+                    "source": "manual",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                },
+                "notes": "bundled with other employee benefits, not pure SBC"
+            }
+        }
     },
     "rnd": {
         "tags": [
             "OtherResearchAndDevelopmentExpense",
             "ResearchAndDevelopmentExpense"
         ],
-        "category": "income"
+        "category": "income",
+        "tag_meta": {
+            "ResearchAndDevelopmentExpense": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            }
+        }
     },
     "interest_expense": {
         "tags": [
@@ -90,14 +291,36 @@
             "InterestExpenseDebt",
             "InterestExpense"
         ],
-        "category": "income"
+        "category": "income",
+        "tag_meta": {
+            "InterestExpense": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            }
+        }
     },
     "income_tax": {
         "tags": [
             "CurrentIncomeTaxExpenseBenefit",
             "IncomeTaxExpenseBenefit"
         ],
-        "category": "income"
+        "category": "income",
+        "tag_meta": {
+            "IncomeTaxExpenseBenefit": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            }
+        }
     },
     "depreciation": {
         "tags": [
@@ -109,39 +332,141 @@
             "DepreciationDepletionAndAmortization",
             "Depreciation"
         ],
-        "category": "income"
+        "category": "income",
+        "tag_meta": {
+            "DepreciationDepletionAndAmortization": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "DepreciationAndAmortization": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "DepreciationAmortizationAndAccretionNet": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "Depreciation": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            }
+        }
     },
     "assets": {
         "tags": [
             "Assets"
         ],
-        "category": "balance_sheet"
+        "category": "balance_sheet",
+        "tag_meta": {
+            "Assets": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            }
+        }
     },
     "assets_current": {
         "tags": [
             "DepositsAssetsCurrent",
             "AssetsCurrent"
         ],
-        "category": "balance_sheet"
+        "category": "balance_sheet",
+        "tag_meta": {
+            "AssetsCurrent": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            }
+        }
     },
     "liabilities": {
         "tags": [
             "Liabilities"
         ],
-        "category": "balance_sheet"
+        "category": "balance_sheet",
+        "tag_meta": {
+            "Liabilities": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            }
+        }
     },
     "liabilities_current": {
         "tags": [
             "LiabilitiesCurrent"
         ],
-        "category": "balance_sheet"
+        "category": "balance_sheet",
+        "tag_meta": {
+            "LiabilitiesCurrent": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            }
+        }
     },
     "equity": {
         "tags": [
             "StockholdersEquity",
             "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest"
         ],
-        "category": "balance_sheet"
+        "category": "balance_sheet",
+        "tag_meta": {
+            "StockholdersEquity": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            }
+        }
     },
     "long_term_debt": {
         "tags": [
@@ -152,7 +477,18 @@
             "OtherLongTermDebt",
             "LongTermDebt"
         ],
-        "category": "balance_sheet"
+        "category": "balance_sheet",
+        "tag_meta": {
+            "LongTermDebt": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            }
+        }
     },
     "cash_equivalents": {
         "tags": [
@@ -161,13 +497,44 @@
             "CashEquivalentsAtCarryingValue",
             "CashAndCashEquivalentsAtCarryingValue"
         ],
-        "category": "balance_sheet"
+        "category": "balance_sheet",
+        "tag_meta": {
+            "CashAndCashEquivalentsAtCarryingValue": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "CashEquivalentsAtCarryingValue": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            }
+        }
     },
     "retained_earnings": {
         "tags": [
             "RetainedEarningsAccumulatedDeficit"
         ],
-        "category": "balance_sheet"
+        "category": "balance_sheet",
+        "tag_meta": {
+            "RetainedEarningsAccumulatedDeficit": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            }
+        }
     },
     "shares_outstanding": {
         "tags": [
@@ -176,7 +543,37 @@
             "WeightedAverageNumberOfSharesOutstandingBasic",
             "CommonStockSharesOutstanding"
         ],
-        "category": "balance_sheet"
+        "category": "balance_sheet",
+        "tag_meta": {
+            "CommonStockSharesOutstanding": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "SharesOutstanding": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "WeightedAverageNumberOfSharesOutstandingBasic": {
+                "scope": "total",
+                "status": "deprecated",
+                "priority": 999,
+                "provenance": {
+                    "source": "manual",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                },
+                "notes": "weighted average for EPS, not period-end outstanding"
+            }
+        }
     },
     "shares_issued": {
         "tags": [
@@ -185,49 +582,199 @@
             "PreferredStockSharesIssued",
             "CommonStockSharesIssued"
         ],
-        "category": "balance_sheet"
+        "category": "balance_sheet",
+        "tag_meta": {
+            "CommonStockSharesIssued": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "SharesIssued": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "PreferredStockSharesIssued": {
+                "scope": "industry_specific",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "ConversionOfStockSharesIssued1": {
+                "scope": "total",
+                "status": "deprecated",
+                "priority": 999,
+                "provenance": {
+                    "source": "manual",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                },
+                "notes": "period event (shares issued via conversion), not cumulative issued"
+            }
+        }
     },
     "ppne_net": {
         "tags": [
             "PublicUtilitiesPropertyPlantAndEquipmentNet",
             "PropertyPlantAndEquipmentNet"
         ],
-        "category": "balance_sheet"
+        "category": "balance_sheet",
+        "tag_meta": {
+            "PropertyPlantAndEquipmentNet": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "PublicUtilitiesPropertyPlantAndEquipmentNet": {
+                "scope": "industry_specific",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            }
+        }
     },
     "operating_cash_flow": {
         "tags": [
             "NetCashProvidedByUsedInOperatingActivitiesContinuingOperations",
             "NetCashProvidedByUsedInOperatingActivities"
         ],
-        "category": "cashflow"
+        "category": "cashflow",
+        "tag_meta": {
+            "NetCashProvidedByUsedInOperatingActivities": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "NetCashProvidedByUsedInOperatingActivitiesContinuingOperations": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            }
+        }
     },
     "investing_cash_flow": {
         "tags": [
             "NetCashProvidedByUsedInInvestingActivitiesContinuingOperations",
             "NetCashProvidedByUsedInInvestingActivities"
         ],
-        "category": "cashflow"
+        "category": "cashflow",
+        "tag_meta": {
+            "NetCashProvidedByUsedInInvestingActivities": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "NetCashProvidedByUsedInInvestingActivitiesContinuingOperations": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            }
+        }
     },
     "financing_cash_flow": {
         "tags": [
             "NetCashProvidedByUsedInFinancingActivitiesContinuingOperations",
             "NetCashProvidedByUsedInFinancingActivities"
         ],
-        "category": "cashflow"
+        "category": "cashflow",
+        "tag_meta": {
+            "NetCashProvidedByUsedInFinancingActivities": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "NetCashProvidedByUsedInFinancingActivitiesContinuingOperations": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            }
+        }
     },
     "capex": {
         "tags": [
             "PaymentsForConstructionAndAcquisitionOfPropertyPlantAndEquipment",
             "PaymentsToAcquirePropertyPlantAndEquipment"
         ],
-        "category": "cashflow"
+        "category": "cashflow",
+        "tag_meta": {
+            "PaymentsToAcquirePropertyPlantAndEquipment": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            }
+        }
     },
     "stock_repurchase": {
         "tags": [
             "PaymentsForRepurchaseOfCommonStock",
             "PaymentsForRepurchaseOfEquity"
         ],
-        "category": "cashflow"
+        "category": "cashflow",
+        "tag_meta": {
+            "PaymentsForRepurchaseOfCommonStock": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "PaymentsForRepurchaseOfEquity": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            }
+        }
     },
     "dividends_paid": {
         "tags": [
@@ -237,6 +784,54 @@
             "PaymentsOfDividendsCommonStock",
             "PaymentsOfDividends"
         ],
-        "category": "cashflow"
+        "category": "cashflow",
+        "tag_meta": {
+            "PaymentsOfDividends": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "PaymentsOfDividendsCommonStock": {
+                "scope": "total",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "PaymentsOfDividendsPreferredStockAndPreferenceStock": {
+                "scope": "industry_specific",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "PaymentsOfDividendsMinorityInterest": {
+                "scope": "industry_specific",
+                "status": "active",
+                "priority": 0,
+                "provenance": {
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                }
+            },
+            "OtherPreferredStockDividendsAndAdjustments": {
+                "scope": "total",
+                "status": "deprecated",
+                "priority": 999,
+                "provenance": {
+                    "source": "manual",
+                    "discovered_at": "2026-06-14T10:09:15+00:00"
+                },
+                "notes": "income statement adjustment, not cash flow payment"
+            }
+        }
     }
 }
