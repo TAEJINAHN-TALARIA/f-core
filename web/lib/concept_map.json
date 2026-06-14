@@ -1,6 +1,9 @@
 {
     "revenue": {
         "tags": [
+            "ManagementFeesRevenue",
+            "AdvertisingRevenue",
+            "GoldProductsAndServicesRevenue",
             "SalesRevenueGoodsNet",
             "RealEstateRevenueNet",
             "RevenueFromGrants",
@@ -38,6 +41,7 @@
     },
     "eps_basic": {
         "tags": [
+            "EarningsPerShareBasicUndistributed",
             "EarningsPerShareBasic"
         ],
         "category": "income"
@@ -56,6 +60,7 @@
     },
     "sbc": {
         "tags": [
+            "AllocatedShareBasedCompensationExpenseNetOfTax",
             "StockIssuedDuringPeriodValueShareBasedCompensation",
             "StockGrantedDuringPeriodValueSharebasedCompensation",
             "AllocatedShareBasedCompensationExpense",
@@ -73,6 +78,7 @@
     },
     "interest_expense": {
         "tags": [
+            "InterestExpenseRelatedParty",
             "InterestExpenseDebtExcludingAmortization",
             "InterestExpenseLongTermDebt",
             "FinancingInterestExpense",
@@ -113,6 +119,7 @@
     },
     "assets_current": {
         "tags": [
+            "DepositsAssetsCurrent",
             "AssetsCurrent"
         ],
         "category": "balance_sheet"
@@ -173,6 +180,7 @@
     },
     "shares_issued": {
         "tags": [
+            "ConversionOfStockSharesIssued1",
             "SharesIssued",
             "PreferredStockSharesIssued",
             "CommonStockSharesIssued"
