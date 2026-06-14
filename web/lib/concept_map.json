@@ -87,135 +87,112 @@
                 }
             },
             "ResultsOfOperationsRevenueFromOilAndGasProducingActivities": {
-                "scope": "industry_specific",
-                "status": "pending_review",
-                "priority": 500,
+                "scope": "total",
+                "status": "deprecated",
+                "priority": 999,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:27:44+00:00",
-                    "model": "gemini-2.5-flash",
-                    "discovered_for_cik": "0000811809"
-                }
+                    "source": "manual",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                },
+                "notes": "ASC 932 oil & gas supplementary disclosure, not income-statement revenue"
             },
             "ManagementFeesRevenue": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "A specific type of service revenue."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             },
             "AdvertisingRevenue": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "A specific type of revenue from advertising activities."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             },
             "GoldProductsAndServicesRevenue": {
                 "scope": "industry_specific",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "Revenue specific to the gold or precious metals industry."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             },
             "SalesRevenueGoodsNet": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "A major component representing sales of goods."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             },
             "RevenueFromGrants": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "Revenue derived from grants, common in certain sectors."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             },
             "BrokerageCommissionsRevenue": {
                 "scope": "segment",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "Revenue earned from a specific line of business within financial services."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             },
             "SalesRevenueServicesNet": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "A major component representing sales of services."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             },
             "LicenseAndServicesRevenue": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "Revenue from licensing and providing services."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             },
             "ReimbursementRevenue": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "Revenue generated from reimbursements."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             },
             "RefiningAndMarketingRevenue": {
                 "scope": "industry_specific",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:38:58+00:00",
-                    "model": "gemini-2.5-flash",
-                    "discovered_for_cik": "0001035002"
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
                 }
             },
             "HealthCareOrganizationRevenue": {
                 "scope": "industry_specific",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:40:19+00:00",
-                    "model": "gemini-2.5-flash",
-                    "discovered_for_cik": "0001333141"
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
                 }
             }
         }
@@ -238,26 +215,24 @@
                 }
             },
             "EquityMethodInvestmentSummarizedFinancialInformationGrossProfitLoss": {
-                "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "scope": "total",
+                "status": "deprecated",
+                "priority": 999,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:27:50+00:00",
-                    "model": "gemini-2.5-flash",
-                    "discovered_for_cik": "0001061219"
-                }
+                    "source": "manual",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                },
+                "notes": "equity-method investee's gross profit, not the reporter's own"
             },
             "RetailLandSalesInstallmentMethodGrossProfitDeferred": {
-                "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "scope": "total",
+                "status": "deprecated",
+                "priority": 999,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:39:06+00:00",
-                    "model": "gemini-2.5-flash",
-                    "discovered_for_cik": "0001601046"
-                }
+                    "source": "manual",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                },
+                "notes": "deferred gross profit from installment sales, not current-period gross profit"
             }
         }
     },
@@ -305,15 +280,14 @@
                 }
             },
             "ResultsOfOperationsOilAndGasProducingActivitiesNetIncomeExcludingCorporateOverheadAndInterestCosts": {
-                "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "scope": "total",
+                "status": "deprecated",
+                "priority": 999,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:27:44+00:00",
-                    "model": "gemini-2.5-flash",
-                    "discovered_for_cik": "0000811809"
-                }
+                    "source": "manual",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                },
+                "notes": "oil & gas segment NI excluding corporate overhead, not company-wide NI"
             }
         }
     },
@@ -334,15 +308,14 @@
                 }
             },
             "EarningsPerShareBasicUndistributed": {
-                "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "scope": "total",
+                "status": "deprecated",
+                "priority": 999,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
+                    "source": "manual",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
                 },
-                "notes": "A specific calculation or variant of basic EPS."
+                "notes": "undistributed earnings per share variant, not standard basic EPS"
             }
         }
     },
@@ -445,58 +418,52 @@
             },
             "AllocatedShareBasedCompensationExpenseNetOfTax": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "A specific, detailed component of share-based compensation."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             },
             "IncomeTaxReconciliationNondeductibleExpenseShareBasedCompensationCost": {
-                "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "scope": "total",
+                "status": "deprecated",
+                "priority": 999,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:39:07+00:00",
-                    "model": "gemini-2.5-flash",
-                    "discovered_for_cik": "0000917851"
-                }
+                    "source": "manual",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                },
+                "notes": "nondeductible-for-tax SBC portion in rate reconciliation, not SBC expense itself"
             },
             "EmployeeServiceShareBasedCompensationAllocationOfRecognizedPeriodCostsCapitalizedAmount": {
-                "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "scope": "total",
+                "status": "deprecated",
+                "priority": 999,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:39:32+00:00",
-                    "model": "gemini-2.5-flash",
-                    "discovered_for_cik": "0001130310"
-                }
+                    "source": "manual",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                },
+                "notes": "capitalized portion of SBC (added to assets), not P&L expense"
             },
             "AdjustmentsRelatedToTaxWithholdingForShareBasedCompensation": {
-                "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "scope": "total",
+                "status": "deprecated",
+                "priority": 999,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:39:56+00:00",
-                    "model": "gemini-2.5-flash",
-                    "discovered_for_cik": "0002074176"
-                }
+                    "source": "manual",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                },
+                "notes": "RSU tax-withholding adjustment, not SBC expense"
             },
             "PaymentsRelatedToTaxWithholdingForShareBasedCompensation": {
-                "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "scope": "total",
+                "status": "deprecated",
+                "priority": 999,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:40:26+00:00",
-                    "model": "gemini-2.5-flash",
-                    "discovered_for_cik": "0000763901"
-                }
+                    "source": "manual",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                },
+                "notes": "RSU tax-withholding cash outflow, not SBC expense"
             }
         }
     },
@@ -518,14 +485,12 @@
             },
             "OtherResearchAndDevelopmentExpense": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "A residual category for R&D expenses not specified elsewhere."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             }
         }
     },
@@ -557,123 +522,101 @@
             },
             "InterestExpenseRelatedParty": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "Interest expense arising from transactions with related parties."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             },
             "InterestExpenseDebtExcludingAmortization": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "A specific breakdown of interest expense on debt, excluding amortization."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             },
             "InterestExpenseLongTermDebt": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "Interest expense specifically related to long-term debt."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             },
             "FinancingInterestExpense": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "Interest expense categorized as a financing activity."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             },
             "InterestExpenseOther": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "A residual category for miscellaneous interest expenses."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             },
             "FinanceLeaseInterestExpense": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "Interest expense specifically from finance leases."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             },
             "InterestExpenseOperating": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "Interest expense incurred in operating activities."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             },
             "InterestExpenseBorrowings": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "Interest expense specifically from borrowings."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             },
             "InterestExpenseNonoperating": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "Interest expense not related to core operating activities."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             },
             "InterestExpenseDebt": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "General interest expense incurred on debt."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             },
             "InterestExpenseLesseeAssetsUnderCapitalLease": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:40:27+00:00",
-                    "model": "gemini-2.5-flash",
-                    "discovered_for_cik": "0001604028"
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
                 }
             }
         }
@@ -696,14 +639,12 @@
             },
             "CurrentIncomeTaxExpenseBenefit": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "A key component of total income tax expense, distinct from deferred."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             }
         }
     },
@@ -758,59 +699,51 @@
                 }
             },
             "SegmentReportingInformationDepreciationDepletionAndAmortizationExpense": {
-                "scope": "segment",
-                "status": "pending_review",
-                "priority": 500,
+                "scope": "total",
+                "status": "deprecated",
+                "priority": 999,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:27:41+00:00",
-                    "model": "gemini-2.5-flash",
-                    "discovered_for_cik": "0000047710"
-                }
+                    "source": "manual",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                },
+                "notes": "segment-reporting footnote item, not company-wide D&A"
             },
             "ResultsOfOperationsDepreciationDepletionAndAmortizationAndValuationProvisions": {
-                "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "scope": "total",
+                "status": "deprecated",
+                "priority": 999,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:27:44+00:00",
-                    "model": "gemini-2.5-flash",
-                    "discovered_for_cik": "0000811809"
-                }
+                    "source": "manual",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                },
+                "notes": "ASC 932 oil & gas supplementary disclosure, not income-statement D&A"
             },
             "CostOfServicesDepreciationAndAmortization": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "Depreciation and amortization specifically allocated to cost of services."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             },
             "CostOfGoodsAndServicesSoldDepreciationAndAmortization": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "Depreciation and amortization within cost of goods and services sold."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             },
             "OtherDepreciationAndAmortization": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "A residual category for other depreciation and amortization."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             }
         }
     },
@@ -850,24 +783,20 @@
             },
             "DepositsAssetsCurrent": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "A specific type of current asset related to deposits."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             },
             "DerivativeAssetsCurrent": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:40:27+00:00",
-                    "model": "gemini-2.5-flash",
-                    "discovered_for_cik": "0000101382"
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
                 }
             }
         }
@@ -907,13 +836,11 @@
             },
             "DeferredTaxLiabilitiesCurrent": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:39:06+00:00",
-                    "model": "gemini-2.5-flash",
-                    "discovered_for_cik": "0000004977"
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
                 }
             }
         }
@@ -968,81 +895,70 @@
                 }
             },
             "DebtDefaultLongtermDebtAmount": {
-                "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "scope": "total",
+                "status": "deprecated",
+                "priority": 999,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:27:39+00:00",
-                    "model": "gemini-2.5-flash",
-                    "discovered_for_cik": "0000753308"
-                }
+                    "source": "manual",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                },
+                "notes": "amount of long-term debt in default, not total long-term debt balance"
             },
             "SubordinatedLongTermDebt": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "A specific type of long-term debt with subordinated claims."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             },
             "UnsecuredLongTermDebt": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "A specific type of long-term debt that is unsecured."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             },
             "LongTermDebtAndCapitalLeaseObligations": {
                 "scope": "total",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "deprecated",
+                "priority": 999,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
+                    "source": "manual",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
                 },
-                "notes": "An aggregate representing the company's total long-term debt and capital lease obligations."
+                "notes": "includes capital lease obligations \u2014 broader than pure long-term debt"
             },
             "SecuredLongTermDebt": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "A specific type of long-term debt that is secured."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             },
             "OtherLongTermDebt": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "A residual category for other types of long-term debt."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             },
             "BusinessAcquisitionPurchasePriceAllocationNotesPayableAndLongTermDebt": {
-                "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "scope": "total",
+                "status": "deprecated",
+                "priority": 999,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:39:35+00:00",
-                    "model": "gemini-2.5-flash",
-                    "discovered_for_cik": "0000011544"
-                }
+                    "source": "manual",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                },
+                "notes": "M&A purchase price allocation entry, not standing debt balance"
             }
         }
     },
@@ -1075,25 +991,22 @@
             },
             "CashCashEquivalentsAndShortTermInvestments": {
                 "scope": "total",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "deprecated",
+                "priority": 999,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
+                    "source": "manual",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
                 },
-                "notes": "An aggregate of the company's most liquid assets."
+                "notes": "includes short-term investments \u2014 broader than cash equivalents"
             },
             "CashCashEquivalentsAndFederalFundsSold": {
                 "scope": "industry_specific",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "An aggregate reflecting cash, equivalents, and federal funds sold, specific to financial institutions."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             }
         }
     },
@@ -1152,15 +1065,14 @@
                 "notes": "weighted average for EPS, not period-end outstanding"
             },
             "TemporaryEquitySharesOutstanding": {
-                "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "scope": "total",
+                "status": "deprecated",
+                "priority": 999,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
+                    "source": "manual",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
                 },
-                "notes": "A specific class of shares outstanding, related to temporary equity."
+                "notes": "mezzanine/temporary equity shares, not common stock outstanding"
             }
         }
     },
@@ -1239,15 +1151,14 @@
                 }
             },
             "DisposalGroupIncludingDiscontinuedOperationPropertyPlantAndEquipmentNet": {
-                "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "scope": "total",
+                "status": "deprecated",
+                "priority": 999,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:39:32+00:00",
-                    "model": "gemini-2.5-flash",
-                    "discovered_for_cik": "0000906107"
-                }
+                    "source": "manual",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                },
+                "notes": "PP&E held for disposal / discontinued ops, not in-service PP&E"
             }
         }
     },
@@ -1333,13 +1244,11 @@
             },
             "ProceedsFromPaymentsForOtherFinancingActivities": {
                 "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:39:56+00:00",
-                    "model": "gemini-2.5-flash",
-                    "discovered_for_cik": "0000887225"
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
                 }
             }
         }
@@ -1362,14 +1271,12 @@
             },
             "PaymentsForConstructionAndAcquisitionOfPropertyPlantAndEquipment": {
                 "scope": "total",
-                "status": "pending_review",
-                "priority": 500,
+                "status": "active",
+                "priority": 0,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:28:05+00:00",
-                    "model": "gemini-2.5-flash"
-                },
-                "notes": "The aggregate cash outflow for capital expenditures on PP&E."
+                    "source": "seed",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                }
             }
         }
     },
@@ -1400,15 +1307,14 @@
                 }
             },
             "PaymentsForRepurchaseOfCommonStockForEmployeeTaxWithholdingObligations": {
-                "scope": "component",
-                "status": "pending_review",
-                "priority": 500,
+                "scope": "total",
+                "status": "deprecated",
+                "priority": 999,
                 "provenance": {
-                    "source": "auto_llm",
-                    "discovered_at": "2026-06-14T10:39:16+00:00",
-                    "model": "gemini-2.5-flash",
-                    "discovered_for_cik": "0001178670"
-                }
+                    "source": "manual",
+                    "discovered_at": "2026-06-14T10:50:27+00:00"
+                },
+                "notes": "RSU net-settlement tax remittance, not a buyback program payment"
             }
         }
     },

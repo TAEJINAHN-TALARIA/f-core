@@ -90,6 +90,46 @@ SEED_CANONICAL: dict[tuple[str, str], str] = {
     ("dividends_paid", "PaymentsOfDividendsCommonStock"): "total",
     ("dividends_paid", "PaymentsOfDividendsPreferredStockAndPreferenceStock"): "industry_specific",
     ("dividends_paid", "PaymentsOfDividendsMinorityInterest"): "industry_specific",
+
+    # Curated after first pending_review round (LLM-suggested, human-verified).
+    ("revenue", "ManagementFeesRevenue"): "component",
+    ("revenue", "AdvertisingRevenue"): "component",
+    ("revenue", "SalesRevenueGoodsNet"): "component",
+    ("revenue", "SalesRevenueServicesNet"): "component",
+    ("revenue", "LicenseAndServicesRevenue"): "component",
+    ("revenue", "ReimbursementRevenue"): "component",
+    ("revenue", "RevenueFromGrants"): "component",
+    ("revenue", "BrokerageCommissionsRevenue"): "segment",
+    ("revenue", "GoldProductsAndServicesRevenue"): "industry_specific",
+    ("revenue", "RefiningAndMarketingRevenue"): "industry_specific",
+    ("revenue", "HealthCareOrganizationRevenue"): "industry_specific",
+    ("sbc", "AllocatedShareBasedCompensationExpenseNetOfTax"): "component",
+    ("rnd", "OtherResearchAndDevelopmentExpense"): "component",
+    ("interest_expense", "InterestExpenseDebt"): "component",
+    ("interest_expense", "InterestExpenseLongTermDebt"): "component",
+    ("interest_expense", "InterestExpenseBorrowings"): "component",
+    ("interest_expense", "InterestExpenseDebtExcludingAmortization"): "component",
+    ("interest_expense", "FinanceLeaseInterestExpense"): "component",
+    ("interest_expense", "InterestExpenseLesseeAssetsUnderCapitalLease"): "component",
+    ("interest_expense", "InterestExpenseOperating"): "component",
+    ("interest_expense", "InterestExpenseNonoperating"): "component",
+    ("interest_expense", "InterestExpenseOther"): "component",
+    ("interest_expense", "InterestExpenseRelatedParty"): "component",
+    ("interest_expense", "FinancingInterestExpense"): "component",
+    ("income_tax", "CurrentIncomeTaxExpenseBenefit"): "component",
+    ("depreciation", "CostOfServicesDepreciationAndAmortization"): "component",
+    ("depreciation", "CostOfGoodsAndServicesSoldDepreciationAndAmortization"): "component",
+    ("depreciation", "OtherDepreciationAndAmortization"): "component",
+    ("assets_current", "DepositsAssetsCurrent"): "component",
+    ("assets_current", "DerivativeAssetsCurrent"): "component",
+    ("liabilities_current", "DeferredTaxLiabilitiesCurrent"): "component",
+    ("long_term_debt", "SubordinatedLongTermDebt"): "component",
+    ("long_term_debt", "UnsecuredLongTermDebt"): "component",
+    ("long_term_debt", "SecuredLongTermDebt"): "component",
+    ("long_term_debt", "OtherLongTermDebt"): "component",
+    ("cash_equivalents", "CashCashEquivalentsAndFederalFundsSold"): "industry_specific",
+    ("capex", "PaymentsForConstructionAndAcquisitionOfPropertyPlantAndEquipment"): "total",
+    ("financing_cash_flow", "ProceedsFromPaymentsForOtherFinancingActivities"): "component",
 }
 
 # Known-wrong tags: same concept slot but semantically different measurement.
@@ -107,6 +147,44 @@ SEED_DEPRECATED: dict[tuple[str, str], str] = {
         "period event (shares issued via conversion), not cumulative issued",
     ("dividends_paid", "OtherPreferredStockDividendsAndAdjustments"):
         "income statement adjustment, not cash flow payment",
+
+    # Curated after first pending_review round.
+    ("revenue", "ResultsOfOperationsRevenueFromOilAndGasProducingActivities"):
+        "ASC 932 oil & gas supplementary disclosure, not income-statement revenue",
+    ("gross_profit", "EquityMethodInvestmentSummarizedFinancialInformationGrossProfitLoss"):
+        "equity-method investee's gross profit, not the reporter's own",
+    ("gross_profit", "RetailLandSalesInstallmentMethodGrossProfitDeferred"):
+        "deferred gross profit from installment sales, not current-period gross profit",
+    ("net_income", "ResultsOfOperationsOilAndGasProducingActivitiesNetIncomeExcludingCorporateOverheadAndInterestCosts"):
+        "oil & gas segment NI excluding corporate overhead, not company-wide NI",
+    ("eps_basic", "EarningsPerShareBasicUndistributed"):
+        "undistributed earnings per share variant, not standard basic EPS",
+    ("sbc", "IncomeTaxReconciliationNondeductibleExpenseShareBasedCompensationCost"):
+        "nondeductible-for-tax SBC portion in rate reconciliation, not SBC expense itself",
+    ("sbc", "EmployeeServiceShareBasedCompensationAllocationOfRecognizedPeriodCostsCapitalizedAmount"):
+        "capitalized portion of SBC (added to assets), not P&L expense",
+    ("sbc", "AdjustmentsRelatedToTaxWithholdingForShareBasedCompensation"):
+        "RSU tax-withholding adjustment, not SBC expense",
+    ("sbc", "PaymentsRelatedToTaxWithholdingForShareBasedCompensation"):
+        "RSU tax-withholding cash outflow, not SBC expense",
+    ("depreciation", "SegmentReportingInformationDepreciationDepletionAndAmortizationExpense"):
+        "segment-reporting footnote item, not company-wide D&A",
+    ("depreciation", "ResultsOfOperationsDepreciationDepletionAndAmortizationAndValuationProvisions"):
+        "ASC 932 oil & gas supplementary disclosure, not income-statement D&A",
+    ("long_term_debt", "DebtDefaultLongtermDebtAmount"):
+        "amount of long-term debt in default, not total long-term debt balance",
+    ("long_term_debt", "LongTermDebtAndCapitalLeaseObligations"):
+        "includes capital lease obligations — broader than pure long-term debt",
+    ("long_term_debt", "BusinessAcquisitionPurchasePriceAllocationNotesPayableAndLongTermDebt"):
+        "M&A purchase price allocation entry, not standing debt balance",
+    ("cash_equivalents", "CashCashEquivalentsAndShortTermInvestments"):
+        "includes short-term investments — broader than cash equivalents",
+    ("shares_outstanding", "TemporaryEquitySharesOutstanding"):
+        "mezzanine/temporary equity shares, not common stock outstanding",
+    ("ppne_net", "DisposalGroupIncludingDiscontinuedOperationPropertyPlantAndEquipmentNet"):
+        "PP&E held for disposal / discontinued ops, not in-service PP&E",
+    ("stock_repurchase", "PaymentsForRepurchaseOfCommonStockForEmployeeTaxWithholdingObligations"):
+        "RSU net-settlement tax remittance, not a buyback program payment",
 }
 
 
@@ -152,8 +230,21 @@ def _llm_meta_entry(scope: str, notes: str | None = None) -> dict:
 
 
 def apply_seed(concept_map: dict) -> dict[str, int]:
-    """Apply whitelist + blacklist. Returns counters. Does NOT overwrite existing meta."""
-    stats = {"added_canonical": 0, "added_deprecated": 0, "skipped_existing": 0, "skipped_missing_tag": 0}
+    """Apply whitelist + blacklist. Returns counters.
+
+    For each (concept, tag) in the seed lists:
+    - If no meta exists → add the seed entry.
+    - If meta exists with status=pending_review → OVERWRITE. The seed lists
+      are the human-curated source of truth; this is the promotion path
+      from LLM-suggested to verified.
+    - If meta exists with status in {active, deprecated} → skip (already
+      curated; the seed entry is redundant or a conflict).
+    """
+    stats = {
+        "added_canonical": 0, "added_deprecated": 0,
+        "promoted_to_active": 0, "promoted_to_deprecated": 0,
+        "skipped_existing": 0, "skipped_missing_tag": 0,
+    }
 
     for (concept, tag), scope in SEED_CANONICAL.items():
         if concept not in concept_map:
@@ -162,11 +253,15 @@ def apply_seed(concept_map: dict) -> dict[str, int]:
             stats["skipped_missing_tag"] += 1
             continue
         tag_meta = concept_map[concept].setdefault("tag_meta", {})
-        if tag in tag_meta:
+        existing = tag_meta.get(tag)
+        if existing is None:
+            tag_meta[tag] = _seed_meta_entry(scope)
+            stats["added_canonical"] += 1
+        elif existing.get("status") == "pending_review":
+            tag_meta[tag] = _seed_meta_entry(scope)
+            stats["promoted_to_active"] += 1
+        else:
             stats["skipped_existing"] += 1
-            continue
-        tag_meta[tag] = _seed_meta_entry(scope)
-        stats["added_canonical"] += 1
 
     for (concept, tag), notes in SEED_DEPRECATED.items():
         if concept not in concept_map:
@@ -175,11 +270,15 @@ def apply_seed(concept_map: dict) -> dict[str, int]:
             stats["skipped_missing_tag"] += 1
             continue
         tag_meta = concept_map[concept].setdefault("tag_meta", {})
-        if tag in tag_meta:
+        existing = tag_meta.get(tag)
+        if existing is None:
+            tag_meta[tag] = _deprecated_meta_entry(notes)
+            stats["added_deprecated"] += 1
+        elif existing.get("status") == "pending_review":
+            tag_meta[tag] = _deprecated_meta_entry(notes)
+            stats["promoted_to_deprecated"] += 1
+        else:
             stats["skipped_existing"] += 1
-            continue
-        tag_meta[tag] = _deprecated_meta_entry(notes)
-        stats["added_deprecated"] += 1
 
     return stats
 
