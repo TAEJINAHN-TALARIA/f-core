@@ -2,6 +2,7 @@ import os
 import json
 import logging
 import time
+from datetime import datetime, timezone
 import requests
 import threading
 from dotenv import load_dotenv
@@ -14,6 +15,9 @@ load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"))
 from .loader import get_client
 from .config import CONCEPT_MAP_PATH
 from .downloader import iter_companyfacts
+from .concept_map_schema import VALID_SCOPES
+
+GEMINI_MODEL = "gemini-2.5-flash"
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
@@ -271,7 +275,7 @@ def infer_best_tags_with_llm_chunk(chunk_data):
         
     prompt = "We are mapping financial tags from SEC EDGAR. We need the US-GAAP tag that best represents several missing concepts for multiple companies.\n"
     prompt += "For each company (identified by CIK), we have a list of missing concepts and curated candidate tags.\n\nCompanies to map:\n"
-    
+
     for cik, items in chunk_data.items():
         prompt += f"\nCompany CIK: {cik}\n"
         for item in items:
@@ -282,20 +286,25 @@ def infer_best_tags_with_llm_chunk(chunk_data):
             if len(cands) > 20:
                 cands = cands[:20]
             prompt += f"- Concept: '{concept}'\n  Description: {description}\n  Candidates: {', '.join(cands)}\n"
-        
+
     prompt += """
-Please return ONLY a valid JSON object mapping each CIK to a dictionary of its concepts and their best candidate tag exactly as they appear in their candidate lists.
-If none of the candidates fit accurately, map it to "NONE".
+For each (CIK, concept), pick the best candidate tag AND classify its scope:
+- "total":              aggregate value for the whole company (e.g. Revenues, Assets)
+- "industry_specific":  industry-standard variant of a total (e.g. FinancialServicesRevenue for banks)
+- "component":          a narrower part of a total (e.g. InterestExpenseLongTermDebt — part of total interest)
+- "segment":            business-segment breakdown (e.g. BrokerageCommissionsRevenue)
+
+Return ONLY a valid JSON object. Use exactly this shape (tag must appear in the candidate list; use "NONE" if no candidate fits).
 Do not wrap the JSON in Markdown formatting like ```json.
-Example format:
+Example:
 {
   "0001318605": {
-    "revenue": "RevenueFromContractWithCustomerExcludingAssessedTax",
-    "gross_profit": "GrossProfit",
-    "operating_income": "NONE"
+    "revenue":          {"tag": "RevenueFromContractWithCustomerExcludingAssessedTax", "scope": "total"},
+    "gross_profit":     {"tag": "GrossProfit", "scope": "total"},
+    "operating_income": {"tag": "NONE"}
   },
   "0001067983": {
-    "revenue": "SalesRevenueNet"
+    "revenue": {"tag": "FinancialServicesRevenue", "scope": "industry_specific"}
   }
 }
 """
@@ -345,11 +354,19 @@ Example format:
                 cik_results = result_map.get(cik, {})
                 for item in items:
                     c = item["concept"]
-                    tag = cik_results.get(c)
-                    if tag == "NONE" or tag not in item["candidates"]:
+                    entry = cik_results.get(c) or {}
+                    # Tolerate legacy string responses ("TagName" instead of {"tag": ...}).
+                    if isinstance(entry, str):
+                        entry = {"tag": entry}
+                    tag = entry.get("tag")
+                    scope = entry.get("scope")
+                    if tag in (None, "NONE") or tag not in item["candidates"]:
                         final_map[cik][c] = None
                     else:
-                        final_map[cik][c] = tag
+                        final_map[cik][c] = {
+                            "tag": tag,
+                            "scope": scope if scope in VALID_SCOPES else None,
+                        }
             return final_map
 
         except Exception as e:
@@ -361,18 +378,40 @@ Example format:
             time.sleep(delay)
     return {}
 
-def auto_commit_tag(concept, tag):
+def auto_commit_tag(concept, tag, scope=None, discovered_for_cik=None):
+    """Append `tag` to concept's tags[] and record tag_meta. Returns True if added.
+
+    Order within tags[] no longer encodes priority — that's tag_meta[tag].priority.
+    Newly discovered tags default to status=pending_review so human review can
+    promote (or deprecate) them before they affect canonical selection downstream.
+    """
     with file_lock:
         with open(CONCEPT_MAP_PATH, "r", encoding="utf-8") as f:
             concept_map = json.load(f)
-            
-        if tag not in concept_map[concept]["tags"]:
-            # Insert at the beginning so it has highest priority
-            concept_map[concept]["tags"].insert(0, tag)
-            with open(CONCEPT_MAP_PATH, "w", encoding="utf-8") as f:
-                json.dump(concept_map, f, indent=4)
-            return True
-        return False
+
+        if tag in concept_map[concept]["tags"]:
+            return False
+
+        concept_map[concept]["tags"].append(tag)
+
+        tag_meta = concept_map[concept].setdefault("tag_meta", {})
+        meta_entry = {
+            "scope": scope if scope in VALID_SCOPES else "total",
+            "status": "pending_review",
+            "priority": 500,
+            "provenance": {
+                "source": "auto_llm",
+                "discovered_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                "model": GEMINI_MODEL,
+            },
+        }
+        if discovered_for_cik:
+            meta_entry["provenance"]["discovered_for_cik"] = discovered_for_cik
+        tag_meta[tag] = meta_entry
+
+        with open(CONCEPT_MAP_PATH, "w", encoding="utf-8") as f:
+            json.dump(concept_map, f, indent=4)
+        return True
 
 def write_log(filename, message):
     log_path = os.path.join(os.path.dirname(__file__), "..", filename)
@@ -447,14 +486,16 @@ def run_auto_discovery():
             name = names_by_cik[cik]
             for item in items:
                 concept = item["concept"]
-                best_tag = inferred_tags.get(cik, {}).get(concept)
-                
-                if best_tag:
-                    logger.info(f"  ✅ [Chunk {chunk_index}] inferred tag for {cik} '{concept}': {best_tag}")
-                    success = auto_commit_tag(concept, best_tag)
+                inferred = inferred_tags.get(cik, {}).get(concept)
+
+                if inferred:
+                    best_tag = inferred["tag"]
+                    scope = inferred.get("scope")
+                    logger.info(f"  ✅ [Chunk {chunk_index}] inferred tag for {cik} '{concept}': {best_tag} (scope={scope})")
+                    success = auto_commit_tag(concept, best_tag, scope=scope, discovered_for_cik=cik)
                     if success:
                         logger.info(f"  Successfully auto-committed '{best_tag}' to '{concept}' in concept_map.json.")
-                        write_log("tag_updates.log", f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] CIK: {cik} ({name}) -> Detected '{concept}' Tag: {best_tag}\n")
+                        write_log("tag_updates.log", f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] CIK: {cik} ({name}) -> Detected '{concept}' Tag: {best_tag} (scope={scope})\n")
                 else:
                     logger.warning(f"  ❌ [Chunk {chunk_index}] LLM could not infer tag for {cik} '{concept}'.")
                     write_log("unmapped_concepts.log", f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] CIK: {cik} ({name}) -> LLM failed to infer tag for '{concept}' from {len(item['candidates'])} candidates\n")
