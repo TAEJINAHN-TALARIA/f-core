@@ -38,6 +38,14 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python -m etl.auto_discover_tags
 
+      - name: Backfill missing tag_meta (safety net for manual edits)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python -m etl.backfill_tag_meta --full
+
+      - name: Validate concept_map schema before commit
+        run: python -m etl.concept_map_schema
+
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:

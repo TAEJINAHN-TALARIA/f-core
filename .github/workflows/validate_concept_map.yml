@@ -1,0 +1,34 @@
+name: Validate Concept Map
+
+on:
+  pull_request:
+    paths:
+      - "web/lib/concept_map.json"
+      - "etl/concept_map_schema.py"
+      - "etl/backfill_tag_meta.py"
+      - "etl/test_concept_map_schema.py"
+      - "etl/auto_discover_tags.py"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate concept_map schema
+        run: python -m etl.concept_map_schema
+
+      - name: Run schema test suite
+        run: python -m etl.test_concept_map_schema
